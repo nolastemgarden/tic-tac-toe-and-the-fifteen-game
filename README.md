@@ -1,6 +1,5 @@
-# Play the Classic Connect Four Game
-
-A React app version of the classic game, get four in a row to win.
+# Play two seemingly different Games, then learn how they are ac the same game below the surface.
+A React app version of the classic game, get three in a row to win.
 Play against the bot I programmed and turn hints on and off.
 The /build folder will be deployed at GH_PAGES_URL
 
