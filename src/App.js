@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 // My Custom Components
-import Game from './components/Game'
+import Game from './components/TicTacToeGame'
 
 
 // MUI compound components
@@ -31,13 +31,10 @@ const useStyles = makeStyles({
         border: 'solid red 1px',
         height: '90vmin',
         width: '75vmin',
+        borderRadius: '2vmin',
+        overflow: 'hidden'
     },
-    titleArea: {
-        display: 'flex',
-    },
-    title: {
-        fontSize: 'min(max(1.6rem, 6vw), 2.4rem)',
-    },
+    
     stemGardenLink: {
 
     },
