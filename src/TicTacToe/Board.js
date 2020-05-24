@@ -52,7 +52,12 @@ export default function Board(props) {
 
 
     const squares = props.data.map((squareValue) =>
-        <Square key={squareValue} value={squareValue} />
+        <Square 
+            key={squareValue} 
+            value={squareValue} 
+            // onClick={() => this.props.onClick(i)}
+            // onClick={handleSquareClick}    
+            />
     );
 
     return (
@@ -85,7 +90,7 @@ function Square(props) {
     return (
         <Paper 
             className={classes.square}
-
+            // onClick={handleSquareClick()} 
         >
             {icon}
         </Paper>
