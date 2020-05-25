@@ -17,20 +17,35 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from '@material-ui/icons/Menu';
+
+
 import AppBar from '@material-ui/core/AppBar'
 import Typography from '@material-ui/core/Typography'
 
 
 
-
 import { makeStyles } from '@material-ui/core/styles';
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+    // modal: {
+    //     display: 'flex',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    // },
+    // paper: {
+    //     backgroundColor: theme.palette.background.paper,
+    //     border: '2px solid #000',
+    //     boxShadow: theme.shadows[5],
+    //     padding: theme.spacing(2, 4, 3),
+    // },
+
     appBar: {
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#4AC9FD',
+        alignItems: 'end',
+        // backgroundColor: '#4AC9FD',
         height: '5vmin',
-        width: '101%'
+        width: '75vmin',
+        margin: '0'
 
 
     },
@@ -46,22 +61,25 @@ const useStyles = makeStyles({
     icon: {
         color: 'navy',
         fontSize: '3.5vmin',
-        marginRight: '1vmin',
+        marginRight: '1.5vmin',
+        marginTop: '0.5vmin'
     },
-})
+}));
 
 
 export default function Navbar(props) {
     const classes = useStyles();
+    const pageTitle = props.pageTitle;
 
     return (
-        <Box className={classes.appBar} >
+        <div className={classes.appBar} >
             <Typography className={classes.title} variant="h6" noWrap >
-                {props.pageTitle}
+                {pageTitle}
             </Typography>
 
+            
             <SimpleMenu />
-        </Box>
+        </div>
     );
 }
 
@@ -84,10 +102,10 @@ function SimpleMenu(props) {
 
     return (
         <div>
-            <MenuIcon 
-                className={classes.icon} 
-                onClick={handleClick} 
-                aria-controls="simple-menu" 
+            <MenuIcon
+                className={classes.icon}
+                onClick={handleClick}
+                aria-controls="simple-menu"
                 aria-haspopup="true"
             />
             
@@ -138,3 +156,6 @@ function SimpleMenu(props) {
         </div>
     );
 }
+
+
+
