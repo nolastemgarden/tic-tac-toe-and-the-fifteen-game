@@ -19,6 +19,7 @@ import StrategyPage from "./pages/StrategyPage";
 
 // MUI  components
 import Link from '@material-ui/core/Link';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -34,48 +35,41 @@ const useStyles = makeStyles({
     root: {
         height: '100vh',
         width: '100vw',
-        boxSizing: 'border-box',
-        backgroundColor: '#BBFFFF',
+        // boxSizing: 'border-box',
+        backgroundColor: '#ccFFFF',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
 
     },
     container: {
-        border: 'solid #4AC9FD 1vmin',
-        // boxSizing: 'border-box',
+        backgroundColor: '#4AC9FD',
         height: '90vmin',
         width: '75vmin',
         borderRadius: '2vmin',
         overflow: 'hidden',
-        backgroundColor: '#f8f8ff',
+        display: 'flex',
+        flexDirection: 'column',
     },
-    appBar: {
-        display: 'flex',   
-        flexDirection: 'row',
-        backgroundColor: '#4AC9FD',
-        
-        
-        
+    footer: {
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        height: '5vmin',
+        width: '75vmin',
+        alignItems: 'bottom',
     },
-    title: {
-        flexGrow: '1',
-        marginLeft: '1rem',
+    footerText: {
+        paddingTop: '0.7vmin',
+        paddingRight: '2.5vmin',
+        color: 'navy',
+        fontSize: '1.6vmin'
     },
-    menuIcon: {
-        color: 'white',  
-    },
-    stemGardenLink: {
-
-    },
-    tabArea: {
-        width: 'inherit'
-    },
-    boardArea: {
-        backgroundColor: 'blue',
-        width: '100%',
-        height: '100%'
-    }
+    // title: {
+    //     flexGrow: '1',
+    //     marginLeft: '1rem',
+    // },
+    
+    
 })
 
 
@@ -121,8 +115,21 @@ export default function App() {
                         </Route>
                     </Switch>
                 </Router>
+                <Footer />
             </div>
         </div>
+    );
+}
+
+function Footer() {
+    const classes = useStyles();
+
+    return (
+        <Box className={classes.footer} >
+            <Typography className={classes.footerText} noWrap >
+                Produced by the Nola Stem Garden
+            </Typography>
+        </Box>
     );
 }
 
