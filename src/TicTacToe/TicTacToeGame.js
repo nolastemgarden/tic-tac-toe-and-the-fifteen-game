@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 // My Components
 import Board from "./Board";
+import Panel from "./Panel";
 
 
 // MUI  components
@@ -13,16 +14,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AppBar from '@material-ui/core/AppBar'
 import Typography from '@material-ui/core/Typography'
 
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
-    
     root: {
         display: 'flex',
         flexDirection: 'column',
@@ -42,47 +38,11 @@ const useStyles = makeStyles((theme) => ({
         boxSizing: 'border-box',
         width: '100%',
         height: '32vmin',
-        padding: '1vmin',
         
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'center'
         
-    },
-    panel: {
-        
-        display: 'flex',
-        flexDirection: 'row',
-
-    },
-    history: {
-        border: 'solid red 1px',
-        width: '20vmin',
-        // height: '100%',
-    },
-    status: {
-        border: 'solid red 1px',
-        width: '25vmin',
-        height: '100%',
-    },
-    
-    controls: {
-
-    },
-    info: {
-        border: 'solid red 1px',
-        width: '25vmin',
-        height: '100%',
-    },
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
     },
 }));
 
@@ -90,19 +50,14 @@ const useStyles = makeStyles((theme) => ({
 export default function TicTacToeGame() {
     const classes = useStyles();
 
-    // history is an array. Indexes 0 thru 8 represent turn 0.  Indexes 9 thru 17 represent turn 1. this array will max out at length 90 = 10 'turns' x 9 squares
-    // history is an array of up to 9 elements, representing the 9 moves to be made.
-    // let turnNumber = history.length
-    // the value to put into each index of history when that move number is made is the squareId claimed on that move. 
-    // Board has a little more work to do translating this than the old design but it save the 'undo' feature lots of complexity
-     
     let [history, setHistory] = useState([]); 
     console.log("History initialized to: " + history);
 
+    // let [xLines, setXLines] = useState(Array(8).fill(0));
+    // let [oLines, setOLines] = useState(Array(8).fill(0));
     
     // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
-    const boardData = getBoardData(history);
-    function getBoardData(history) {
+    function getBoardValues(history) {
         // Start with an array representing a board of NINE empty squares ...
         let data = Array(9).fill('');
         // For each move in the history ...
@@ -136,133 +91,139 @@ export default function TicTacToeGame() {
         <div className={classes.root} >
             <div className={classes.boardArea} >
                 <Board 
-                    data={boardData} 
+                    data={getBoardValues(history)} 
                     handleSquareClick={handleSquareClick}
+
                 />
             </div>
             <div className={classes.panelArea}>
-                <Panel data={panelData}  />
+                <Panel 
+                    // data={getPanelData(history)} 
+                    status={getStatus()}
+                    handleUndoButtonClick={handleUndoButtonClick}
+                />
             </div>
             
         </div>
     );
 
+    function handleUndoButtonClick() {
+        const shortenedHistory = history.slice(0, history.length - 1)
+        console.log(`${history[history.length-1]} removed. Shortened history: ${shortenedHistory}`);
+        setHistory(shortenedHistory);
+    }
+
+
     
     function handleSquareClick(squareClicked) {
-        // If squareClicked is already claimed in the history, return early w/o effects
-        if (-1 !== history.indexOf(squareClicked)) {
-            console.log(`returning early with no effect. Clicked Square is already claimed.`)
+        if (gameOver()) {
+            console.log("return without effects from handleSquareClick(). The Game is already over.")
             return;
         }
-        // If gameOver already return early w/o effects (this will only fire in case of a Win, the above squareAlreadyClicked will cause a return in case of a filled board && no 3-in-a-rows)
-        if (gameHasBeenWon(history)) {
-            console.log(`returning early with no effect. Game has already been won!`)
+        if (history.indexOf(squareClicked) !== -1) {
+            console.log("return without effects from handleSquareClick(). That square has already been claimed.")
             return;
         }
-        
         // If we reach this point the clicked square is open and the game is not over yet ... 
         setHistory(history.concat(squareClicked));
-        // NOTE handleSquareClick Does not pass anything to the board, 
-        // it calls setHistory and use of that hook setFunction tells React It needs to re-render
-        // all components that depend on the state "history" 
-        // ??? OR do I need to add those re-renders explicitly here? 
+        // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
 
-    // This array's indicies correspond to the squareIds 0 thru 8.
-    // Its elements correspond to the Magic Square Values of those board positions.
-    const magicSquare = [2, 9, 4, 7, 5, 3, 6, 1, 8];
-    // TODO For now this method always returns false
-    function gameHasBeenWon(history) {
-        // The game CANNOT be won before 5 moves have been made.
-        if (history.length < 5) {
-            return false;
+
+    // function historyFilteredByPlayer(history, player) {
+    //     let playerNumber;
+    //     if (player === 'x') {
+    //         playerNumber = 0;
+    //     }
+    //     else if (player === 'o') {
+    //         playerNumber = 1;
+    //     }
+    //     else {
+    //         console.error(`filterHistoryByPlayer was passed an invalid player argument: ${player}`)
+    //         playerNumber = undefined;
+    //     }
+    //     const filteredHistory = history.filter((squareId, index) => index % 2 === playerNumber);
+    //     console.log(`Filtered History:  Player: ${player},  squares claimed: ${filteredHistory}`)
+    //     return filteredHistory;
+    // }
+    
+
+    // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
+    function xLines() {
+        const xLines = getLines(history.filter((squareId, index) => index % 2 === 0));
+        console.log(`Number of X in each line: ${xLines}`)
+        return xLines;
+    }
+    function oLines(){
+        const oLines = getLines(history.filter((squareId, index) => index % 2 === 1));
+        console.log(`Number of O in each line: ${oLines}`)
+        return oLines;
+    }
+    function getLines(claimedSquares) {
+        let status = Array(8).fill(0);
+        // For each square this player has claimed make 2, 3, or 4 updates
+        for (let i = 0; i < claimedSquares.length; i++) {
+            const squareId = claimedSquares[i];
+
+            // Update Row
+            const row = Math.floor(squareId / 3)    // number 0, 1, or 2
+            status[row]++;
+
+            // Update Col
+            const col = (squareId % 3)            // number 0, 1, or 2  +3 to account for the three indexes set asside for rows
+            status[col + 3]++;
+
+            // UpSlash ?
+            if (squareId === 2 || squareId === 4 || squareId === 6) {
+                status[6]++
+            }
+
+            // DownSlash ?
+            if (squareId === 0 || squareId === 4 || squareId === 8) {
+                status[7]++
+            }
         }
-
-
-        // TODO
-        else return true;
-
-        // Partition the data into X and O claimed
-        let xSquareIds = history.filter((element, index) => index % 2 === 0);
-        let oSquareIds = history.filter((element, index) => index % 2 === 1);
-
-        // Refer to Magic Square to convert squareIds arrays into Point-value arrays
-        let xPoints = magicSquare.filter((squareId) => xSquareIds.contains(squareId));
-        let oPoints = magicSquare.filter((squareId) => oSquareIds.contains(squareId));
-        
-        // To win you must have 3 squares claimed
-        
+        // console.log(`Status: ${status}`)
+        return status;
+    }
+    
+    
+    // BOOLEAN helpers for getStatus() and handleSquareClick()
+    function xWins() {
+        return (xLines().includes(3));
+    }
+    function oWins() {
+        return (oLines().includes(3));
+    }
+    function gameDrawn() {
+        return (history.length >= 9 && !xWins() && !oWins());  // Board full and neither player has a win
+    }
+    function gameOver() {
+        return (history.length >= 9 || xWins() || oWins());  // Board full or there's a 3-in-a-row
     }
 
-}
+    
+    function getStatus() {
+        if (xWins()){
+            const winningLine = getLines(history.filter((squareId, index) => index % 2 === 0)).indexOf(3);
+            return (`X wins on line ${winningLine}`)
+        }
+        else if (oWins()){
+            return (`O wins!`)
+        }
+        else if (gameDrawn()){
+            return (`Draw.`)
+        }
+        else if (history.length % 2 === 0){
+            return (`X to move.`)
+        }
+        else if (history.length % 2 === 1) {
+            return (`O to move.`)
+        }
+        else {
+            console.error("getStatus() is broken!");
+            return
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-function Panel(props) {
-    const classes = useStyles();
-    return (
-        <div className={classes.panel}>
-            <div className={classes.history}>
-                Game History
-            </div>
-            <div className={classes.status}>
-                Status
-            </div>
-            <GameRulesModal />
-
-        </div>
-    )
-}
-
-
-function GameRulesModal() {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    return (
-        <div>
-            <HelpOutlineIcon
-                className={classes.icon}
-                onClick={handleOpen}
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-            />
-
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={open}
-                onClose={handleClose}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={open}>
-                    <div className={classes.paper}>
-                        <h2 id="transition-modal-title">Transition modal</h2>
-                        <p id="transition-modal-description">react-transition-group animates me.</p>
-                    </div>
-                </Fade>
-            </Modal>
-        </div>
-    );
 }
