@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Switch from '@material-ui/core/Switch';
 
 
 
@@ -30,32 +31,30 @@ const useStyles = makeStyles((theme) => ({
     },
     infoArea: {
         border: 'solid red 1px',
-        width: '65%',
+        width: '70%',
         fontSize: '2rem',
         
     },
     buttonArea: {
-        border: 'solid red 1px',
-        width: '35%',
+        // border: 'solid red 1px',
+        width: '30%',
+        display: 'flex',
+        flexDirection: 'column', 
+        justifyContent: 'space-around',
+        alignItems: 'center',
+
         
 
     },
+    button: {
+        width: '100%'
+    },
     status: {
-        fontSize: '2rem',
+        fontSize: '2.4rem',
+        fontWeight: 'bold'
     },
     commentary: {
         fontSize: '1.2rem',
-    },
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
     },
 }));
 
@@ -64,10 +63,44 @@ export default function Panel(props) {
 
     
     let status = props.status;
-    // if ()
+    
+    const undoButton = (
+        <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            startIcon={<UndoIcon />}
+            onClick={() => props.handleUndoButtonClick()}
 
-    // if game is over then display who won or if drawn
+        >
+            Undo Move
+        </Button>
+    );
 
+    const showMovesSwitch = (
+        <Switch
+            checked={props.showMoves}
+            onChange={props.toggleShowMovesSwitch}
+            color="primary"
+            name="checkedB"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+        />
+
+    );
+
+    const showCommentarySwitch = (
+        <Switch
+            checked={props.showCommentary}
+            onChange={props.toggleShowCommentarySwitch}
+            color="primary"
+            name="checkedB"
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+        />
+
+    );
+
+    
+        
 
     return (
         <Paper className={classes.panel}>
@@ -81,19 +114,17 @@ export default function Panel(props) {
                 
                 
             </Box>
+            
+            
             <Box className={classes.buttonArea}>
                 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    startIcon={<UndoIcon />}
-                    onClick={() => props.handleUndoButtonClick()}
+                {undoButton}
+                
+                <HowToPlayModal />
 
-                >
-                    Undo Move
-            </Button>
-            <HowToPlayModal />
+                {showMovesSwitch}
+                
+                {showCommentarySwitch}
             </Box>
                 
              
