@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 // MUI Components
+import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -37,12 +38,19 @@ export default function HowToPlayModal() {
 
     return (
         <div>
-            <HelpOutlineIcon
-                className={classes.icon}
+            <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                startIcon={<HelpOutlineIcon />}
                 onClick={handleOpen}
                 aria-controls="simple-menu"
                 aria-haspopup="true"
-            />
+
+            >
+                How To Play
+            </Button>
+
 
             <Modal
                 aria-labelledby="transition-modal-title"
