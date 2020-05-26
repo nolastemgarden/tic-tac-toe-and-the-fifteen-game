@@ -51,14 +51,12 @@ export default function TicTacToeGame() {
     const classes = useStyles();
 
     let [history, setHistory] = useState([]); 
-    console.log("History initialized to: " + history);
-
-    // let [xLines, setXLines] = useState(Array(8).fill(0));
-    // let [oLines, setOLines] = useState(Array(8).fill(0));
+    let [showMoves, setShowMoves] = useState(false); 
+    let [showCommentary, setShowCommentary] = useState(false);  
     
     // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
-    function getBoardValues(history) {
-        // Start with an array representing a board of NINE empty squares ...
+    function getBoardValues() {
+        // Start with an array representing a board of NINE empty squares
         let data = Array(9).fill('');
         // For each move in the history ...
         for ( let i = 0; i < history.length; i++ ) {
@@ -75,23 +73,12 @@ export default function TicTacToeGame() {
     }
     
     
-    const panelData = getPanelData(history);
-    function getPanelData(history) {
-        // List moves according to row, col in table of moves made
-        // Check for a win
-        // Check for a draw
-        // Panel has control buttons that must recieve clickHandlers which are defined in the <Game> and passed as props to the panel then the control section 
-        // Game must genterate and pass in data for the Interactive info/hint panel
-        
-        return {};
-    }
-    
 
     return (
         <div className={classes.root} >
             <div className={classes.boardArea} >
                 <Board 
-                    data={getBoardValues(history)} 
+                    data={getBoardValues()} 
                     handleSquareClick={handleSquareClick}
 
                 />
@@ -100,7 +87,11 @@ export default function TicTacToeGame() {
                 <Panel 
                     // data={getPanelData(history)} 
                     status={getStatus()}
+                    showMoves={showMoves}
+                    showCommentary={showCommentary}
                     handleUndoButtonClick={handleUndoButtonClick}
+                    toggleShowMovesSwitch={toggleShowMovesSwitch}
+                    toggleShowCommentarySwitch={toggleShowCommentarySwitch}
                 />
             </div>
             
@@ -112,7 +103,12 @@ export default function TicTacToeGame() {
         console.log(`${history[history.length-1]} removed. Shortened history: ${shortenedHistory}`);
         setHistory(shortenedHistory);
     }
-
+    function toggleShowMovesSwitch() {
+        setShowMoves(!showMoves)
+    }
+    function toggleShowCommentarySwitch() {
+        setShowCommentary(!showCommentary)
+    }
 
     
     function handleSquareClick(squareClicked) {
@@ -128,24 +124,6 @@ export default function TicTacToeGame() {
         setHistory(history.concat(squareClicked));
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
-
-
-    // function historyFilteredByPlayer(history, player) {
-    //     let playerNumber;
-    //     if (player === 'x') {
-    //         playerNumber = 0;
-    //     }
-    //     else if (player === 'o') {
-    //         playerNumber = 1;
-    //     }
-    //     else {
-    //         console.error(`filterHistoryByPlayer was passed an invalid player argument: ${player}`)
-    //         playerNumber = undefined;
-    //     }
-    //     const filteredHistory = history.filter((squareId, index) => index % 2 === playerNumber);
-    //     console.log(`Filtered History:  Player: ${player},  squares claimed: ${filteredHistory}`)
-    //     return filteredHistory;
-    // }
     
 
     // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
