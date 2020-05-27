@@ -12,12 +12,12 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%'
+        // width: '100%'
     },
     button: {
         // border: 'solid red 1px',
-        width: 'inherit',
-        border: 'solid red 1px',
+        width: '100%',
+        height: '18%',
         fontSize: '1rem',
     },
     modal: {
