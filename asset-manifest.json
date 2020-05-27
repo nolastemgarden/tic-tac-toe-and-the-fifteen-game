@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/tic-tac-toe-and-the-fifteen-game/static/css/main.4738d84e.chunk.css",
-    "main.js": "/tic-tac-toe-and-the-fifteen-game/static/js/main.9c727c1e.chunk.js",
-    "main.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/main.9c727c1e.chunk.js.map",
+    "main.js": "/tic-tac-toe-and-the-fifteen-game/static/js/main.72fe8a5a.chunk.js",
+    "main.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/main.72fe8a5a.chunk.js.map",
     "runtime-main.js": "/tic-tac-toe-and-the-fifteen-game/static/js/runtime-main.c584e9d6.js",
     "runtime-main.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/runtime-main.c584e9d6.js.map",
-    "static/js/2.70548fae.chunk.js": "/tic-tac-toe-and-the-fifteen-game/static/js/2.70548fae.chunk.js",
-    "static/js/2.70548fae.chunk.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/2.70548fae.chunk.js.map",
+    "static/js/2.243cde7c.chunk.js": "/tic-tac-toe-and-the-fifteen-game/static/js/2.243cde7c.chunk.js",
+    "static/js/2.243cde7c.chunk.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/2.243cde7c.chunk.js.map",
     "index.html": "/tic-tac-toe-and-the-fifteen-game/index.html",
-    "precache-manifest.d8dea91ce34c70aa25644373d46d9bae.js": "/tic-tac-toe-and-the-fifteen-game/precache-manifest.d8dea91ce34c70aa25644373d46d9bae.js",
+    "precache-manifest.b5c92a462c58a2f6c4e44fa700f1356c.js": "/tic-tac-toe-and-the-fifteen-game/precache-manifest.b5c92a462c58a2f6c4e44fa700f1356c.js",
     "service-worker.js": "/tic-tac-toe-and-the-fifteen-game/service-worker.js",
     "static/css/main.4738d84e.chunk.css.map": "/tic-tac-toe-and-the-fifteen-game/static/css/main.4738d84e.chunk.css.map",
-    "static/js/2.70548fae.chunk.js.LICENSE.txt": "/tic-tac-toe-and-the-fifteen-game/static/js/2.70548fae.chunk.js.LICENSE.txt",
+    "static/js/2.243cde7c.chunk.js.LICENSE.txt": "/tic-tac-toe-and-the-fifteen-game/static/js/2.243cde7c.chunk.js.LICENSE.txt",
     "static/media/logo.svg": "/tic-tac-toe-and-the-fifteen-game/static/media/logo.ee7cd8ed.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.c584e9d6.js",
-    "static/js/2.70548fae.chunk.js",
+    "static/js/2.243cde7c.chunk.js",
     "static/css/main.4738d84e.chunk.css",
-    "static/js/main.9c727c1e.chunk.js"
+    "static/js/main.72fe8a5a.chunk.js"
   ]
 }
