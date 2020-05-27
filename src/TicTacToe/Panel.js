@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 // Custom Components
 import HelpModal from "./HelpModal";
+import SettingsModal from "./SettingsModal";
 
 // MUI Components
 import Box from '@material-ui/core/Box';
@@ -36,27 +37,17 @@ const useStyles = makeStyles((theme) => ({
         
     },
     buttonArea: {
-        border: 'solid red 1px',
-
+        // border: 'solid red 1px',
         width: '30%',
         display: 'flex',
         flexDirection: 'column', 
         justifyContent: 'space-around',
         alignItems: 'center',
-
-        
-
-    },
-    buttonBox: {
-        // border: 'solid blue 1px',
-        display: 'flex',
-        width: '80%',
-        fontSize: '1rem',
     },
     button: {
-        border: 'solid red 1px',
-
-        width: '90%',
+        // border: 'solid red 1px',
+        width: '100%',
+        // height: '18%',
         fontSize: '1rem',
     },
     
@@ -89,7 +80,20 @@ export default function Panel(props) {
             Undo
         </Button>
     );
+    const newGameButton = (
+        <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => props.handleNewGameButtonClick()}
+        >
+            <UndoIcon />
+            New Game
+        </Button>
 
+
+    );
+    
     const helpButton = (
         <div
             className={classes.button}
@@ -100,46 +104,12 @@ export default function Panel(props) {
         
     );
 
-    const showMovesSwitch = (
-        <Box className={classes.buttonBox}>
-            <Typography className={classes.switchLabel}>
-                Show Moves
-            </Typography>
-            <Switch
-                checked={props.showMoves}
-                onChange={props.toggleShowMovesSwitch}
-                color="primary"
-                name="checkedB"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-        </Box>
-    );
-
-    const showCommentarySwitch = (
-        <Switch
-            checked={props.showCommentary}
-            onChange={props.toggleShowCommentarySwitch}
-            color="primary"
-            name="checkedB"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-        />
-    );
-
-    const newGameButton = (
-        <div
-            className={classes.button}
-        >
-            <HelpModal />
-        </div>
-
-
-    );
-
+    
     const settingsButton = (
         <div
             className={classes.button}
         >
-            <HelpModal />
+            <SettingsModal />
         </div>
 
 
