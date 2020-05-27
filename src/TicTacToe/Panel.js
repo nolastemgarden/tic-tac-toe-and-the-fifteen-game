@@ -40,15 +40,23 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid red 1px',
         width: '30%',
         display: 'flex',
-        flexDirection: 'column', 
+        flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'center',
+        padding: '1rem',
     },
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        // height: '18%',
-        fontSize: '1rem',
+        height: '20%',
+        fontSize: '0.8rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0.4rem',
+    },
+    buttonIcon: {
+        marginRight: '0.6rem'
     },
     
     switchLabel: {
@@ -95,24 +103,16 @@ export default function Panel(props) {
     );
     
     const helpButton = (
-        <div
-            className={classes.button}
-        >
+        <div className={classes.button} >
             <HelpModal />
-        </div>
-            
-        
+        </div> 
     );
 
     
     const settingsButton = (
-        <div
-            className={classes.button}
-        >
+        <div className={classes.button} >
             <SettingsModal />
-        </div>
-
-
+        </div> 
     );
 
 

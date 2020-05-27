@@ -23,18 +23,20 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%'
+        width: '100%',
+        height: '100%',
     },
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        // height: '18%',
-        fontSize: '1rem',
+        height: '100%',
+        fontSize: '0.8rem',
         display: 'flex',
-        justifyContent: 'start',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     buttonIcon: {
-        marginRight: '1rem'
+        marginRight: '0.6rem'
     },
     modal: {
         display: 'flex',
@@ -46,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+    },
+
+    switchLabel: {
+        lineHeight: '1rem'
     },
 
 }));
@@ -88,7 +94,7 @@ export default function SettingsModal(props) {
     );
 
     return (
-        <div>
+        <div className={classes.root} >
             <Button
                 className={classes.button}
                 variant="contained"

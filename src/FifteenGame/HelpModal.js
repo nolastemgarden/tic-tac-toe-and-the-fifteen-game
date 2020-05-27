@@ -12,13 +12,20 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
-        // width: '100%'
+        width: '100%',
+        height: '100%',
     },
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        height: '18%',
-        fontSize: '1rem',
+        height: '100%',
+        fontSize: '0.8rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonIcon: {
+        marginRight: '0.6rem'
     },
     modal: {
         display: 'flex',
@@ -56,7 +63,7 @@ export default function HowToPlayModal() {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
             >
-                <HelpOutlineIcon /> 
+                <HelpOutlineIcon className={classes.buttonIcon} /> 
                 Help
             </Button>
 
@@ -78,16 +85,16 @@ export default function HowToPlayModal() {
                         <h2 id="transition-modal-title">How To Play</h2>
                         <ul id="transition-modal-description" >
                             <li>
-                                X and O take turns claiming one of the 9 squares on the board.
+                                Two players take turns claiming one of the 9 numbers.
                             </li>
                             <li>
-                                The first player to claim all 3 squares in a single row, column, or diagonal.
+                                To win a player must collect a set of 3 numbers that add up to exactly 15.
                             </li>
                             <li>
                                 By default, you go first and play against my Bot, which will never fail to get a draw.
                             </li>
                             <li>
-                                In the Settings you can adjust whether you play as X or O and against the computer or not.
+                                In the Settings you can adjust whether you go first or second.
                             </li>
                             <li>
                                 You can also adjust whether to show/hide commentary and move hints.

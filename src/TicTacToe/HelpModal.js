@@ -12,13 +12,20 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
-        // width: '100%'
+        width: '100%',
+        height: '100%',
     },
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        height: '18%',
-        fontSize: '1rem',
+        height: '100%',
+        fontSize: '0.8rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonIcon: {
+        marginRight: '0.6rem'
     },
     modal: {
         display: 'flex',
@@ -56,7 +63,7 @@ export default function HowToPlayModal() {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
             >
-                <HelpOutlineIcon /> 
+                <HelpOutlineIcon className={classes.buttonIcon} /> 
                 Help
             </Button>
 

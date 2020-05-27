@@ -43,17 +43,21 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column', 
         justifyContent: 'space-around',
         alignItems: 'center',
+        padding: '1rem',
     },
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        // height: '18%',
-        fontSize: '1rem',
+        height: '20%',
+        fontSize: '0.8rem',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonIcon: {
+        marginRight: '0.6rem'
     },
     
-    switchLabel: {
-        lineHeight: '1rem'
-    },
     status: {
         fontSize: '2.4rem',
         fontWeight: 'bold'
@@ -76,7 +80,7 @@ export default function Panel(props) {
             className={classes.button}
             onClick={() => props.handleUndoButtonClick()}
         >
-            <UndoIcon />
+            <UndoIcon className={classes.buttonIcon} />
             Undo
         </Button>
     );
@@ -87,7 +91,6 @@ export default function Panel(props) {
             className={classes.button}
             onClick={() => props.handleNewGameButtonClick()}
         >
-            <UndoIcon />
             New Game
         </Button>
 
@@ -95,9 +98,7 @@ export default function Panel(props) {
     );
     
     const helpButton = (
-        <div
-            className={classes.button}
-        >
+        <div className={classes.button} >
             <HelpModal />
         </div>
             
@@ -106,13 +107,9 @@ export default function Panel(props) {
 
     
     const settingsButton = (
-        <div
-            className={classes.button}
-        >
+        <div className={classes.button} >
             <SettingsModal />
         </div>
-
-
     );
 
 
