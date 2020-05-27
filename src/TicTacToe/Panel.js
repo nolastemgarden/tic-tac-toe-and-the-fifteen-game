@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // Custom Components
-import HowToPlayModal from "./HowToPlayModal";
+import HelpModal from "./HelpModal";
 
 // MUI Components
 import Box from '@material-ui/core/Box';
@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
         
     },
     buttonArea: {
-        // border: 'solid red 1px',
+        border: 'solid red 1px',
+
         width: '30%',
         display: 'flex',
         flexDirection: 'column', 
@@ -46,8 +47,21 @@ const useStyles = makeStyles((theme) => ({
         
 
     },
+    buttonBox: {
+        // border: 'solid blue 1px',
+        display: 'flex',
+        width: '80%',
+        fontSize: '1rem',
+    },
     button: {
-        width: '100%'
+        border: 'solid red 1px',
+
+        width: '90%',
+        fontSize: '1rem',
+    },
+    
+    switchLabel: {
+        lineHeight: '1rem'
     },
     status: {
         fontSize: '2.4rem',
@@ -69,23 +83,36 @@ export default function Panel(props) {
             variant="contained"
             color="primary"
             className={classes.button}
-            startIcon={<UndoIcon />}
             onClick={() => props.handleUndoButtonClick()}
-
         >
-            Undo Move
+            <UndoIcon />
+            Undo
         </Button>
     );
 
-    const showMovesSwitch = (
-        <Switch
-            checked={props.showMoves}
-            onChange={props.toggleShowMovesSwitch}
-            color="primary"
-            name="checkedB"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-        />
+    const helpButton = (
+        <div
+            className={classes.button}
+        >
+            <HelpModal />
+        </div>
+            
+        
+    );
 
+    const showMovesSwitch = (
+        <Box className={classes.buttonBox}>
+            <Typography className={classes.switchLabel}>
+                Show Moves
+            </Typography>
+            <Switch
+                checked={props.showMoves}
+                onChange={props.toggleShowMovesSwitch}
+                color="primary"
+                name="checkedB"
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+        </Box>
     );
 
     const showCommentarySwitch = (
@@ -96,11 +123,28 @@ export default function Panel(props) {
             name="checkedB"
             inputProps={{ 'aria-label': 'primary checkbox' }}
         />
+    );
+
+    const newGameButton = (
+        <div
+            className={classes.button}
+        >
+            <HelpModal />
+        </div>
+
 
     );
 
-    
-        
+    const settingsButton = (
+        <div
+            className={classes.button}
+        >
+            <HelpModal />
+        </div>
+
+
+    );
+
 
     return (
         <Paper className={classes.panel}>
@@ -120,11 +164,15 @@ export default function Panel(props) {
                 
                 {undoButton}
                 
-                <HowToPlayModal />
+                {newGameButton}
 
-                {showMovesSwitch}
+                {helpButton}
                 
-                {showCommentarySwitch}
+                {settingsButton}
+
+                {/* {showMovesSwitch} */}
+                
+                {/* {showCommentarySwitch} */}
             </Box>
                 
              
