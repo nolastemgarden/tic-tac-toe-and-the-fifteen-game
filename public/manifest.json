@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Tic Tac Toe",
+  "name": "Lesson on Tic Tac Toe, the Fifteen Game, and Magic Squares",
   "icons": [
     {
       "src": "favicon.ico",
