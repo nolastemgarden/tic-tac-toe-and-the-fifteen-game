@@ -11,6 +11,15 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%'
+    },
+    button: {
+        // border: 'solid red 1px',
+        width: 'inherit',
+        border: 'solid red 1px',
+        fontSize: '1rem',
+    },
     modal: {
         display: 'flex',
         alignItems: 'center',
@@ -22,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+    
 }));
 
 export default function HowToPlayModal() {
@@ -37,18 +47,17 @@ export default function HowToPlayModal() {
     };
 
     return (
-        <div>
+        <div className={classes.root}>
             <Button
                 variant="contained"
                 color="primary"
                 className={classes.button}
-                startIcon={<HelpOutlineIcon />}
                 onClick={handleOpen}
                 aria-controls="simple-menu"
                 aria-haspopup="true"
-
             >
-                How To Play
+                <HelpOutlineIcon /> 
+                Help
             </Button>
 
 
@@ -67,7 +76,23 @@ export default function HowToPlayModal() {
                 <Fade in={open}>
                     <div className={classes.paper}>
                         <h2 id="transition-modal-title">How To Play</h2>
-                        <p id="transition-modal-description">X and O take turns climin one of the 9 squares on the board. The first player to claim all 3 squares in a single row, column or diagonal.</p>
+                        <ul id="transition-modal-description" >
+                            <li>
+                                X and O take turns claiming one of the 9 squares on the board.
+                            </li>
+                            <li>
+                                The first player to claim all 3 squares in a single row, column, or diagonal.
+                            </li>
+                            <li>
+                                By default, you go first and play against my Bot, which will never fail to get a draw.
+                            </li>
+                            <li>
+                                In the Settings you can adjust whether you play as X or O and against the computer or not.
+                            </li>
+                            <li>
+                                You can also adjust whether to show/hide commentary and move hints.
+                            </li>
+                        </ul>
                     </div>
                 </Fade>
             </Modal>
