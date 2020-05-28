@@ -60,17 +60,26 @@ export default function TicTacToeGame() {
         // Start with an array representing a board of NINE empty squares
         let data = Array(9).fill('');
         // For each move in the history ...
-        
-        for ( let i = 0; i < history.length; i++ ) {
-            // If it was X's turn set the index in data indicated here by history
-            if ( i % 2 === 0 ) {
-                data.splice(history[i], 1, 'x')
-            }
-            // If it was O's turn set the index in data indicated here by history
-            else if (i % 2 === 1) {
-                data.splice(history[i], 1, 'o')
-            }
-        }
+        // for ( let i = 0; i < history.length; i++ ) {
+        //     // If it was X's turn set the index in data indicated here by history
+        //     if ( i % 2 === 0 ) {
+        //         data.splice(history[i], 1, 'x')
+        //     }
+        //     // If it was O's turn set the index in data indicated here by history
+        //     else if (i % 2 === 1) {
+        //         data.splice(history[i], 1, 'o')
+        //     }
+        // }
+        xSquares().forEach(squareId => {
+            data[squareId] = 'x';
+        });
+        oSquares().forEach(squareId => {
+            data[squareId] = 'o';
+        });
+        emptySquares().forEach(squareId => {
+            data[squareId] = '';
+        });
+
         return data;
     }
     
