@@ -11,7 +11,6 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
-    
     board: {
         width: '50vmin',
         height: '50vmin',
@@ -21,6 +20,31 @@ const useStyles = makeStyles({
         justifyContent: 'center',
     },
 });
+
+// .circle - container {
+//     position: relative;
+//     width: 24em;
+//     height: 24em;
+//     padding: 2.8em;
+//     /*2.8em = 2em*1.4 (2em = half the width of a link with img, 1.4 = sqrt(2))*/
+//     border: dashed 1px;
+//     border - radius: 50 %;
+//     margin: 1.75em auto 0;
+// }
+    // .circle - container a {
+    // display: block;
+    // position: absolute;
+    // top: 50 %; left: 50 %;
+    // width: 4em; height: 4em;
+    // margin: -2em;
+// }
+    // .circle - container img { display: block; width: 100 %; }
+    // .deg0 { transform: translate(12em); } /* 12em = half the width of the wrapper */
+    // .deg45 { transform: rotate(45deg) translate(12em) rotate(-45deg); }
+    // .deg135 { transform: rotate(135deg) translate(12em) rotate(-135deg); }
+    // .deg180 { transform: translate(-12em); }
+    // .deg225 { transform: rotate(225deg) translate(12em) rotate(-225deg); }
+    // .deg315 { transform: rotate(315deg) translate(12em) rotate(-315deg); }
 
 export default function Board(props) {
     const classes = useStyles();
@@ -52,7 +76,7 @@ export default function Board(props) {
 
     
     let board = [];
-    for (let num = 0; num < 9; num++) {
+    for (let num = 1; num <= 9; num++) {
         let newNumberCard =
             <NumberCard
                 key={num}
