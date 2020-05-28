@@ -17,14 +17,13 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        fontSize: '10vmin',
     },
     red: {
-        width: 'inherit',
-        height: 'inherit',
-        backgroundColor: 'F55D3E',
+        backgroundColor: '#F56f4f',
     },
     yellow: {
-        backgroundColor: 'F7CB15',
+        backgroundColor: '#F7CB15',
     },
     
 });
@@ -37,30 +36,28 @@ export default function NumberCard(props) {
     const num = props.num
     // function handleSquareClick(id) = props.handleSquareClick
 
-
-    // switch (status) {
-    //     case 'red':
-    //         className = "classes.circle"
-    //         break;
-    //     case 'yellow':
-    //         className = "classes.circle"
-    //         break;
-    //     case 'available':
-    //         className = "classes.circle"
-    //         break;
-    //     default:
-    //         throw console.error("Square passed value not 'x' 'o' or ''");
-    //         break;
-    // }
-
+    let className;
+    switch (status) {
+        case 'red':
+            className = `${classes.square} ${classes.red} `
+            break;
+        case 'yellow':
+            className = `${classes.square} ${classes.yellow} `
+            break;
+        case 'available':
+            className = `${classes.square} `
+            break;
+        default:
+            throw console.error("number card passed invalid status");
+    }
+    //className={`${classes.square} ${classes.red} `}
     return (
-        <Box className={classes.square}>
-            <Paper
-                className={classes.red}
-                onClick={() => props.handleClick(num)}
-            >
-                {num}
-            </Paper>
-        </Box>
+        <Paper
+            className={className}
+            onClick={() => props.handleClick(num)}
+        >
+            {num}
+        </Paper>
+        
     )
 }

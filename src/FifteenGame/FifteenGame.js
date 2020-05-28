@@ -61,7 +61,7 @@ export default function FifteenGame() {
             <div className={classes.boardArea} >
                 <Board
                     history={history}
-                    // handleSquareClick={handleSquareClick}
+                    handleCardClick={handleCardClick}
 
                 />
             </div>
@@ -113,19 +113,19 @@ export default function FifteenGame() {
     // }
 
 
-    // function handleSquareClick(squareClicked) {
-    //     if (gameOver()) {
-    //         console.log("return without effects from handleSquareClick(). The Game is already over.")
-    //         return;
-    //     }
-    //     if (history.indexOf(squareClicked) !== -1) {
-    //         console.log("return without effects from handleSquareClick(). That square has already been claimed.")
-    //         return;
-    //     }
-    //     // If we reach this point the clicked square is open and the game is not over yet ... 
-    //     setHistory(history.concat(squareClicked));
-    //     // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
-    // }
+    function handleCardClick(numberClicked) {
+        if (gameOver()) {
+            console.log("return without effects from handleCardClick(). The Game is already over.")
+            return;
+        }
+        if (history.indexOf(numberClicked) !== -1) {
+            console.log("return without effects from handleCardClick(). That number has already been claimed.")
+            return;
+        }
+        // If we reach this point the clicked square is open and the game is not over yet ... 
+        setHistory(history.concat(numberClicked));
+        // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
+    }
 
 
     // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
@@ -178,9 +178,10 @@ export default function FifteenGame() {
     // function gameDrawn() {
     //     return (history.length >= 9 && !xWins() && !oWins());  // Board full and neither player has a win
     // }
-    // function gameOver() {
-    //     return (history.length >= 9 || xWins() || oWins());  // Board full or there's a 3-in-a-row
-    // }
+    function gameOver() {
+        return false;
+        // return (history.length >= 9 || xWins() || oWins());  // Board full or there's a 3-in-a-row
+    }
 
 
     // function getStatus() {
