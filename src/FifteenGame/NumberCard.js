@@ -3,9 +3,8 @@ import React from 'react';
 // My Components
 
 // MUI  components
+import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
-import ClearIcon from '@material-ui/icons/Clear';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,43 +18,49 @@ const useStyles = makeStyles({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    iconX: {
-        fontSize: '13vmin',
+    red: {
+        width: 'inherit',
+        height: 'inherit',
+        backgroundColor: 'F55D3E',
     },
-    iconO: {
-        fontSize: '10vmin',
+    yellow: {
+        backgroundColor: 'F7CB15',
     },
+    
 });
 
 export default function NumberCard(props) {
     const classes = useStyles();
-    const id = props.id
     const status = props.status
+    console.log(`NumCard called with status = ${status}`)
+    
+    const num = props.num
     // function handleSquareClick(id) = props.handleSquareClick
 
 
-    let icon;
-    switch (status) {
-        case 'red':
-            icon = <ClearIcon className={classes.iconX} />
-            break;
-        case 'yellow':
-            icon = <RadioButtonUncheckedIcon className={classes.iconO} />
-            break;
-        case 'available':
-            icon = null;
-            break;
-        default:
-            throw console.error("Square passed value not 'x' 'o' or ''");
-            break;
-    }
+    // switch (status) {
+    //     case 'red':
+    //         className = "classes.circle"
+    //         break;
+    //     case 'yellow':
+    //         className = "classes.circle"
+    //         break;
+    //     case 'available':
+    //         className = "classes.circle"
+    //         break;
+    //     default:
+    //         throw console.error("Square passed value not 'x' 'o' or ''");
+    //         break;
+    // }
 
     return (
-        <Paper
-            className={classes.square}
-            onClick={() => props.handleClick(id)}
-        >
-            {icon}
-        </Paper>
+        <Box className={classes.square}>
+            <Paper
+                className={classes.red}
+                onClick={() => props.handleClick(num)}
+            >
+                {num}
+            </Paper>
+        </Box>
     )
 }
