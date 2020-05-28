@@ -53,12 +53,14 @@ export default function TicTacToeGame() {
     let [history, setHistory] = useState([]); 
     let [showMoves, setShowMoves] = useState(false); 
     let [showCommentary, setShowCommentary] = useState(false);  
+
     
     // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
     function getBoardValues() {
         // Start with an array representing a board of NINE empty squares
         let data = Array(9).fill('');
         // For each move in the history ...
+        
         for ( let i = 0; i < history.length; i++ ) {
             // If it was X's turn set the index in data indicated here by history
             if ( i % 2 === 0 ) {
@@ -121,28 +123,41 @@ export default function TicTacToeGame() {
             return;
         }
         // If we reach this point the clicked square is open and the game is not over yet ... 
+        console.log(`History: ${history.concat(squareClicked)}`)
         setHistory(history.concat(squareClicked));
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
     
 
+    // Filter the history into squareIds claimed by X and by O.
+    function xSquares() {
+        return history.filter((squareId, index) => index % 2 === 0);
+    }
+    function oSquares() {
+        return history.filter((squareId, index) => index % 2 === 1);
+    }
+    function emptySquares() {
+        const squares = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        const empty = squares.filter((squareId) => (!history.includes(squareId)));
+        console.log(`Empty Squares: ${empty}`)
+        return empty;
+    }
+
     // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
     function xLines() {
-        const xLines = getLines(history.filter((squareId, index) => index % 2 === 0));
+        const xLines = getLines(xSquares());
         console.log(`Number of X in each line: ${xLines}`)
         return xLines;
     }
     function oLines(){
-        const oLines = getLines(history.filter((squareId, index) => index % 2 === 1));
+        const oLines = getLines(oSquares());
         console.log(`Number of O in each line: ${oLines}`)
         return oLines;
     }
     function getLines(claimedSquares) {
         let status = Array(8).fill(0);
         // For each square this player has claimed make 2, 3, or 4 updates
-        for (let i = 0; i < claimedSquares.length; i++) {
-            const squareId = claimedSquares[i];
-
+        claimedSquares.forEach(squareId => {
             // Update Row
             const row = Math.floor(squareId / 3)    // number 0, 1, or 2
             status[row]++;
@@ -160,7 +175,7 @@ export default function TicTacToeGame() {
             if (squareId === 0 || squareId === 4 || squareId === 8) {
                 status[7]++
             }
-        }
+        });
         // console.log(`Status: ${status}`)
         return status;
     }
