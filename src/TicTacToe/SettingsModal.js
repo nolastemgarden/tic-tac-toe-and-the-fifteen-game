@@ -99,9 +99,7 @@ export default function SettingsModal(props) {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
             >
-                <SettingsIcon 
-                    className={classes.buttonIcon}
-                />
+                <SettingsIcon className={classes.buttonIcon} />
                 Settings
             </Button>
             
