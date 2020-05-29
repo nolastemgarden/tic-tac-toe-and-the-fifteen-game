@@ -12,11 +12,12 @@ import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
 
 
-
+import ReplayIcon from '@material-ui/icons/Replay';
 import UndoIcon from '@material-ui/icons/Undo';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
     panel: {
         boxSizing: 'border-box',
@@ -31,51 +32,49 @@ const useStyles = makeStyles((theme) => ({
 
     },
     infoArea: {
-        border: 'solid red 1px',
-        width: '70%',
-        fontSize: '2rem',
         
     },
     buttonArea: {
-        // border: 'solid red 1px',
-        width: '30%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '1rem',
     },
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        height: '20%',
-        fontSize: '0.8rem',
+        height: '4.4vmin',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        margin: '0.4rem',
+        fontSize: '1.8vmin',
+        lineHeight: '1vmin',
     },
-    buttonIcon: {
-        marginRight: '0.6rem'
-    },
-    
     switchLabel: {
         lineHeight: '1rem'
     },
-    status: {
-        fontSize: '2.4rem',
+    statusText: {
+        fontSize: '5vmin',
         fontWeight: 'bold'
     },
     commentary: {
-        fontSize: '1.2rem',
+        fontSize: '1vmin',
     },
 }));
 
 export default function Panel(props) {
     const classes = useStyles();
+    const status = props.status;
+    const commentary = props.commentary;
 
     
-    let status = props.status;
+    const showMoves = props.showMoves 
+    const showCommentary = props.showCommentary 
+    const handleUndoButtonClick = props.handleUndoButtonClick
+    const handleNewGameButtonClick = props.handleNewGameButtonClick
+    const toggleShowMovesSwitch = props.toggleShowMovesSwitch
+    const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
     
     const undoButton = (
         <Button
@@ -83,71 +82,63 @@ export default function Panel(props) {
             color="primary"
             className={classes.button}
             onClick={() => props.handleUndoButtonClick()}
+            startIcon={< UndoIcon />}
         >
-            <UndoIcon />
             Undo
         </Button>
     );
+
     const newGameButton = (
         <Button
             variant="contained"
             color="primary"
             className={classes.button}
             onClick={() => props.handleNewGameButtonClick()}
+            startIcon={< ReplayIcon />}
         >
-            <UndoIcon />
-            New Game
+            New&nbsp;Game
         </Button>
-
-
     );
-    
+
     const helpButton = (
         <div className={classes.button} >
             <HelpModal />
-        </div> 
+        </div>
     );
 
-    
+
     const settingsButton = (
         <div className={classes.button} >
             <SettingsModal />
-        </div> 
+        </div>
     );
-
 
     return (
         <Paper className={classes.panel}>
-            <Box className={classes.infoArea}> 
-                <Typography className={classes.status} noWrap >
-                    {status}
-                </Typography>
-                <Typography className={classes.commentary}  >
-                    Commentary would show up here if turned on.
-                </Typography>
-                
-                
-            </Box>
+            <Grid container>
+                <Grid item className={classes.infoArea} xs={8}>
+                    <Typography className={classes.statusText} noWrap >
+                        {status}
+                    </Typography>
+                    <Typography className={classes.commentary}  >
+                        {commentary}
+                    </Typography>
+                </Grid>
+                <Grid item className={classes.buttonArea} xs={4}>
+                    {undoButton}
+                    {newGameButton}
+                    {helpButton}
+                    {settingsButton}
+                </Grid>
+            </Grid>
             
             
-            <Box className={classes.buttonArea}>
-                
-                {undoButton}
-                
-                {newGameButton}
-
-                {helpButton}
-                
-                {settingsButton}
-
-                {/* {showMovesSwitch} */}
-                
-                {/* {showCommentarySwitch} */}
-            </Box>
+            
                 
              
         </Paper>
     )
+
 }
 
 
