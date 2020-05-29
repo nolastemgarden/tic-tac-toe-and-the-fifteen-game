@@ -59,10 +59,10 @@ const useStyles = makeStyles((theme) => ({
         padding: '0vmin',
     },
     title: {
-        fontSize: '3.2vmin',
+        fontSize: '3.0vmin',
     },
     header: {
-        fontSize: '2.8vmin',
+        fontSize: '2.6vmin',
         fontWeight: 'bold'
     },
     body: {
@@ -80,11 +80,23 @@ export default function WelcomePage() {
         setExpanded(isExpanded ? panel : false);
     };
 
+    
+    // What distinguishes Math from Science?
+    //    sci... Math...
+    //  Bottom Line: Proof vs evidence. 
+    // What does Tic Tac Toe have to do with this?
+    // --play now button
+    // What is the Fifteen Game?
+    
     return (
         <div className={classes.root} >
             <Paper className={classes.paper} >
                
-                <ExpansionPanel className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                {/* What distinguishes Math from Science? */}
+               <ExpansionPanel 
+                    className={classes.panel} 
+                    expanded={expanded === 'panel1'} 
+                    onChange={handleChange('panel1')}>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
@@ -101,9 +113,10 @@ export default function WelcomePage() {
                                     In Science:
                                 </Typography>
                                 <Typography className={classes.body} >
-                                    We observe the natural world and collect data. We use math to look for 
-                                    patterns in the data and try to come up with <em>theories</em> that explain 
-                                    what we observe.
+                                    We start by observing the natural world and taking measurements. 
+                                    We then use math to look for patterns in the data and we try to come 
+                                    up with <em>theories</em> that explain what we observe and help us 
+                                    predict nature.
                                 </Typography>
                                 <Typography className={classes.body} >
                                     We use evidence to support our theories, but new tools for observing the world 
@@ -115,8 +128,8 @@ export default function WelcomePage() {
                                     In Mathematics:
                                 </Typography>
                                 <Typography className={classes.body}>
-                                    We start with abstract ideas like number and shape. 
-                                    We look for things that we can proove <em>must always be true</em>.
+                                    We start with abstract ideas like number and shape and we look for things 
+                                    that we can <em>prove must always be true</em> about them. 
                                     We try to see beneath-the-surface similarities between 
                                     parts of the real-world that seem unrelated at first.                                
                                 </Typography>
@@ -126,52 +139,107 @@ export default function WelcomePage() {
                                     it later being disproven.
                                 </Typography>
                             </Grid>
+                            <Grid item xs={12}>
+                                <Typography className={classes.body} >
+                                    <strong>Bottom Line:</strong> Proof is the heart of Mathematics.
+                                </Typography>
+                            </Grid>
                         </Grid>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
-                <ExpansionPanel className={classes.panel} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+
+
+                {/* What does Tic-Tac-Toe have to do with this? */}
+                <ExpansionPanel 
+                    className={classes.panel} 
+                    expanded={expanded === 'panel2'} 
+                    onChange={handleChange('panel2')}>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1bh-content"
-                        id="panel1bh-header"
+                        aria-controls="panel2bh-content"
+                        id="panel2bh-header"
                     >
                         <Typography className={classes.title} >
-                            What distinguishes Math from Science?
+                            What does Tic-Tac-Toe have to do with this?
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Grid container spacing={4}>
-                            <Grid item xs={6}>
-                                <Typography className={classes.header} >
-                                    In Science:
+                            <Grid item xs={8}>
+                                {/* <Typography className={classes.header} >
+                                    Tic-Tac-Toe has been "solved".
+                                </Typography> */}
+                                <Typography className={classes.body} >
+                                    Proof is one of the most important concepts in mathematics,
+                                    but it is often introduced in an uninspiring way and much later than it should be. 
+                                    
                                 </Typography>
                                 <Typography className={classes.body} >
-                                    We observe the natural world and collect data. We use math to look for
-                                    patterns in the data and try to come up with <em>theories</em> that explain
-                                    what we observe.
+                                    We require kids to <em>show their work</em> from an early age but only with enough
+                                    clarity for the teacher to understand. The more important skill is being able to 
+                                    <em>explain your reasoning</em> in a way that can be understood by your peers.
+                                    
                                 </Typography>
                                 <Typography className={classes.body} >
-                                    We use evidence to support our theories, but new tools for observing the world
-                                    can provide us with new evidence that forces dramatic changes in scientific theory.
+                                    Well-writtenProofs is one of the most important foundation concepts in all of mathematics.
+                                    Unfortunately, many math students of math don't write their first full proof
+                                    until they have reached univeristy. Most are introduced to proof as part of 
+                                    a geometry class, in a unit that really is more about congruent triangles than
+                                    it is about proof. 
+                                    
                                 </Typography>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={4}>
                                 <Typography className={classes.header} >
-                                    In Mathematics:
+                                     
+                             
                                 </Typography>
-                                <Typography className={classes.body}>
-                                    We start with abstract ideas like number and shape.
-                                    We look for things that we can proove <em>must always be true</em>.
-                                    We try to see beneath-the-surface similarities between
-                                    parts of the real-world that seem unrelated at first.
-                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <Typography className={classes.body} >
-                                    Mathematical proof relies on <em>pure logic, not evidence,</em>
-                                    so once a theorem is mathematically prooven there is no chance of
-                                    it later being disproven.
-                                </Typography>
+                                    <strong>Bottom Line:</strong> Proof is the heart of Mathematics.
+                            </Typography>
                             </Grid>
                         </Grid>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel> 
+                    
+
+
+
+
+
+                <ExpansionPanel expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel3bh-content"
+                        id="panel3bh-header"
+                    >
+                        <Typography className={classes.heading}>Advanced settings</Typography>
+                        <Typography className={classes.secondaryHeading}>
+                            Filtering has been entirely disabled for whole web server
+                        </Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <Typography>
+                            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
+                            vitae egestas augue. Duis vel est augue.
+                        </Typography>
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <ExpansionPanel expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel4bh-content"
+                        id="panel4bh-header"
+                    >
+                        <Typography className={classes.heading}>Personal data</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <Typography>
+                            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
+                            vitae egestas augue. Duis vel est augue.
+                    </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </Paper>
