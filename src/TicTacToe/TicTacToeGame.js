@@ -54,37 +54,6 @@ export default function TicTacToeGame() {
     let [showMoves, setShowMoves] = useState(false); 
     let [showCommentary, setShowCommentary] = useState(false);  
 
-    
-    // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
-    function getBoardValues() {
-        // Start with an array representing a board of NINE empty squares
-        let data = Array(9).fill('');
-        // For each move in the history ...
-        // for ( let i = 0; i < history.length; i++ ) {
-        //     // If it was X's turn set the index in data indicated here by history
-        //     if ( i % 2 === 0 ) {
-        //         data.splice(history[i], 1, 'x')
-        //     }
-        //     // If it was O's turn set the index in data indicated here by history
-        //     else if (i % 2 === 1) {
-        //         data.splice(history[i], 1, 'o')
-        //     }
-        // }
-        xSquares().forEach(squareId => {
-            data[squareId] = 'x';
-        });
-        oSquares().forEach(squareId => {
-            data[squareId] = 'o';
-        });
-        emptySquares().forEach(squareId => {
-            data[squareId] = '';
-        });
-
-        return data;
-    }
-    
-    
-
     return (
         <div className={classes.root} >
             <div className={classes.boardArea} >
@@ -98,30 +67,74 @@ export default function TicTacToeGame() {
                 <Panel 
                     // data={getPanelData(history)} 
                     status={getStatus()}
+                    commentary={getCommentary()}
                     showMoves={showMoves}
                     showCommentary={showCommentary}
                     handleUndoButtonClick={handleUndoButtonClick}
+                    handleNewGameButtonClick={handleNewGameButtonClick}
                     toggleShowMovesSwitch={toggleShowMovesSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
                 />
             </div>
-            
         </div>
     );
 
-    function handleUndoButtonClick() {
-        const shortenedHistory = history.slice(0, history.length - 1)
-        console.log(`${history[history.length-1]} removed. Shortened history: ${shortenedHistory}`);
-        setHistory(shortenedHistory);
+    // The <Game> holds all state and most helper and handler function definitions.
+    // It passes what it needs to to the board to render and to the panel.
+    
+    // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
+    function getBoardValues() {
+        let data = Array(9).fill('');  // Start with an array representing a board of NINE empty squares
+        xSquares().forEach(squareId => {
+            data[squareId] = 'x';
+        });
+        oSquares().forEach(squareId => {
+            data[squareId] = 'o';
+        });
+        emptySquares().forEach(squareId => {
+            data[squareId] = '';
+        });
+        return data;
     }
-    function toggleShowMovesSwitch() {
-        setShowMoves(!showMoves)
+    function getStatus() {
+        if (xWins()) {
+            const winningLine = getLines(history.filter((squareId, index) => index % 2 === 0)).indexOf(3);
+            return (`X wins on line ${winningLine}`)
+        }
+        else if (oWins()) {
+            return (`O wins!`)
+        }
+        else if (gameDrawn()) {
+            return (`Draw.`)
+        }
+        else if (history.length % 2 === 0) {
+            return (`X's turn.`)
+        }
+        else if (history.length % 2 === 1) {
+            return (`O's turn.`)
+        }
+        else {
+            console.error("getStatus() is broken!");
+            return
+        }
     }
-    function toggleShowCommentarySwitch() {
-        setShowCommentary(!showCommentary)
+    function getCommentary() {
+        console.log(`getCommentary() called while showCommentary = ${showCommentary}`)
+        if (gameOver()) {
+            return `Game Over`
+        }
+        if (!showCommentary) {
+            return `Coach's commentary would appear here if turned on in the settings.`
+        }
+        // If no moves have been made
+        if (history.length === 0) {
+            return `X goes first. It may look like there are 9 different options but when you
+            consider symmetry there are really only 3 options: Center, Edge, or Corner.`
+        }
     }
 
-    
+
+    // CLICK HANDLERS
     function handleSquareClick(squareClicked) {
         if (gameOver()) {
             console.log("return without effects from handleSquareClick(). The Game is already over.")
@@ -136,6 +149,23 @@ export default function TicTacToeGame() {
         setHistory(history.concat(squareClicked));
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
+    function handleUndoButtonClick() {
+        const shortenedHistory = history.slice(0, history.length - 1)
+        console.log(`${history[history.length-1]} removed. Shortened history: ${shortenedHistory}`);
+        setHistory(shortenedHistory);
+    }
+    function handleNewGameButtonClick() {
+        const empty = [];
+        console.log(`History reset to: ${empty}`);
+        setHistory(empty);
+    }
+    function toggleShowMovesSwitch() {
+        setShowMoves(!showMoves)
+    }
+    function toggleShowCommentarySwitch() {
+        setShowCommentary(!showCommentary)
+    }
+    
     
 
     // Filter the history into squareIds claimed by X and by O.
@@ -202,30 +232,6 @@ export default function TicTacToeGame() {
     }
     function gameOver() {
         return (history.length >= 9 || xWins() || oWins());  // Board full or there's a 3-in-a-row
-    }
-
-    
-    function getStatus() {
-        if (xWins()){
-            const winningLine = getLines(history.filter((squareId, index) => index % 2 === 0)).indexOf(3);
-            return (`X wins on line ${winningLine}`)
-        }
-        else if (oWins()){
-            return (`O wins!`)
-        }
-        else if (gameDrawn()){
-            return (`Draw.`)
-        }
-        else if (history.length % 2 === 0){
-            return (`X to move.`)
-        }
-        else if (history.length % 2 === 1) {
-            return (`O to move.`)
-        }
-        else {
-            console.error("getStatus() is broken!");
-            return
-        }
     }
 
 }
