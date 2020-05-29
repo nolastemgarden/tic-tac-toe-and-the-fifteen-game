@@ -18,12 +18,16 @@ const useStyles = makeStyles({
         alignItems: 'center',
         justifyContent: 'center',
         fontSize: '10vmin',
+        fontWeight: 'bold',
     },
-    red: {
-        backgroundColor: '#F56f4f',
+    playerOne: {
+        backgroundColor: '#3f51b5',
+        color: 'white',
+        
     },
-    yellow: {
-        backgroundColor: '#F7CB15',
+    playerTwo: {
+        backgroundColor: '#4AC9FD',
+        
     },
     
 });
@@ -39,10 +43,10 @@ export default function NumberCard(props) {
     let className;
     switch (status) {
         case 'red':
-            className = `${classes.square} ${classes.red} `
+            className = `${classes.square} ${classes.playerOne} `
             break;
         case 'yellow':
-            className = `${classes.square} ${classes.yellow} `
+            className = `${classes.square} ${classes.playerTwo} `
             break;
         case 'available':
             className = `${classes.square} `
