@@ -19,13 +19,15 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid red 1px',
         width: '100%',
         height: '100%',
-        fontSize: '0.8rem',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        fontSize: '1.8vmin',
+        lineHeight: '0.8vmin',
     },
     buttonIcon: {
-        marginRight: '0.6rem'
+
     },
     modal: {
         display: 'flex',
@@ -62,8 +64,8 @@ export default function HowToPlayModal() {
                 onClick={handleOpen}
                 aria-controls="simple-menu"
                 aria-haspopup="true"
+                startIcon={<HelpOutlineIcon />}
             >
-                <HelpOutlineIcon className={classes.buttonIcon} /> 
                 Help
             </Button>
 
