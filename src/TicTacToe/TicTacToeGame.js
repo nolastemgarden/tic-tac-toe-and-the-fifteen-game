@@ -60,7 +60,7 @@ export default function TicTacToeGame() {
             <div className={classes.boardArea} >
                 <Board 
                     boardValues={getBoardValues()} 
-                    boardHints={getBoardHints()}
+                    boardHints={getBoardHints(myTurn())}
                     handleSquareClick={handleSquareClick}
 
                 />
@@ -121,32 +121,41 @@ export default function TicTacToeGame() {
     
     
     // TODO
-    function getBoardHints() {
+    function getBoardHints(player) {
+        console.log(`Getting board hints for player: ${player}...`)
         // If the game is over return early, there are no hints to give. In case of a draw there are no hinst since the board is full.
         if (xWins() || oWins()) { 
             return highlightWins();
         }
 
         
-        // Start with an array representing a board of NINE squares which all lead to a draw.
-        let hints = Array(9).fill('draw');  
+        // Start with an array representing a board of NINE squares which all lead to an undetermined outcome.
+        let hints = Array(9).fill('');  
         
-        // How to classify a move as "winning"? 
         
-        // Set all claimed squares to white bg.
-        history.forEach(squareId => {
-            hints[squareId] = '';
-        });
+
+        // How to identify moves that are "winning"? 
+        // 1) If the player whose turn it is has an unblocked two in a line, the last square in that line is winning.
+        // if (listTwos(myTurn()).length !== 0 ) {
+        const list = listTwos(myTurn())
+        console.log(`List Twos for player '${player}': ${list}`)
+        // }
+        
+        
+        
+        
+        // How to identify moves that are "losing"? 
+        // 1)If opponent has an unblocked two in a line, then all sqares last square in it is winning.
+        // 2) If opponent has an unblocked two in a line, then all sqares last square in it is winning.
+
+
+
         
         // for each line, see if the person whose turn it is has an unblocked 2 in a row
         lineCounts(myTurn()).forEach((count, line) => {
 
         })
         
-        // if (  ) {
-        //     console.log(`I found an unblocked 2 in a row!`)
-        // }
-
         // Sound play can be reduced to this order of priorities:
 
         // 1) Complete a 3-in a row if you can. If you have no unblocked 2 in a rows then...
@@ -157,24 +166,45 @@ export default function TicTacToeGame() {
         // 4) ??? otherwise make a single threat, a forcing (but not necessarily winning move)
         // is this enough to draw?? i'm going to build it this way then play with it to see if it is correct. 
         
-        // hints.forEach(squareId => {
-        //     // If the square is already claimed there is no hint about it.
-        //     if(history.includes(squareId)) {
-        //         hints[squareId] = 'draw'
-        //     }
-        // });
         
-        // Else put a yellow dot in each square
-       
-        // Whos turn is it?
+        // PRIORITIES
+        // 1) complete a 3 in a line to win.
+        // 2) block opponent's 2 in a line.
+        // 3) create a double attack.
+        // ?) prevent opponent from creating a double attack.
+        // 5) make a forcing move that does not force opponent to create a double attack.
+
+
+
+        // List the lines where I have 2 and the last square is empty. Mark these as winning.
+        listTwos(myTurn()).forEach((line) => {
+            getSquares(line).forEach((square) => {
+                if (!history.includes(square)){
+                    hints[square] = 'win'
+                }
+            })
+        })
+
+        // List the lines where opponent has 2 and the last square is empty. 
+        // If this list has 2 unique squares in it then all yet-unmarked moves are losing.
+        // If this list has 1 unique square in it then 
+        // -- that square may lead to a draw or a win.
+        // -- all other yet-unmarked squares are losing.
+        console.log(`Opponent's unblocked two in a lines: ${listTwos(notMyTurn())}`)
+        listTwos(notMyTurn()).forEach((line) => {
+            getSquares(line).forEach((square) => {
+                if (!history.includes(square)) {
+                    hints[square] = 'win'
+                }
+            })
+        })
         
-        // For each line   
-        // -- see how many X's are in it
-        // -- see how many O's are in it
-        
-        // emptySquares().forEach(squareId => {
-        //     data[squareId] = '';
-        // });
+
+        // Set all claimed squares to white bg.  Not necessary as they now default to white bg.
+        history.forEach(squareId => {
+            hints[squareId] = '';
+        });
+
         return hints;
     }
 
@@ -230,7 +260,6 @@ export default function TicTacToeGame() {
             chance to win.`
         }
 
-
     }
     
 
@@ -247,6 +276,7 @@ export default function TicTacToeGame() {
         }
         // If we reach this point the clicked square is open and the game is not over yet ... 
         console.log(`History: ${history.concat(squareClicked)}`)
+        
         setHistory(history.concat(squareClicked));
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
@@ -271,6 +301,9 @@ export default function TicTacToeGame() {
     function myTurn() {
         return (history.length % 2 === 0) ? 'x' : 'o' ;
     }
+    function notMyTurn() {
+        return (history.length % 2 === 0) ? 'o' : 'x';
+    }
 
 
     // Filter the history into squareIds claimed by X and by O.
@@ -282,7 +315,7 @@ export default function TicTacToeGame() {
             return history.filter((squareId, index) => index % 2 === 1);
         }
         else {
-            console.error(`Method squares() called with in valid player: ${player}`)
+            console.error(`Method squares() called with invalid player: ${player}`)
             return undefined;
         }
     }
@@ -335,31 +368,7 @@ export default function TicTacToeGame() {
         console.log(`Number of O in each line: ${oLines}`)
         return oLines;
     }
-    // function getLines(claimedSquares) {
-    //     let status = Array(8).fill(0);
-    //     // For each square this player has claimed make 2, 3, or 4 updates
-    //     claimedSquares.forEach(squareId => {
-    //         // Update Row
-    //         const row = Math.floor(squareId / 3)    // number 0, 1, or 2
-    //         status[row]++;
-
-    //         // Update Col
-    //         const col = (squareId % 3)            // number 0, 1, or 2  +3 to account for the three indexes set asside for rows
-    //         status[col + 3]++;
-
-    //         // UpSlash ?
-    //         if (squareId === 2 || squareId === 4 || squareId === 6) {
-    //             status[6]++
-    //         }
-
-    //         // DownSlash ?
-    //         if (squareId === 0 || squareId === 4 || squareId === 8) {
-    //             status[7]++
-    //         }
-    //     });
-    //     // console.log(`Status: ${status}`)
-    //     return status;
-    // }
+    
 
     // list the squareIds that fall in a given lineId
     function getSquares(lineId) {
@@ -402,14 +411,43 @@ export default function TicTacToeGame() {
     function wins(player) {
         return (lineCounts(player).includes(3));
     }
+    
     function listThrees(player) {
         let list = [];
+        // console.log(`lineCounts : ${lineCounts(player)}`)
         lineCounts(player).forEach((count, line) => {
             if (count === 3) {
-                list.concat(line)
+                // console.log(`lineCounts found a count of 3 in line: ${line}`)
+                // list.concat(line) // Make a "shallow copy" not required since this mthod only reads the history once and never modifies it.
+                list.push(line)
             }
         })
-        console.log(`listThrees() called for player '${player}'. List: ${list}`)
+        // console.log(`listThrees() called for player '${player}'. List: ${list}`)
+        return list;
+    }
+
+    function listTwos(player) {
+        let list = [];
+        // console.log(`lineCounts : ${lineCounts(player)}`)
+        lineCounts(player).forEach((count, line) => {
+            if (count === 2) {  // && lineCounts(!player)[line] === 0
+                list.push(line)
+            }
+        })
+        console.log(`List Twos for player '${player}': ${list}`)
+        return list;
+    }
+
+
+    function listOnes(player) {
+        let list = [];
+        // console.log(`lineCounts : ${lineCounts(player)}`)
+        lineCounts(player).forEach((count, line) => {
+            if (count === 2) {
+                list.push(line)
+            }
+        })
+        // console.log(`listOnes() called for player '${player}'. List: ${list}`)
         return list;
     }
     
