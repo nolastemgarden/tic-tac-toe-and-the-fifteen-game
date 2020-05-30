@@ -11,7 +11,6 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
-    
     board: {
         width: '50vmin',
         height: '50vmin',
@@ -24,10 +23,9 @@ const useStyles = makeStyles({
 
 export default function Board(props) {
     const classes = useStyles();
-    
-    const squareValues = props.data;
-    // const handleSquareClick = props.handleSquareClick;
-
+    const handleSquareClick = props.handleSquareClick
+    const boardValues = props.boardValues;
+    const boardHints = props.boardHints;
     
     let board = [];
     for (let id = 0; id < 9; id++) {
@@ -35,8 +33,9 @@ export default function Board(props) {
             <Square
                 key={id}
                 id={id}
-                value={squareValues[id]} 
-                handleClick={props.handleSquareClick}
+                value={boardValues[id]}
+                hint={boardHints[id]}
+                handleClick={handleSquareClick}
             />
         ;
         board = board.concat(newSquare);

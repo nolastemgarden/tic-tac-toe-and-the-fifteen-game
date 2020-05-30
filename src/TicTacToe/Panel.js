@@ -59,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold'
     },
     commentary: {
-        fontSize: '1vmin',
+        fontSize: '2.2vmin',
+        paddingRight: '5vmin'
     },
 }));
 
@@ -81,7 +82,7 @@ export default function Panel(props) {
             variant="contained"
             color="primary"
             className={classes.button}
-            onClick={() => props.handleUndoButtonClick()}
+            onClick={() => handleUndoButtonClick()}
             startIcon={< UndoIcon />}
         >
             Undo
@@ -93,7 +94,7 @@ export default function Panel(props) {
             variant="contained"
             color="primary"
             className={classes.button}
-            onClick={() => props.handleNewGameButtonClick()}
+            onClick={() => handleNewGameButtonClick()}
             startIcon={< ReplayIcon />}
         >
             New&nbsp;Game
@@ -106,10 +107,14 @@ export default function Panel(props) {
         </div>
     );
 
-
     const settingsButton = (
         <div className={classes.button} >
-            <SettingsModal />
+            <SettingsModal 
+                showMoves={showMoves}
+                showCommentary={showCommentary}
+                toggleShowMovesSwitch={toggleShowMovesSwitch}
+                toggleShowCommentarySwitch={toggleShowCommentarySwitch}
+            />
         </div>
     );
 

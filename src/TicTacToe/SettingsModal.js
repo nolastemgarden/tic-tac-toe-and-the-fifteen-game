@@ -6,10 +6,6 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
-
-
-
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -48,44 +44,75 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+    switchBox: {
+        // border: 'solid red 1px',
+        display: 'flex',
+        alignItems: 'center',
 
+    },
+    switchLabel: {
+        fontSize: '2.2vmin',
+        width: '40%'
+
+    }
 }));
 
 export default function SettingsModal(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const showMoves = props.showMoves
+    const showCommentary = props.showCommentary
+    const toggleShowMovesSwitch = props.toggleShowMovesSwitch
+    const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
 
+    // Modal Open & Close 
+    const [open, setOpen] = React.useState(false);
     const openSettingsModal = () => {
         setOpen(true);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
 
     const showMovesSwitch = (
-        <Box className={classes.buttonBox}>
-            <Typography className={classes.switchLabel}>
-                Show Moves
-            </Typography>
-            <Switch
-                checked={props.showMoves}
-                onChange={props.toggleShowMovesSwitch}
-                color="primary"
-                name="checkedB"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-        </Box>
+        <React.Fragment>
+            <Box className={classes.switchBox}>
+                <Typography className={classes.switchLabel}>
+                    Show Moves
+                </Typography>
+                <Switch
+                    checked={showMoves}
+                    onChange={toggleShowMovesSwitch}
+                    color="primary"
+                    name="checkedB"
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+            </Box>
+            <DialogContentText>
+                Show whether each possible move leads to a win, loss, or draw.
+            </DialogContentText>
+        </React.Fragment>
     );
 
     const showCommentarySwitch = (
-        <Switch
-            checked={props.showCommentary}
-            onChange={props.toggleShowCommentarySwitch}
-            color="primary"
-            name="checkedB"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-        />
+        <React.Fragment>
+            <Box className={classes.switchBox}>
+                <Typography className={classes.switchLabel}>
+                    Show Commentary
+            </Typography>
+                <Switch
+                    checked={showCommentary}
+                    onChange={toggleShowCommentarySwitch}
+                    color="primary"
+                    name="checkedB"
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+            </Box>
+            <DialogContentText>
+                Show verbal hints about the position.
+            </DialogContentText>
+        </React.Fragment>
+        
+        
     );
 
     return (
@@ -113,20 +140,11 @@ export default function SettingsModal(props) {
                 </DialogTitle>
                 
                 <DialogContent>
-                    <DialogContentText>
-                            To subscribe to this website, please enter your email address here. We will send updates
-                            occasionally.
-                    </DialogContentText>
-                    {showMovesSwitch}
+                    
                     {showCommentarySwitch}
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
-                        fullWidth
-                    />
+                    
+                    {showMovesSwitch}
+                    
                 </DialogContent>
                 <DialogActions>
                     <Button 
