@@ -128,44 +128,8 @@ export default function TicTacToeGame() {
             return highlightWins();
         }
 
-        
         // Start with an array representing a board of NINE squares which all lead to an undetermined outcome.
         let hints = Array(9).fill('');  
-        
-        
-
-        // How to identify moves that are "winning"? 
-        // 1) If the player whose turn it is has an unblocked two in a line, the last square in that line is winning.
-        // if (listTwos(myTurn()).length !== 0 ) {
-        const list = listTwos(myTurn())
-        console.log(`List Twos for player '${player}': ${list}`)
-        // }
-        
-        
-        
-        
-        // How to identify moves that are "losing"? 
-        // 1)If opponent has an unblocked two in a line, then all sqares last square in it is winning.
-        // 2) If opponent has an unblocked two in a line, then all sqares last square in it is winning.
-
-
-
-        
-        // for each line, see if the person whose turn it is has an unblocked 2 in a row
-        lineCounts(myTurn()).forEach((count, line) => {
-
-        })
-        
-        // Sound play can be reduced to this order of priorities:
-
-        // 1) Complete a 3-in a row if you can. If you have no unblocked 2 in a rows then...
-        // 2) Check if enemy has an unblocked 2 in a row and if so Block it from becoming 3. If enemy has no unblocked 2 in a rows then...
-        // 3) Try to make a double attack ...
-        //          this involves listing all of your 1-in-a-rows where the enemy has 0
-        //          if there is a square in two lists then it is winning as it creates a double attack and we only reach this point if enemy has no 2 in a rows
-        // 4) ??? otherwise make a single threat, a forcing (but not necessarily winning move)
-        // is this enough to draw?? i'm going to build it this way then play with it to see if it is correct. 
-        
         
         // PRIORITIES
         // 1) complete a 3 in a line to win.
@@ -173,31 +137,76 @@ export default function TicTacToeGame() {
         // 3) create a double attack.
         // ?) prevent opponent from creating a double attack.
         // 5) make a forcing move that does not force opponent to create a double attack.
+        // Mark all claimed squares as 'claimed' (no hint) If a move is not diffinitively winning or losing or claimed after all checks have run then default it to 'draw' 
 
-
-
+        // (1)
         // List the lines where I have 2 and the last square is empty. Mark these as winning.
-        listTwos(myTurn()).forEach((line) => {
-            getSquares(line).forEach((square) => {
-                if (!history.includes(square)){
-                    hints[square] = 'win'
-                }
-            })
-        })
-
-        // List the lines where opponent has 2 and the last square is empty. 
-        // If this list has 2 unique squares in it then all yet-unmarked moves are losing.
-        // If this list has 1 unique square in it then 
-        // -- that square may lead to a draw or a win.
-        // -- all other yet-unmarked squares are losing.
-        console.log(`Opponent's unblocked two in a lines: ${listTwos(notMyTurn())}`)
-        listTwos(notMyTurn()).forEach((line) => {
+        // console.log(`List Twos for player '${player}': ${listTwos(myTurn())}`)
+        listTwos(player).forEach((line) => {
             getSquares(line).forEach((square) => {
                 if (!history.includes(square)) {
                     hints[square] = 'win'
                 }
             })
         })
+        
+        // 2) Check if enemy has an unblocked 2 in a row and if so Block it from becoming 3. If enemy has no unblocked 2 in a rows then...
+        
+        console.log(`Opponent's unblocked two in a lines: ${listTwos(other(player))}`)
+        const list = listTwos(other(player));
+        //  If enemy has multiple unblocked 2 in a rows then all moves NOT YET MARKED mark as losing
+        if (list.length > 1) {
+            console.log(`Opponent has multiple unblocked two in a lines!`)
+            hints.forEach((hint, lineId) => {
+                if (hint === '') {
+                    hints[lineId] = 'lose';
+                }
+            }); 
+        }
+        //  If enemy has one unblocked 2 in a row then the last square in that line all moves NOT YET MARKED mark as losing, 
+        if (list.length === 1) {
+            const keyLine = list[0];
+            const keySquares = getSquares(keyLine);
+            keySquares.forEach(square => {
+                if (squareIsEmpty(square)) {
+                    hints[square] = 'draw'
+                }
+            })
+
+        }
+
+
+        listTwos(notMyTurn()).forEach((line) => {
+
+
+            getSquares(line).forEach((square) => {
+                if (squareIsEmpty(square)) {
+                    hints[square] = 'draw' // ????????????????? SOMETIMES THIS BLOCK ALSO WINS
+                }
+            })
+        })
+        
+        
+        // 3) Try to make a double attack ... this would let you ignore an opponent attack
+        //          this involves listing all of your 1-in-a-rows where the enemy has 0
+        //          if there is a square in two lists then it is winning as it creates a double attack and we only reach this point if enemy has no 2 in a rows
+        // 4) ??? otherwise make a single threat, a forcing (but not necessarily winning move)
+        // is this enough to draw?? i'm going to build it this way then play with it to see if it is correct. 
+        
+        
+        
+
+
+
+        
+       
+
+        // List the lines where opponent has 2 and the last square is empty. 
+        // If this list has 2 unique squares in it then all yet-unmarked moves are losing.
+        // If this list has 1 unique square in it then 
+        // -- that square may lead to a draw or a win.
+        // -- all other yet-unmarked squares are losing.
+        
         
 
         // Set all claimed squares to white bg.  Not necessary as they now default to white bg.
@@ -208,6 +217,11 @@ export default function TicTacToeGame() {
         return hints;
     }
 
+    
+    function squareIsEmpty(square) {
+        return (!history.includes(square))
+    }
+    
     function getStatus() {
         if (xWins()) {
             return (`X wins!`)
@@ -303,6 +317,10 @@ export default function TicTacToeGame() {
     }
     function notMyTurn() {
         return (history.length % 2 === 0) ? 'o' : 'x';
+    }
+    function other(player) {
+        if (player !== 'o' && player !== 'x') { console.error(`other(player) called with invalid player: ${player}`)}
+        return (player === 'o') ? 'x' : 'o';
     }
 
 
