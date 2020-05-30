@@ -52,13 +52,15 @@ export default function TicTacToeGame() {
 
     let [history, setHistory] = useState([]); 
     let [showMoves, setShowMoves] = useState(false); 
-    let [showCommentary, setShowCommentary] = useState(false);  
+    // let [showCommentary, setShowCommentary] = useState(false);  
+    let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
         <div className={classes.root} >
             <div className={classes.boardArea} >
                 <Board 
-                    data={getBoardValues()} 
+                    boardValues={getBoardValues()} 
+                    boardHints={getBoardHints()}
                     handleSquareClick={handleSquareClick}
 
                 />
@@ -96,6 +98,62 @@ export default function TicTacToeGame() {
         });
         return data;
     }
+
+    function highlightWins() {
+        console.log(`highlightWins() was called`)
+        let highlights = Array(9).fill('');
+        
+        // Assert: we only reach this point if either x or o has won.
+        let lines = (xWins()) ? xLines() : oLines();
+        lines.forEach((count, index) => {  // 2nd param to foreach is the current index in the array which in this case corresponds to the lineId
+            if (count === 3) {
+                console.log(`highlightWins() found a win in line: ${index}`)
+                getSquares(index).forEach(squareId => {
+                    highlights[squareId] = 'win';
+                })
+            }
+        });
+        return highlights;
+    } 
+    
+    // TODO
+    function getBoardHints() {
+        // If the game is over return early, there are no hints to give. In case of a draw there are no hinst since the board is full.
+        if (xWins() || oWins()) { 
+            return highlightWins();
+        }
+
+        
+        // Start with an array representing a board of NINE squares which all lead to a draw.
+        let hints = Array(9).fill('draw');  
+        
+        
+        history.forEach(squareId => {
+            hints[squareId] = '';
+        });
+        
+        
+        // hints.forEach(squareId => {
+        //     // If the square is already claimed there is no hint about it.
+        //     if(history.includes(squareId)) {
+        //         hints[squareId] = 'draw'
+        //     }
+        // });
+        
+        // Else put a yellow dot in each square
+       
+        // Whos turn is it?
+        
+        // For each line   
+        // -- see how many X's are in it
+        // -- see how many O's are in it
+        
+        // emptySquares().forEach(squareId => {
+        //     data[squareId] = '';
+        // });
+        return hints;
+    }
+
     function getStatus() {
         if (xWins()) {
             const winningLine = getLines(history.filter((squareId, index) => index % 2 === 0)).indexOf(3);
@@ -114,10 +172,11 @@ export default function TicTacToeGame() {
             return (`O's turn.`)
         }
         else {
-            console.error("getStatus() is broken!");
+            console.error("A call to getStatus() did not work!");
             return
         }
     }
+
     function getCommentary() {
         console.log(`getCommentary() called while showCommentary = ${showCommentary}`)
         if (gameOver()) {
@@ -126,12 +185,31 @@ export default function TicTacToeGame() {
         if (!showCommentary) {
             return `Coach's commentary would appear here if turned on in the settings.`
         }
+
         // If no moves have been made
         if (history.length === 0) {
-            return `X goes first. It may look like there are 9 different options but when you
-            consider symmetry there are really only 3 options: Center, Edge, or Corner.`
+            return `X goes first. It may look like there are 9 different options but 
+            when you consider symmetry there are really only 3: Center, Edge, or Corner.`
         }
+
+        // If one move has been made
+        if (history.length === 1 && history[0] === 4) {
+            return `X went in the center. O has two options. One is good and lets O
+            force a draw. The other is bad and gives X a chance to win.`
+        }
+        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
+            return `X went in the corner. O has five non-symmetrical options. Only 
+            one of them prevents X from being able to force a win.`
+        }
+        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 1) {
+            return `X went on the edge. O has five non-symmetrical options. __ are
+            good and let O force a draw. The other __ are mistakes that give X a 
+            chance to win.`
+        }
+
+
     }
+    
 
 
     // CLICK HANDLERS
@@ -217,6 +295,42 @@ export default function TicTacToeGame() {
         });
         // console.log(`Status: ${status}`)
         return status;
+    }
+
+    // list the squareIds that fall in a given lineId
+    function getSquares(lineId) {
+        console.log(`getSquares() was called with lineId: ${lineId}`)
+        let squareIds;
+        switch (lineId) {
+            case 0:
+                squareIds = [0, 1, 2];
+                break;
+            case 1:
+                squareIds = [3, 4, 5];
+                break;
+            case 2:
+                squareIds = [6, 7, 8];
+                break;
+            case 3:
+                squareIds = [0, 3, 6];
+                break;
+            case 4:
+                squareIds = [1, 4, 7];
+                break;
+            case 5:
+                squareIds = [2, 5, 8];
+                break;
+            case 6:
+                squareIds = [2, 4, 6];
+                break;
+            case 7:
+                squareIds = [0, 4, 8];
+                break;
+            default:
+                console.error(`getSquares() was called with an invalid lineId.`)
+        }
+        return squareIds;
+        
     }
     
     
