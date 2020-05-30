@@ -26,13 +26,15 @@ const useStyles = makeStyles({
         fontSize: '10vmin',
     },
     win: {
-        backgroundColor: '#8ff772'
+        backgroundColor: '#00DD00'
+        // backgroundColor: 'green'
     },
     lose: {
         backgroundColor: '#ff6354'
     },
     draw: {
         backgroundColor: '#f9ff52'
+        // backgroundColor: 'var(--logo-bg-color)'
     }
 });
 
