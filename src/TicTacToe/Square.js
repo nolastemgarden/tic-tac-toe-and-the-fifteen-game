@@ -25,13 +25,23 @@ const useStyles = makeStyles({
     iconO: {
         fontSize: '10vmin',
     },
+    win: {
+        backgroundColor: '#8ff772'
+    },
+    lose: {
+        backgroundColor: '#ff6354'
+    },
+    draw: {
+        backgroundColor: '#f9ff52'
+    }
 });
 
 export default function Square(props) {
     const classes = useStyles();
     const id = props.id
     const value = props.value
-    // function handleSquareClick(id) = props.handleSquareClick
+    const hint = props.hint
+    const handleClick = props.handleClick
 
 
     let icon;
@@ -50,10 +60,25 @@ export default function Square(props) {
             break;
     }
 
+    let className;
+    switch (hint) {
+        case 'win':
+            className = `${classes.square} ${classes.win} `
+            break;
+        case 'lose':
+            className = `${classes.square} ${classes.lose} `
+            break;
+        case 'draw':
+            className = `${classes.square} ${classes.draw} `
+            break;
+        default:
+            className = `${classes.square} `
+    }
+
     return (
         <Paper
-            className={classes.square}
-            onClick={() => props.handleClick(id)}
+            className={className}
+            onClick={() => handleClick(id)}
         >
             {icon}
         </Paper>
