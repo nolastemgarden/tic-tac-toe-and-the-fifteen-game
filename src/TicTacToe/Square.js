@@ -41,13 +41,13 @@ const useStyles = makeStyles({
 export default function Square(props) {
     const classes = useStyles();
     const id = props.id
-    const value = props.value
-    const hint = props.hint
+    const symbol = props.symbol
+    const color = props.color
     const handleClick = props.handleClick
 
 
     let icon;
-    switch (value) {
+    switch (symbol) {
         case 'x':
             icon = <ClearIcon className={classes.iconX} />
             break;
@@ -58,12 +58,12 @@ export default function Square(props) {
             icon = null;
             break;
         default:
-            throw console.error("Square passed value not 'x' 'o' or ''");
+            throw console.error("Square passed symbol not 'x' 'o' or ''");
             break;
     }
 
     let className;
-    switch (hint) {
+    switch (color) {
         case 'win':
             className = `${classes.square} ${classes.win} `
             break;

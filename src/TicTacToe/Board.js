@@ -24,8 +24,8 @@ const useStyles = makeStyles({
 export default function Board(props) {
     const classes = useStyles();
     const handleSquareClick = props.handleSquareClick
-    const boardValues = props.boardValues;
-    const boardHints = props.boardHints;
+    const boardSymbols = props.boardSymbols;
+    const boardColors = props.boardColors;
     
     let board = [];
     for (let id = 0; id < 9; id++) {
@@ -33,8 +33,8 @@ export default function Board(props) {
             <Square
                 key={id}
                 id={id}
-                value={boardValues[id]}
-                hint={boardHints[id]}
+                symbol={boardSymbols[id]}
+                color={boardColors[id]}
                 handleClick={handleSquareClick}
             />
         ;
