@@ -137,6 +137,7 @@ export default function TicTacToeGame() {
         });
         
         // (2) Check if enemy has an unblocked 2 in a row and if so Block it from becoming 3.
+        // If there are multiple urgent defensive moves they both are Losing. If there is one it is set here to Draw but that may be over-written if the following call to doubleAttackCreatingMoves() finds that an urgent defensive move is simultanoeusly a winning attacking move.
         urgentDefensiveMoves().forEach(keySquare => {
             if (hints[keySquare] === '') {                     // ONLY modify a square to say "draw" or "lose" if it has not already been labeled "win"
                 if (urgentDefensiveMoves().length === 1) {
@@ -148,14 +149,31 @@ export default function TicTacToeGame() {
                 }
             }
         });
+        
+        // (3) This is third priority because a doubleAttack is only winning if there were NO urgentDefensiveMoves() or if there was One urgentDefensiveMoves() and it was the same square as found by doubleAttackCreatingMoves().
+        doubleAttackCreatingMoves().forEach(keyAttackingMove => {
+            if (urgentDefensiveMoves().length === 0 ) {
+                hints[keyAttackingMove] = 'win';
+            }
+            if (urgentDefensiveMoves().length === 1) {
+                const keyDefensiveMove = urgentDefensiveMoves()[0] 
+                if (keyAttackingMove === keyDefensiveMove) {  // I believe an equivalent test would be to check if hints[keySquare] has already been set to 'draw' by the code block above that starts with a call to urgentDefensiveMoves().
+                    hints[keyAttackingMove] = 'win';
+                }
+            }
+            if (urgentDefensiveMoves().length > 1) {
+                // Then it doesn't matter if you can create a double attack or not, it is already lost.
+                console.log(`doubleAttackCreatingMoves() may have found a double attack but it was irrelevant because opponent already had a double attack.`)
+            }
+        });
+        
+        
+        
+        
 
 
-        // urgentDefensiveMoves() could potentially find a move that also happens to be an immediateWin or doubleAttackCreatingMove and in this case they should be labeled as 'winning' moves even though they are also urgentDefensiveMoves
-
-
-
-        // console.log(`Opponent's unblocked two in a lines: ${listTwos(other(player))}`)
-        // const list = listTwos(other(player));
+        // console.log(`Opponent's unblocked two in a lines: ${listUnblockedTwos(other(player))}`)
+        // const list = listUnblockedTwos(other(player));
         // //  If enemy has multiple unblocked 2 in a rows then all moves NOT YET MARKED mark as losing
         // if (list.length > 1) {
         //     console.log(`Opponent has multiple unblocked two in a lines!`)
@@ -181,7 +199,7 @@ export default function TicTacToeGame() {
         // }
 
 
-        // listTwos(notMyTurn()).forEach((line) => {
+        // listUnblockedTwos(notMyTurn()).forEach((line) => {
 
 
         //     squaresInLine(line).forEach((square) => {
@@ -243,7 +261,7 @@ export default function TicTacToeGame() {
     function immediateWins(){
         let winningSquares = [];
         const player = myTurn();
-        listTwos(player).forEach((line) => {
+        listUnblockedTwos(player).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
                     winningSquares.push(square);
@@ -257,7 +275,7 @@ export default function TicTacToeGame() {
     function urgentDefensiveMoves() {
         let keySquares = [];
         const player = myTurn();
-        listTwos(other(player)).forEach((line) => {
+        listUnblockedTwos(other(player)).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
                     keySquares.push(square);
@@ -267,7 +285,23 @@ export default function TicTacToeGame() {
         return keySquares;
     }
 
+    function doubleAttackCreatingMoves() {
+        return threatCreatingMoves().filter((square, index) => threatCreatingMoves().indexOf(square) !== index );
+    }
 
+    function threatCreatingMoves() {
+        const player = myTurn();
+        const threatCreatingMoves = []; // A squareId that appears here once creates a two-in-a-line threat.  A squareId that appears here twice creates two separate two-in-a-line threats.
+        listUnblockedOnes(player).forEach((line) => {
+            squaresInLine(line).forEach((square) => {
+                if (squareIsEmpty(square)){                 // Don't add an already claimed square to the list of therat creating moves!
+                    threatCreatingMoves.push(square);
+                }
+            })
+        })
+        console.log(`threatCreatingMoves() found the following empty squares make threats: ${threatCreatingMoves}`)
+        return threatCreatingMoves;
+    }
 
 
     
@@ -431,28 +465,24 @@ export default function TicTacToeGame() {
         // console.log(`listThrees() called for player '${player}'. List: ${list}`)
         return list;
     }
-    function listTwos(player) {
+    function listUnblockedTwos(player) {
         let list = [];
-        // console.log(`lineCounts : ${lineCounts(player)}`)
         lineCounts(player).forEach((count, line) => {
-            if (count === 2) {  // && lineCounts(!player)[line] === 0
+            if (count === 2 && lineCounts(other(player))[line] === 0 ) {  
                 list.push(line)
             }
         })
-        console.log(`List Twos for player '${player}': ${list}`)
+        console.log(`List Unblocked Twos for player '${player}': ${list}`)
         return list;
     }
-
-
-    function listOnes(player) {
+    function listUnblockedOnes(player) {
         let list = [];
-        // console.log(`lineCounts : ${lineCounts(player)}`)
         lineCounts(player).forEach((count, line) => {
-            if (count === 2) {
+            if (count === 1 && lineCounts(other(player))[line] === 0) {
                 list.push(line)
             }
         })
-        // console.log(`listOnes() called for player '${player}'. List: ${list}`)
+        console.log(`List Unblocked Ones for player '${player}': ${list}`)
         return list;
     }
     
