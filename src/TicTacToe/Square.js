@@ -11,19 +11,21 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     square: {
-        margin: '1vmin',
-        width: '13vmin',
-        height: '13vmin',
+        margin: '2%',
+        width: '27%',
+        height: '27%',
         boxSizing: 'border-box',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
     },
     iconX: {
-        fontSize: '13vmin',
+        width: '100%',
+        height: '100%',
     },
     iconO: {
-        fontSize: '10vmin',
+        width: '80%',
+        height: '80%',
     },
     win: {
         backgroundColor: '#00DD00'
@@ -79,6 +81,7 @@ export default function Square(props) {
 
     return (
         <Paper
+            elevation={4}
             className={className}
             onClick={() => handleClick(id)}
         >
