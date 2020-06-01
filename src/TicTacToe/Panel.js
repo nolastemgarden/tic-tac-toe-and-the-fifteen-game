@@ -21,15 +21,14 @@ import { Grid } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
     panel: {
         boxSizing: 'border-box',
-        margin: '3vmin',
-        width: '68vmin',
-        height: '28vmin',
-        padding: '2vmin',
+        marginTop: '3%',
+        width: '100%',
+        height: '94%',
+        padding: '3%',
         
         display: 'flex',
         flexDirection: 'row',
         
-
     },
     infoArea: {
         
@@ -43,13 +42,18 @@ const useStyles = makeStyles((theme) => ({
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        height: '4.4vmin',
+        height: '18%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: '1.8vmin',
-        lineHeight: '1vmin',
+        fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        // lineHeight: '1vmin',
+    },
+    buttonIcon: {
+        marginRight: '2vw',
+        fontSize: 'larger'
+        // fontSize: 'min(max(0.7rem, 3vmin), 22px)',
     },
     switchLabel: {
         lineHeight: '1rem'
@@ -83,10 +87,13 @@ export default function Panel(props) {
             color="primary"
             className={classes.button}
             onClick={() => handleUndoButtonClick()}
-            startIcon={< UndoIcon />}
+            
         >
+            <UndoIcon className={classes.buttonIcon} />
             Undo
         </Button>
+
+        
     );
 
     const newGameButton = (
@@ -94,9 +101,9 @@ export default function Panel(props) {
             variant="contained"
             color="primary"
             className={classes.button}
-            onClick={() => handleNewGameButtonClick()}
-            startIcon={< ReplayIcon />}
+            onClick={() => handleNewGameButtonClick()} 
         >
+            <ReplayIcon className={classes.buttonIcon} />
             New&nbsp;Game
         </Button>
     );

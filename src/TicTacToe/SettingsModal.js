@@ -30,8 +30,13 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: '1.8vmin',
+        fontSize: 'min(max(0.7rem, 3vmin), 24px)',
         lineHeight: '0.8vmin',
+    },
+    buttonIcon: {
+        marginRight: '2vw',
+        fontSize: 'larger'
+        // fontSize: 'min(max(0.7rem, 3vmin), 22px)',
     },
     modal: {
         display: 'flex',
@@ -123,9 +128,9 @@ export default function SettingsModal(props) {
                 color="primary"
                 onClick={openSettingsModal}
                 aria-controls="simple-menu"
-                aria-haspopup="true"
-                startIcon={<SettingsIcon />}
+                aria-haspopup="true" 
             >
+                <SettingsIcon className={classes.buttonIcon} />
                 Settings
             </Button>
             
