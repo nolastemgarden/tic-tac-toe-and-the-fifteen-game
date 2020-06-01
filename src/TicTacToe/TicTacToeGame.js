@@ -20,15 +20,19 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
+        height: '100%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        // justifyContent: 'flex-end',
         alignItems: 'center',
         // backgroundColor: '#4AC9FD'
+        
     },
     boardArea: {
         backgroundColor: '#bbffff',
-        height: '50vmin',
-        width: 'calc(100% - 3vmin)',
+        height: '60%',
+        width: '95%',
         display: 'flex',
         justifyContent: 'center',
     },
@@ -36,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid blue 1px',
         // backgroundColor: '#4AC9FD',
         boxSizing: 'border-box',
-        width: '100%',
-        height: '32vmin',
+        width: '95%',
+        height: '40%',
         
         display: 'flex',
         flexDirection: 'row',
