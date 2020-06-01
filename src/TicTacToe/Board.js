@@ -10,10 +10,12 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
+
 const useStyles = makeStyles({
     board: {
-        width: '50vmin',
-        height: '50vmin',
+        // border: 'solid blue 1px',
+        width: '76.4%',
+        height: '100%',
         display: 'flex',
         flexWrap: 'wrap',
         alignContent: 'center',
