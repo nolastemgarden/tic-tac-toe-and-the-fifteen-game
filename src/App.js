@@ -31,6 +31,25 @@ import Typography from '@material-ui/core/Typography'
 
 
 import { makeStyles } from '@material-ui/core/styles';
+
+let availHeight = window.screen.availHeight;
+let availWidth = window.screen.availWidth;
+
+// let containerHeight;
+// let containerWidth;
+
+// if (availHeight * 3 / 4 < availWidth) {
+//     containerHeight = '100vh';
+//     containerWidth = '75vh';
+// } else if (availHeight * 3 / 4 > availWidth) {
+//     console.log(`orientation === "portrait"`);
+//     containerWidth = availWidth;
+//     containerHeight = availWidth * 4 / 3;
+// } else {
+//     console.log("The availHeight and availWidth API isn't supported in this browser :(");
+// }
+
+
 const useStyles = makeStyles({
     root: {
         height: '100vh',
@@ -44,8 +63,12 @@ const useStyles = makeStyles({
     },
     container: {
         backgroundColor: '#4AC9FD',
-        height: '90vmin',
-        width: '75vmin',
+        height: 'min(133vw, 100vh)',
+        maxHeight: '1200px',
+        width: 'min(75vh, 100vw)',
+        maxWidth: '900px',
+        // height: containerHeight,
+        // width: containerWidth,
         borderRadius: '2vmin',
         overflow: 'hidden',
         display: 'flex',
@@ -75,6 +98,8 @@ const useStyles = makeStyles({
 
 export default function App() {
     const classes = useStyles();
+    // const [pageTitle, setPageTitle] = React.useState("Welcome");
+    
     const [pageTitle, setPageTitle] = React.useState("Welcome");
   
     // Similar to componentDidMount and componentDidUpdate:
