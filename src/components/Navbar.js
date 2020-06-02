@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
         fontSize: 'inherit',
         fontWeight: 'bold'
     },
-    menuButton: {
-        
+    menuListItem: {
+        fontSize: 'min(max(0.7rem, 3vmin), 24px)',
     },
     icon: {
         color: 'navy',
@@ -96,7 +96,7 @@ function SimpleMenu(props) {
 
     return (
         <div>
-            <MenuIcon
+            <MenuIcon 
                 className={classes.icon}
                 onClick={handleClick}
                 aria-controls="simple-menu"
@@ -121,37 +121,49 @@ function SimpleMenu(props) {
                 <MenuItem
                     component={RouterLink}
                     to='/'
-                    onClick={handleClose}>
+                    onClick={handleClose}
+                    className={classes.menuListItem}
+                >
                     Home
                 </MenuItem>
                 <MenuItem
                     component={RouterLink}
                     to='/tic-tac-toe'
-                    onClick={handleClose}>
+                    onClick={handleClose}
+                    className={classes.menuListItem}
+                >
                     Play Tic Tac Toe
                 </MenuItem>
                 <MenuItem
                     component={RouterLink}
                     to='/fifteen-game'
-                    onClick={handleClose}>
+                    onClick={handleClose}
+                    className={classes.menuListItem}
+                >
                     Play the Fifteen Game
                 </MenuItem>
                 <MenuItem
                     component={RouterLink}
                     to='/magic-squares'
-                    onClick={handleClose}>
+                    onClick={handleClose}
+                    className={classes.menuListItem}
+                >
                     Learn about Magic Squares
                 </MenuItem>
                 <MenuItem
                     component={RouterLink}
                     to='/strategy'
-                    onClick={handleClose}>
+                    onClick={handleClose}
+                    className={classes.menuListItem}
+                >
                     Learn Tic Tac toe Strategy
                 </MenuItem>
                 <MenuItem
                     component={Link}
                     to='https://www.nolastemgarden.com'
-                    onClick={handleClose}>
+                    onClick={handleClose}
+                    className={classes.menuListItem}
+                >
                     Nola Stem Garden Home
                 </MenuItem>
             </Menu>
