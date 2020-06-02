@@ -35,24 +35,26 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'row',
         alignItems: 'end',
         // backgroundColor: '#4AC9FD',
-        height: '5vmin',
-        width: '75vmin',
-        margin: '0'
-
+        height: '5%',
+        width: '100%',
+        margin: '0',
+        fontSize: 'min(max(1rem, 4vmin), 30px)',
 
     },
     title: {
         color: 'navy',
         flexGrow: '1',
         marginLeft: '1rem',
-        fontSize: '3vmin',
+        // fontSize: '3vmin',
+        fontSize: 'inherit',
+        fontWeight: 'bold'
     },
     menuButton: {
         
     },
     icon: {
         color: 'navy',
-        fontSize: '3.5vmin',
+        fontSize: 'larger',
         marginRight: '1.5vmin',
         marginTop: '0.5vmin'
     },
