@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         // lineHeight: '1vmin',
     },
     buttonIcon: {
-        marginRight: '2vw',
+        marginRight: '1vmin',
         fontSize: 'larger'
         // fontSize: 'min(max(0.7rem, 3vmin), 22px)',
     },
