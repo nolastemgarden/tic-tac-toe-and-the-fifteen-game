@@ -89,12 +89,12 @@ export default function TicTacToeGame() {
     // It passes what it needs to to the board to render and to the panel.
     
     // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
-    function getBoardSymbols() {
+    function getBoardSymbols(moveList = history) {
         let data = Array(9).fill('');  // Start with an array representing a board of NINE empty squares
-        squaresClaimedByPlayer('x', history).forEach(squareId => {
+        squaresClaimedByPlayer('x', moveList).forEach(squareId => {
             data[squareId] = 'x';
         });
-        squaresClaimedByPlayer('o', history).forEach(squareId => {
+        squaresClaimedByPlayer('o', moveList).forEach(squareId => {
             data[squareId] = 'o';
         });
         return data;
@@ -182,7 +182,7 @@ export default function TicTacToeGame() {
     // MID-LEVEL HELPERS for getBoardColors() and getBoardHints()
     function highlightWins() {
         let highlightedSquares = Array(9).fill('')
-        if (!gameOver) {  // Assert: we only reach this point if either x or o has won.
+        if (!gameOver()) {  // Assert: we only reach this point if either x or o has won.
             console.error(`highlightWins() was called but found that the game is not over`);
         }
         let winner = (wins('x')) ? 'x' : 'o';
@@ -221,14 +221,15 @@ export default function TicTacToeGame() {
         return keySquares;
     }
 
-    function threatCreatingMoves(player = myTurn()) {
+    function threatCreatingMoves(moveList = history) {
         // if (player === undefined){
         //     player = myTurn();
         // }
+        const player = myTurn(moveList);
         const threatCreatingMoves = []; // A squareId that appears here once creates a two-in-a-line threat.  A squareId that appears here twice creates two separate two-in-a-line threats.
-        linesWithOnlyOne(player).forEach((line) => {
+        linesWithOnlyOne(player, moveList).forEach((line) => {
             squaresInLine(line).forEach((square) => {
-                if (squareIsEmpty(square)) {                 // Don't add an already claimed square to the list of therat creating moves!
+                if (squareIsEmpty(square, moveList)) {                 // Don't add an already claimed square to the list of therat creating moves!
                     threatCreatingMoves.push(square);
                 }
             })
@@ -237,14 +238,20 @@ export default function TicTacToeGame() {
         return threatCreatingMoves;
     }
 
-    function doubleAttackCreatingMoves() {
-        return threatCreatingMoves().filter((square, index) => threatCreatingMoves().indexOf(square) !== index );
+    function doubleAttackCreatingMoves(moveList = history) {
+        return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) !== index );
     }
 
-    function forcedWinCreatingMoves() {
+    function forcedWinCreatingMoves(moveList = history) {
         let list = [];
-        
+
         const player = myTurn();
+        // let moveList = history.slice();
+
+        console.log(`forcedWinCreatingMoves() made a shallow copy of the history: ${moveList}`)
+
+
+        
         // In order for X to have a forced win O's second move must be forced, an urgentDefensiveMove.
         // Simply that O is making an urgentDefensiveMove does not mean O is on track to lose...
         // But since O's send move is forced we can take the resulting modified history and pass it to doubleAttackCreatingMoves()
@@ -253,7 +260,7 @@ export default function TicTacToeGame() {
         // emptySquares(history).forEach(square => {
 
         // })
-        threatCreatingMoves().forEach(square => {
+        threatCreatingMoves(moveList).forEach(square => {
             let hypotheticalHistory = history.concat(square).concat(urgentDefensiveMoves(other(player)));
             
             
@@ -385,11 +392,11 @@ export default function TicTacToeGame() {
     
     // TURN HELPERS
     // High-Level Methods that need to know whose turn it is can deduce that info by using these helpers to look at the history directly, rather than having to be invoked with a player param. 
-    function myTurn() {
-        return (history.length % 2 === 0) ? 'x' : 'o' ;
+    function myTurn(moveList = history) {
+        return (moveList.length % 2 === 0) ? 'x' : 'o' ;
     }
-    function notMyTurn() {
-        return (history.length % 2 === 0) ? 'o' : 'x';
+    function notMyTurn(moveList = history) {
+        return (moveList.length % 2 === 0) ? 'o' : 'x';
     }
     function other(player) {
         if (player !== 'o' && player !== 'x') { console.error(`other(player) called with invalid player: ${player}`)}
@@ -399,25 +406,26 @@ export default function TicTacToeGame() {
 
     // LOW-LEVEL HELPERS
     // need to be told which player you care about b/c they may be used on EITHER the player whose turn it is or the other player.
-    function squaresClaimedByPlayer(player, history) {
+    function squaresClaimedByPlayer(player, moveList = history) {
         // let history = (alteredHistory === undefined) ? history : alteredHistory
         
         if (player === 'x') {
-            return history.filter((squareId, index) => index % 2 === 0);
+            return moveList.filter((squareId, index) => index % 2 === 0);
         }
         else if (player === 'o') {
-            return history.filter((squareId, index) => index % 2 === 1);
+            return moveList.filter((squareId, index) => index % 2 === 1);
         }
         else {
             console.error(`Method squaresClaimedByPlayer() called with invalid player: ${player}`)
             return undefined;
         }
     }
-    function lineCountsFor(player) {
+
+    function lineCountsFor(player, moveList = history) {
         // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
         let lines = Array(8).fill(0);
 
-        squaresClaimedByPlayer(player, history).forEach(square => {
+        squaresClaimedByPlayer(player, moveList).forEach(square => {
             // Update Row
             const row = Math.floor(square / 3)    // number 0, 1, or 2
             lines[row]++;
@@ -440,59 +448,61 @@ export default function TicTacToeGame() {
         return lines;
     }
 
-    function wins(player) {
-        return (lineCountsFor(player).includes(3));
+    function wins(player, moveList = history) {
+        return (lineCountsFor(player, moveList).includes(3));
     }
-    function linesWithThree(player) {
-        let list = [];
+    function linesWithThree(player, moveList = history) {
+        let linesList = [];
         // console.log(`lineCountsFor : ${lineCountsFor(player)}`)
-        lineCountsFor(player).forEach((count, line) => {
+        lineCountsFor(player, moveList).forEach((count, line) => {
             if (count === 3) {
-                list.push(line)
+                linesList.push(line)
             }
         })
-        // console.log(`linesWithThree() called for player '${player}'. List: ${list}`)
-        return list;
+        // console.log(`linesWithThree() called for player '${player}'. List: ${linesList}`)
+        return linesList;
     }
-    function linesWithOnlyTwo(player) {
-        let list = [];
-        lineCountsFor(player).forEach((count, line) => {
-            if (count === 2 && lineCountsFor(other(player))[line] === 0 ) {  
-                list.push(line)
+
+    function linesWithOnlyTwo(player, moveList = history) {
+        let linesList = [];
+        lineCountsFor(player, moveList).forEach((count, line) => {
+            if (count === 2 && lineCountsFor(other(player), moveList)[line] === 0 ) {  
+                linesList.push(line)
             }
         })
         // console.log(`List Unblocked Twos for player '${player}': ${list}`)
-        return list;
+        return linesList;
     }
-    function linesWithOnlyOne(player) {
-        let list = [];
-        lineCountsFor(player).forEach((count, line) => {
-            if (count === 1 && lineCountsFor(other(player))[line] === 0) {
-                list.push(line)
+
+    function linesWithOnlyOne(player, moveList = history) {
+        let linesList = [];
+        lineCountsFor(player, moveList).forEach((count, line) => {
+            if (count === 1 && lineCountsFor(other(player, moveList))[line] === 0) {
+                linesList.push(line)
             }
         })
         // console.log(`List Unblocked Ones for player '${player}': ${list}`)
-        return list;
+        return linesList;
     }
-    function emptyLines() {
-        let list = [];
-        lineCountsFor('x').forEach((count, line) => {
-            if (count === 0 && lineCountsFor('o')[line] === 0) {
-                list.push(line)
+    function emptyLines(moveList = history) {
+        let linesList = [];
+        lineCountsFor('x', moveList).forEach((count, line) => {
+            if (count === 0 && lineCountsFor('o', moveList)[line] === 0) {
+                linesList.push(line)
             }
         })
-        console.log(`List Empty Lines: ${list}`)
-        return list;
+        console.log(`List Empty Lines: ${linesList}`)
+        return linesList;
     }
-    function blockedLines() {
-        let list = [];
-        lineCountsFor('x').forEach((count, line) => {
-            if (count > 0 && lineCountsFor('o')[line] > 0) {
-                list.push(line)
+    function blockedLines(moveList = history) {
+        let linesList = [];
+        lineCountsFor('x', moveList).forEach((count, line) => {
+            if (count > 0 && lineCountsFor('o', moveList)[line] > 0) {
+                linesList.push(line)
             }
         })
-        console.log(`List Blocked Lines: ${list}`)
-        return list;
+        console.log(`List Blocked Lines: ${linesList}`)
+        return linesList;
     }
     function allLines() {
         // Top Row, Middle Row, Bottom Row, 
@@ -507,15 +517,15 @@ export default function TicTacToeGame() {
 
     
     // list all squareIds not appearing in the history or an 
-    function emptySquares(history) {
-        let list = [];
-        history.forEach((square) => {
-            if (!history.includes(square)) {
-                list.push(square)
+    function emptySquares(moveList = history) {
+        let emptySquaresList = [];
+        for (let i = 0; i < 9; i++) {
+            if (!moveList.includes(i)) {
+                emptySquaresList.push(i)
             }
-        })
-        console.log(`List Empty Squares: ${list}`)
-        return list;
+        }
+        console.log(`List Empty Squares: ${emptySquaresList}`)
+        return emptySquaresList;
     }
     
 
@@ -558,8 +568,8 @@ export default function TicTacToeGame() {
 
     
     // BOOLEAN helpers for getStatus() and handleSquareClick()
-    function squareIsEmpty(square) {
-        return (!history.includes(square))
+    function squareIsEmpty(square, moveList = history) {
+        return (!moveList.includes(square))
     }
     
 
@@ -573,8 +583,10 @@ export default function TicTacToeGame() {
     
     
     
-    function gameOver() {
-        return (history.length >= 9 || wins('x') || wins('o'));  // Board full or there's a 3-in-a-row
+    function gameOver(moveList = history) {
+        return (moveList.length >= 9 
+            || wins('x', moveList) 
+            || wins('o', moveList));  // Board full or there's a 3-in-a-row
     }
 
 }
