@@ -176,8 +176,8 @@ export default function TicTacToeGame() {
         
 
 
-        // console.log(`Opponent's unblocked two in a lines: ${listUnblockedTwos(other(player))}`)
-        // const list = listUnblockedTwos(other(player));
+        // console.log(`Opponent's unblocked two in a lines: ${linesWithOnlyTwo(other(player))}`)
+        // const list = linesWithOnlyTwo(other(player));
         // //  If enemy has multiple unblocked 2 in a rows then all moves NOT YET MARKED mark as losing
         // if (list.length > 1) {
         //     console.log(`Opponent has multiple unblocked two in a lines!`)
@@ -203,7 +203,7 @@ export default function TicTacToeGame() {
         // }
 
 
-        // listUnblockedTwos(notMyTurn()).forEach((line) => {
+        // linesWithOnlyTwo(notMyTurn()).forEach((line) => {
 
 
         //     squaresInLine(line).forEach((square) => {
@@ -253,7 +253,7 @@ export default function TicTacToeGame() {
         }
         let winner = (wins('x')) ? 'x' : 'o';
         // let lines = lines(winner);
-        listThrees(winner).forEach(line => {
+        linesWithThree(winner).forEach(line => {
             squaresInLine(line).forEach(square => {
                 highlightedSquares[square] = 'win';
             });
@@ -265,7 +265,7 @@ export default function TicTacToeGame() {
     function immediateWins(){
         let winningSquares = [];
         const player = myTurn();
-        listUnblockedTwos(player).forEach((line) => {
+        linesWithOnlyTwo(player).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
                     winningSquares.push(square);
@@ -279,7 +279,7 @@ export default function TicTacToeGame() {
     function urgentDefensiveMoves() {
         let keySquares = [];
         const player = myTurn();
-        listUnblockedTwos(other(player)).forEach((line) => {
+        linesWithOnlyTwo(other(player)).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
                     keySquares.push(square);
@@ -296,7 +296,7 @@ export default function TicTacToeGame() {
     function threatCreatingMoves() {
         const player = myTurn();
         const threatCreatingMoves = []; // A squareId that appears here once creates a two-in-a-line threat.  A squareId that appears here twice creates two separate two-in-a-line threats.
-        listUnblockedOnes(player).forEach((line) => {
+        linesWithOnlyOne(player).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)){                 // Don't add an already claimed square to the list of therat creating moves!
                     threatCreatingMoves.push(square);
@@ -306,6 +306,10 @@ export default function TicTacToeGame() {
         console.log(`threatCreatingMoves() found the following empty squares make threats: ${threatCreatingMoves}`)
         return threatCreatingMoves;
     }
+
+    
+
+
 
 
     
@@ -428,7 +432,7 @@ export default function TicTacToeGame() {
             return undefined;
         }
     }
-    function lineCounts(player) {
+    function lineCountsFor(player) {
         // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
         let lines = Array(8).fill(0);
 
@@ -456,38 +460,64 @@ export default function TicTacToeGame() {
     }
 
     function wins(player) {
-        return (lineCounts(player).includes(3));
+        return (lineCountsFor(player).includes(3));
     }
-    function listThrees(player) {
+    function linesWithThree(player) {
         let list = [];
-        // console.log(`lineCounts : ${lineCounts(player)}`)
-        lineCounts(player).forEach((count, line) => {
+        // console.log(`lineCountsFor : ${lineCountsFor(player)}`)
+        lineCountsFor(player).forEach((count, line) => {
             if (count === 3) {
                 list.push(line)
             }
         })
-        // console.log(`listThrees() called for player '${player}'. List: ${list}`)
+        // console.log(`linesWithThree() called for player '${player}'. List: ${list}`)
         return list;
     }
-    function listUnblockedTwos(player) {
+    function linesWithOnlyTwo(player) {
         let list = [];
-        lineCounts(player).forEach((count, line) => {
-            if (count === 2 && lineCounts(other(player))[line] === 0 ) {  
+        lineCountsFor(player).forEach((count, line) => {
+            if (count === 2 && lineCountsFor(other(player))[line] === 0 ) {  
                 list.push(line)
             }
         })
         console.log(`List Unblocked Twos for player '${player}': ${list}`)
         return list;
     }
-    function listUnblockedOnes(player) {
+    function linesWithOnlyOne(player) {
         let list = [];
-        lineCounts(player).forEach((count, line) => {
-            if (count === 1 && lineCounts(other(player))[line] === 0) {
+        lineCountsFor(player).forEach((count, line) => {
+            if (count === 1 && lineCountsFor(other(player))[line] === 0) {
                 list.push(line)
             }
         })
         console.log(`List Unblocked Ones for player '${player}': ${list}`)
         return list;
+    }
+    function emptyLines() {
+        let list = [];
+        lineCountsFor('x').forEach((count, line) => {
+            if (count === 0 && lineCountsFor('o')[line] === 0) {
+                list.push(line)
+            }
+        })
+        console.log(`List Empty Lines: ${list}`)
+        return list;
+    }
+    function blockedLines() {
+        let list = [];
+        lineCountsFor('x').forEach((count, line) => {
+            if (count > 0 && lineCountsFor('o')[line] > 0) {
+                list.push(line)
+            }
+        })
+        console.log(`List Empty Lines: ${list}`)
+        return list;
+    }
+    function allLines() {
+        // Top Row, Middle Row, Bottom Row, 
+        // Left Column, Middle Column, Right Column,
+        // Upslash Diagonal, Downslash Diagonal
+        return [0, 1, 2, 3, 4, 5, 6, 7]
     }
     
     
@@ -543,9 +573,15 @@ export default function TicTacToeGame() {
     
 
     
+    // function gameDrawn() {
+    //     return (history.length >= 9 && !wins('x') && !wins('o'));  // Board full and neither player has a win
+    // }
     function gameDrawn() {
-        return (history.length >= 9 && !wins('x') && !wins('o'));  // Board full and neither player has a win
+        return (blockedLines().length >= 8 && !wins('x') && !wins('o'));  // Board full and neither player has a win
     }
+    
+    
+    
     function gameOver() {
         return (history.length >= 9 || wins('x') || wins('o'));  // Board full or there's a 3-in-a-row
     }
