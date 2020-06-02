@@ -130,8 +130,7 @@ export default function TicTacToeGame() {
         // 1) complete a 3 in a line to win.
         // 2) block opponent's 2 in a line.
         // 3) create a double attack.
-        // ?) prevent opponent from creating a double attack.
-        // 5) make a forcing move that does not force opponent to create a double attack.
+        // 4) make a move that gives the opponent an urgentDefensiveMove and sets you up to create a double attack after the opponent makes thier forced reply.
         // Mark all claimed squares as 'claimed' (no hint) If a move is not diffinitively winning or losing or claimed after all checks have run then default it to White Back Ground 
 
         // (1)
