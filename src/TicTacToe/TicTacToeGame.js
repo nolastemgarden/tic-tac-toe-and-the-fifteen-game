@@ -172,7 +172,7 @@ export default function TicTacToeGame() {
             }
         });
 
-
+        // (4) 
 
         return hints;
     }
@@ -237,10 +237,38 @@ export default function TicTacToeGame() {
                 }
             })
         })
-        console.log(`threatCreatingMoves() found the following empty squares make threats: ${threatCreatingMoves}`)
+        console.log(`threatCreatingMoves() found the following empty squares make threats for player '${player}': ${threatCreatingMoves}`)
         return threatCreatingMoves;
     }
 
+    function distantForcedWinsCreatingMoves() {
+        let list = [];
+        
+        const player = myTurn();
+        // In order for X to have a forced win O's second move must be forced, an urgentDefensiveMove.
+        // Simply that O is making an urgentDefensiveMove does not mean O is on track to lose...
+        // But since O's send move is forced we can take the resulting modified history and pass it to doubleAttackCreatingMoves()
+        // this lets us know one move sooner that X is on track to win. 
+        
+        // emptySquares(history).forEach(square => {
+
+        // })
+        threatCreatingMoves().forEach(square => {
+            let hypotheticalHistory = history.concat(square);
+            urgentDefensiveMoves(other(player))
+            
+            
+            console.log(`hypotheticalHistories to check for double attacks: ${hypotheticalHistory}`)
+            // if hypotheticalHistory.
+        })
+        
+        
+        if (urgentDefensiveMoves(player).length === 1) {
+
+            // CURRENTLY BROKEN B/C it does not check if o's defensive move creates a threat
+            return true;
+        }
+    }
     
 
 
@@ -309,24 +337,14 @@ export default function TicTacToeGame() {
         }
 
         // If three moves have been made
-        if (history.length === 3 && detectDistantForcedWins()) {
+        if (history.length === 3 && distantForcedWinsCreatingMoves()) {
             return `O's first move was a mistake and now X has set up a forced win in two moves!`
         }
 
     }
 
 
-    function detectDistantForcedWins() {
-        const player = myTurn();
-        // At this stage O has at most 1 urgentDefensiveMove
-        // If that move creates a threat then see if X blocking that threat makes a doubleAttack
-        // If that move does not create a threat then see if X has any move makes a doubleAttack
-        if (urgentDefensiveMoves(player).length === 1) {
-            
-            // CURRENTLY BROKEN B/C it does not check if o's defensive move creates a threat
-            return true;
-        }
-    }
+    
 
     
 
@@ -441,7 +459,7 @@ export default function TicTacToeGame() {
                 list.push(line)
             }
         })
-        console.log(`List Unblocked Twos for player '${player}': ${list}`)
+        // console.log(`List Unblocked Twos for player '${player}': ${list}`)
         return list;
     }
     function linesWithOnlyOne(player) {
@@ -451,7 +469,7 @@ export default function TicTacToeGame() {
                 list.push(line)
             }
         })
-        console.log(`List Unblocked Ones for player '${player}': ${list}`)
+        // console.log(`List Unblocked Ones for player '${player}': ${list}`)
         return list;
     }
     function emptyLines() {
@@ -471,7 +489,7 @@ export default function TicTacToeGame() {
                 list.push(line)
             }
         })
-        console.log(`List Empty Lines: ${list}`)
+        console.log(`List Blocked Lines: ${list}`)
         return list;
     }
     function allLines() {
@@ -486,13 +504,22 @@ export default function TicTacToeGame() {
     
 
     
-    
-    
+    // list all squareIds not appearing in the history or an 
+    function emptySquares(history) {
+        let list = [];
+        history.forEach((square) => {
+            if (!history.includes(square)) {
+                list.push(square)
+            }
+        })
+        console.log(`List Empty Squares: ${list}`)
+        return list;
+    }
     
 
     // list the squareIds that fall in a given lineId
     function squaresInLine(lineId) {
-        console.log(`getSquares() was called with lineId: ${lineId}`)
+        // console.log(`getSquares() was called with lineId: ${lineId}`)
         let squareIds;
         switch (lineId) {
             case 0:
@@ -525,7 +552,8 @@ export default function TicTacToeGame() {
         return squareIds;
         
     }
-    
+
+
     
     // BOOLEAN helpers for getStatus() and handleSquareClick()
     function squareIsEmpty(square) {
