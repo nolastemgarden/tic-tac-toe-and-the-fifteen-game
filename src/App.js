@@ -77,8 +77,8 @@ const useStyles = makeStyles({
     footer: {
         display: 'flex',
         flexDirection: 'row-reverse',
-        height: '5vmin',
-        width: '75vmin',
+        height: '5%',
+        width: '100%',
         alignItems: 'bottom',
     },
     footerText: {
