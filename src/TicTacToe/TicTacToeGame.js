@@ -91,10 +91,10 @@ export default function TicTacToeGame() {
     // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button
     function getBoardSymbols() {
         let data = Array(9).fill('');  // Start with an array representing a board of NINE empty squares
-        squaresClaimedByPlayer('x').forEach(squareId => {
+        squaresClaimedByPlayer('x', history).forEach(squareId => {
             data[squareId] = 'x';
         });
-        squaresClaimedByPlayer('o').forEach(squareId => {
+        squaresClaimedByPlayer('o', history).forEach(squareId => {
             data[squareId] = 'o';
         });
         return data;
@@ -172,13 +172,15 @@ export default function TicTacToeGame() {
             }
         });
 
-        // (4) 
+        // (4) forcedWinCreatingMoves() are irrelevant if there the opponent has a doubleAttack but not so if opponent has only a single attack
+        forcedWinCreatingMoves()
+
 
         return hints;
     }
 
 
-    // MID-LEVEL HELPERS for getBoardColors()
+    // MID-LEVEL HELPERS for getBoardColors() and getBoardHints()
     function highlightWins() {
         let highlightedSquares = Array(9).fill('')
         if (!gameOver) {  // Assert: we only reach this point if either x or o has won.
@@ -193,8 +195,7 @@ export default function TicTacToeGame() {
         });
         return highlightedSquares;
     } 
-    
-    // MID-LEVEL HELPERS for getBoardHints()
+     
     function immediateWins(){
         let winningSquares = [];
         const player = myTurn();
@@ -221,10 +222,6 @@ export default function TicTacToeGame() {
         return keySquares;
     }
 
-    function doubleAttackCreatingMoves() {
-        return threatCreatingMoves().filter((square, index) => threatCreatingMoves().indexOf(square) !== index );
-    }
-
     function threatCreatingMoves(player = myTurn()) {
         // if (player === undefined){
         //     player = myTurn();
@@ -232,7 +229,7 @@ export default function TicTacToeGame() {
         const threatCreatingMoves = []; // A squareId that appears here once creates a two-in-a-line threat.  A squareId that appears here twice creates two separate two-in-a-line threats.
         linesWithOnlyOne(player).forEach((line) => {
             squaresInLine(line).forEach((square) => {
-                if (squareIsEmpty(square)){                 // Don't add an already claimed square to the list of therat creating moves!
+                if (squareIsEmpty(square)) {                 // Don't add an already claimed square to the list of therat creating moves!
                     threatCreatingMoves.push(square);
                 }
             })
@@ -241,7 +238,11 @@ export default function TicTacToeGame() {
         return threatCreatingMoves;
     }
 
-    function distantForcedWinsCreatingMoves() {
+    function doubleAttackCreatingMoves() {
+        return threatCreatingMoves().filter((square, index) => threatCreatingMoves().indexOf(square) !== index );
+    }
+
+    function forcedWinCreatingMoves() {
         let list = [];
         
         const player = myTurn();
@@ -254,8 +255,8 @@ export default function TicTacToeGame() {
 
         // })
         threatCreatingMoves().forEach(square => {
-            let hypotheticalHistory = history.concat(square);
-            urgentDefensiveMoves(other(player))
+            let hypotheticalHistory = history.concat(square).concat(urgentDefensiveMoves(other(player)));
+            
             
             
             console.log(`hypotheticalHistories to check for double attacks: ${hypotheticalHistory}`)
@@ -263,11 +264,11 @@ export default function TicTacToeGame() {
         })
         
         
-        if (urgentDefensiveMoves(player).length === 1) {
+        // if (urgentDefensiveMoves(player).length === 1) {
 
-            // CURRENTLY BROKEN B/C it does not check if o's defensive move creates a threat
-            return true;
-        }
+        //     // CURRENTLY BROKEN B/C it does not check if o's defensive move creates a threat
+        //     return true;
+        // }
     }
     
 
@@ -337,7 +338,7 @@ export default function TicTacToeGame() {
         }
 
         // If three moves have been made
-        if (history.length === 3 && distantForcedWinsCreatingMoves()) {
+        if (history.length === 3 && forcedWinCreatingMoves()) {
             return `O's first move was a mistake and now X has set up a forced win in two moves!`
         }
 
@@ -399,7 +400,9 @@ export default function TicTacToeGame() {
 
     // LOW-LEVEL HELPERS
     // need to be told which player you care about b/c they may be used on EITHER the player whose turn it is or the other player.
-    function squaresClaimedByPlayer(player) {
+    function squaresClaimedByPlayer(player, history) {
+        // let history = (alteredHistory === undefined) ? history : alteredHistory
+        
         if (player === 'x') {
             return history.filter((squareId, index) => index % 2 === 0);
         }
@@ -415,7 +418,7 @@ export default function TicTacToeGame() {
         // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
         let lines = Array(8).fill(0);
 
-        squaresClaimedByPlayer(player).forEach(square => {
+        squaresClaimedByPlayer(player, history).forEach(square => {
             // Update Row
             const row = Math.floor(square / 3)    // number 0, 1, or 2
             lines[row]++;
