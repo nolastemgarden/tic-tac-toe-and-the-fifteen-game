@@ -132,7 +132,7 @@ export default function TicTacToeGame() {
         // 3) create a double attack.
         // ?) prevent opponent from creating a double attack.
         // 5) make a forcing move that does not force opponent to create a double attack.
-        // Mark all claimed squares as 'claimed' (no hint) If a move is not diffinitively winning or losing or claimed after all checks have run then default it to 'draw' 
+        // Mark all claimed squares as 'claimed' (no hint) If a move is not diffinitively winning or losing or claimed after all checks have run then default it to White Back Ground 
 
         // (1)
         // List the lines where I have 2 and the last square is empty. Mark these as winning.
@@ -166,80 +166,13 @@ export default function TicTacToeGame() {
                 }
             }
             if (urgentDefensiveMoves().length > 1) {
-                // Then it doesn't matter if you can create a double attack or not, it is already lost.
-                console.log(`doubleAttackCreatingMoves() may have found a double attack but it was irrelevant because opponent already had a double attack.`)
+                // Then it doesn't matter if you can create a double attack or not, because your opponent already has their own double attack.
+                console.log(`doubleAttackCreatingMoves() found a double attack but it was irrelevant because opponent already had a double attack.`)
+                return hints;
             }
         });
-        
-        
-        
-        
 
 
-        // console.log(`Opponent's unblocked two in a lines: ${linesWithOnlyTwo(other(player))}`)
-        // const list = linesWithOnlyTwo(other(player));
-        // //  If enemy has multiple unblocked 2 in a rows then all moves NOT YET MARKED mark as losing
-        // if (list.length > 1) {
-        //     console.log(`Opponent has multiple unblocked two in a lines!`)
-        //     hints.forEach((hint, lineId) => {
-        //         if (hint === '') {
-        //             hints[lineId] = 'lose';
-        //         }
-        //     }); 
-        // }
-
-
-
-        //  If enemy has one unblocked 2 in a row then the last square in that line all moves NOT YET MARKED mark as losing, 
-        // if (list.length === 1) {
-        //     const keyLine = list[0];
-        //     const keySquares = squaresInLine(keyLine);
-        //     keySquares.forEach(square => {
-        //         if (squareIsEmpty(square)) {
-        //             hints[square] = 'draw'
-        //         }
-        //     })
-
-        // }
-
-
-        // linesWithOnlyTwo(notMyTurn()).forEach((line) => {
-
-
-        //     squaresInLine(line).forEach((square) => {
-        //         if (squareIsEmpty(square)) {
-        //             hints[square] = 'draw' // ????????????????? SOMETIMES THIS BLOCK ALSO WINS
-        //         }
-        //     })
-        // })
-        
-        
-        // 3) Try to make a double attack ... this would let you ignore an opponent attack
-        //          this involves listing all of your 1-in-a-rows where the enemy has 0
-        //          if there is a square in two lists then it is winning as it creates a double attack and we only reach this point if enemy has no 2 in a rows
-        // 4) ??? otherwise make a single threat, a forcing (but not necessarily winning move)
-        // is this enough to draw?? i'm going to build it this way then play with it to see if it is correct. 
-        
-        
-        
-
-
-
-        
-       
-
-        // List the lines where opponent has 2 and the last square is empty. 
-        // If this list has 2 unique squares in it then all yet-unmarked moves are losing.
-        // If this list has 1 unique square in it then 
-        // -- that square may lead to a draw or a win.
-        // -- all other yet-unmarked squares are losing.
-        
-        
-
-        // Set all claimed squares to white bg.  Not necessary as they now default to white bg.
-        // history.forEach(squareId => {
-        //     hints[squareId] = '';
-        // });
 
         return hints;
     }
@@ -276,9 +209,8 @@ export default function TicTacToeGame() {
         return winningSquares;
     }
 
-    function urgentDefensiveMoves() {
+    function urgentDefensiveMoves(player = myTurn()) {
         let keySquares = [];
-        const player = myTurn();
         linesWithOnlyTwo(other(player)).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
@@ -293,8 +225,10 @@ export default function TicTacToeGame() {
         return threatCreatingMoves().filter((square, index) => threatCreatingMoves().indexOf(square) !== index );
     }
 
-    function threatCreatingMoves() {
-        const player = myTurn();
+    function threatCreatingMoves(player = myTurn()) {
+        // if (player === undefined){
+        //     player = myTurn();
+        // }
         const threatCreatingMoves = []; // A squareId that appears here once creates a two-in-a-line threat.  A squareId that appears here twice creates two separate two-in-a-line threats.
         linesWithOnlyOne(player).forEach((line) => {
             squaresInLine(line).forEach((square) => {
@@ -366,7 +300,34 @@ export default function TicTacToeGame() {
             chance to win.`
         }
 
+        // If two moves has been made
+        if (history.length === 2) {
+            const player = myTurn();
+            const ones = linesWithOnlyOne(player).length
+            
+            return `Each player has gone once and now X has ${ones} lines with a 1-0 advantage. Look for a forcing move that will set you up to make a double attack next turn!`
+        }
+
+        // If three moves have been made
+        if (history.length === 3 && detectDistantForcedWins()) {
+            return `O's first move was a mistake and now X has set up a forced win in two moves!`
+        }
+
     }
+
+
+    function detectDistantForcedWins() {
+        const player = myTurn();
+        // At this stage O has at most 1 urgentDefensiveMove
+        // If that move creates a threat then see if X blocking that threat makes a doubleAttack
+        // If that move does not create a threat then see if X has any move makes a doubleAttack
+        if (urgentDefensiveMoves(player).length === 1) {
+            
+            // CURRENTLY BROKEN B/C it does not check if o's defensive move creates a threat
+            return true;
+        }
+    }
+
     
 
 
