@@ -18,6 +18,7 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        // backgroundColor: '#00CC00'
     },
     iconX: {
         width: '100%',
@@ -27,24 +28,29 @@ const useStyles = makeStyles({
         width: '80%',
         height: '80%',
     },
-    win: {
-        backgroundColor: '#00DD00'
-        // backgroundColor: 'green'
+    immediateWin: {
+        backgroundColor: '#00bb00'
     },
-    lose: {
-        backgroundColor: '#ff6354'
+    doubleAttackCreatingMove: {
+        backgroundColor: '#55bb00'
     },
-    draw: {
-        backgroundColor: '#f9ff52'
-        // backgroundColor: 'var(--logo-bg-color)'
-    }
+    forcedWinCreatingMove: {
+        backgroundColor: '#88ee33'
+    },
+    unavoidableDefeat: {
+        backgroundColor: '#ff4433'
+    },
+    urgentDefensiveMove: {
+        backgroundColor: '#ff6600'
+    },
+    
 });
 
 export default function Square(props) {
     const classes = useStyles();
     const id = props.id
     const symbol = props.symbol
-    const color = props.color
+    const color = props.color  // String '', 'immediateWin', 'unavoidableDefeat', 'doubleAttackCreatingMove', 'urgentDefensiveMove', 'forcedWinCreatingMove'
     const handleClick = props.handleClick
 
 
@@ -64,16 +70,26 @@ export default function Square(props) {
             break;
     }
 
+    
+    
+    
+    
     let className;
     switch (color) {
-        case 'win':
-            className = `${classes.square} ${classes.win} `
+        case 'immediateWin':
+            className = `${classes.square} ${classes.immediateWin} `
             break;
-        case 'lose':
-            className = `${classes.square} ${classes.lose} `
+        case 'unavoidableDefeat':
+            className = `${classes.square} ${classes.unavoidableDefeat} `
             break;
-        case 'draw':
-            className = `${classes.square} ${classes.draw} `
+        case 'urgentDefensiveMove':
+            className = `${classes.square} ${classes.urgentDefensiveMove} `
+            break;
+        case 'doubleAttackCreatingMove':
+            className = `${classes.square} ${classes.doubleAttackCreatingMove} `
+            break;
+        case 'forcedWinCreatingMove':
+            className = `${classes.square} ${classes.forcedWinCreatingMove} `
             break;
         default:
             className = `${classes.square} `
