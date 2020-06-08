@@ -102,6 +102,7 @@ export default function TicTacToeGame() {
         }
         // If hints are turned on return colors [] filled with empty strings.
         if (showMoves === true) {
+            console.log(`Board Hints: ${getBoardHints()}`)
             return getBoardHints();
         }
     }
@@ -109,72 +110,64 @@ export default function TicTacToeGame() {
     
     // TODO
     function getBoardHints() {
-        // PRIORITIES  squares start off blank '' and are only modified once, by the first of the following rules that includes it.
+        // PRIORITIES  Each of the following steps 
         // 1) Mark any squares that would create an immediateWin.
-        // 2) Mark any urgentDefences, squares that the opponent would be able to win on if not immediately blocked.
-        // 3) Mark any squares that would create a double attack.
+        // 2) If opponent will have an immediateWin no matter what you do right now mark the key squares. 
+        // 3) If there is one urgentDefensiveMove, mark it as either a keyAttackingMove or an urgentDefensiveMove, whatever is the case.
+        // 4) Mark any squares that would create a double attack, if there is only one such move and it is also a keyDefensiveMove then it was marked in step 3.
         // ??? 4) Mark any hard to see mistakes that would allow opponent to create a double attack.
         // 5) Mark any forcing moves that keep the opponent busy this turn and allow you to create a double attack next turn.
         const player = myTurn();
         let hints = Array(9).fill('');  // Start with an array representing a board of NINE squares.
         
-    
-        
-        // (1)
-        immediateWins().forEach(winningSquare => {
-            hints[winningSquare] = 'immediateWin';
+        // (1) 
+        if (immediateWins().length > 0) {
+            immediateWins().forEach(winningSquare => {
+                hints[winningSquare] = 'immediateWin';
+            });
             return hints;
-        });
+        }
         
-        // (2) 
-        if (immediateWins().length === 0) {
+        
+        // (2) If there are multiple urgentDefensiveMoves that means you face unavoidableDefeat.
+        else if (urgentDefensiveMoves().length > 1) {
             urgentDefensiveMoves().forEach(keySquare => {
-                if (urgentDefensiveMoves().length === 1) {
-                    hints[keySquare] = 'urgentDefensiveMove'; // don't return early, don't stop looking for winning moves just because there is an urgent defensive move.
-                }
-                if (urgentDefensiveMoves().length > 1) {
-                    hints[keySquare] = 'unavoidableDefeat';
-                    return hints;
-                }
+                hints[keySquare] = 'unavoidableDefeat';
             });
+            return hints;
         }
 
-        // (3) A doubleAttack is only winning if there were NO urgentDefensiveMoves() or if there was One urgentDefensiveMoves() and it was the same square as found by doubleAttackCreatingMoves().
-        // The only way we reach this condition is if there are no immedeiate wins and not more than one urgent defensive move.  In any other case hints has already been returned.
-        if (immediateWins().length === 0 && urgentDefensiveMoves().length < 2) {  
+        // (3) If there is exactly one urgentDefensiveMove it may also be a doubleAttackCreatingMove which is of greater interest as a hint.
+        else if (urgentDefensiveMoves().length === 1) {
+            const keyDefensiveMove = urgentDefensiveMoves()[0];
+            if (doubleAttackCreatingMoves().includes(keyDefensiveMove)){
+                hints[keyDefensiveMove] = 'doubleAttackCreatingMove';
+            }
+            else {
+                hints[keyDefensiveMove] = 'urgentDefensiveMove';
+            }
+            return hints;  // Return because if there is an urgent defense it has been labeled and nothing else matters. even if there are doubleAttackCreatingMoves available.
+        }
+        
+        // If we reach this point without returning we are sure there are no immediateWins or urgentDefences. 
+        // (4) 
+        else if (doubleAttackCreatingMoves().length > 0) {  
             doubleAttackCreatingMoves().forEach(keyAttackingMove => {
-                const keyDefensiveMove = urgentDefensiveMoves()[0] // This may be 'undefined' in cases where there are no urgentDefensiveMoves() 
-                if (keyAttackingMove === keyDefensiveMove) {  
-                    hints[keyAttackingMove] = 'win';
-                }
-            });
+                hints[keyAttackingMove] = 'doubleAttackCreatingMove';
+            }); 
+            return hints;
         }
-        
-        
-        
 
-        // (4) forcedWinCreatingMoves() are irrelevant if there the opponent has a doubleAttack but not so if opponent has only a single attack
-        if (doubleAttackCreatingMoves().length === 0) {
+        // If we reach this point without returning we are sure there are no immediateWins, no urgentDefences, and no doubleAttackCreatingMoves.
+        // (5) 
+        else if (forcedWinCreatingMoves().length > 0) {
             forcedWinCreatingMoves().forEach(keyAttackingMove => {
-                if (urgentDefensiveMoves().length === 0) {
-                    hints[keyAttackingMove] = 'win';
-                }
-                if (urgentDefensiveMoves().length === 1) {
-                    const keyDefensiveMove = urgentDefensiveMoves()[0]
-                    if (keyAttackingMove === keyDefensiveMove) {  // I believe an equivalent test would be to check if hints[keySquare] has already been set to 'draw' by the code block above that starts with a call to urgentDefensiveMoves().
-                        hints[keyAttackingMove] = 'win';
-                    }
-                }
-                if (urgentDefensiveMoves().length > 1) {
-                    // Then it doesn't matter if you can create a double attack or not, because your opponent already has their own double attack.
-                    console.log(`forcedWinCreatingMoves() found an attack but it was irrelevant because opponent already had a double attack.`)
-                    return hints;
-                }
+                hints[keyAttackingMove] = 'forcedWinCreatingMove';
             });
-
+            return hints;
         }
         
-        
+        console.log(`Searched for immediateWins, urgentDefences, doubleAttackCreatingMoves, and forcedWinCreatingMoves and found NONE. `)
         return hints;
     }
 
