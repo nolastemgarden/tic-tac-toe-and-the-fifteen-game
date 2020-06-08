@@ -100,7 +100,7 @@ export default function TicTacToeGame() {
         if (showMoves === false) {
             return Array(9).fill('');
         }
-        // If hints are turned on return colors [] filled with empty strings.
+        // If hints are turned on return colors [] filled by getBoardHints().
         if (showMoves === true) {
             console.log(`Board Hints: ${getBoardHints()}`)
             return getBoardHints();
@@ -117,7 +117,7 @@ export default function TicTacToeGame() {
         // 4) Mark any squares that would create a double attack, if there is only one such move and it is also a keyDefensiveMove then it was marked in step 3.
         // ??? 4) Mark any hard to see mistakes that would allow opponent to create a double attack.
         // 5) Mark any forcing moves that keep the opponent busy this turn and allow you to create a double attack next turn.
-        const player = myTurn();
+        const player = myTurn(history);
         let hints = Array(9).fill('');  // Start with an array representing a board of NINE squares.
         
         // (1) 
@@ -127,10 +127,13 @@ export default function TicTacToeGame() {
             });
             return hints;
         }
-        
+        else {
+            console.log(`In the current position player '${player}' has NO immediateWins `)
+        }
         
         // (2) If there are multiple urgentDefensiveMoves that means you face unavoidableDefeat.
-        else if (urgentDefensiveMoves().length > 1) {
+        if (urgentDefensiveMoves().length > 1) {
+            console.log(`In the current position player '${player}' has MULTIPLE urgentDefensiveMoves`)
             urgentDefensiveMoves().forEach(keySquare => {
                 hints[keySquare] = 'unavoidableDefeat';
             });
@@ -139,6 +142,7 @@ export default function TicTacToeGame() {
 
         // (3) If there is exactly one urgentDefensiveMove it may also be a doubleAttackCreatingMove which is of greater interest as a hint.
         else if (urgentDefensiveMoves().length === 1) {
+            console.log(`In the current position player '${player}' has ONE urgentDefensiveMove`)
             const keyDefensiveMove = urgentDefensiveMoves()[0];
             if (doubleAttackCreatingMoves().includes(keyDefensiveMove)){
                 hints[keyDefensiveMove] = 'doubleAttackCreatingMove';
@@ -148,33 +152,46 @@ export default function TicTacToeGame() {
             }
             return hints;  // Return because if there is an urgent defense it has been labeled and nothing else matters. even if there are doubleAttackCreatingMoves available.
         }
+        else {
+            console.log(`In the current position player '${player}' has NO urgentDefensiveMoves`)
+        }
         
         // If we reach this point without returning we are sure there are no immediateWins or urgentDefences. 
         // (4) 
-        else if (doubleAttackCreatingMoves().length > 0) {  
+        if (doubleAttackCreatingMoves().length > 0) {  
             doubleAttackCreatingMoves().forEach(keyAttackingMove => {
                 hints[keyAttackingMove] = 'doubleAttackCreatingMove';
             }); 
             return hints;
         }
+        else {
+            console.log(`In the current position player '${player}' has NO doubleAttackCreatingMoves`)
+        }
 
         // If we reach this point without returning we are sure there are no immediateWins, no urgentDefences, and no doubleAttackCreatingMoves.
         // (5) 
-        else if (forcedWinCreatingMoves().length > 0) {
+        if (forcedWinCreatingMoves().length > 0) {
             forcedWinCreatingMoves().forEach(keyAttackingMove => {
                 hints[keyAttackingMove] = 'forcedWinCreatingMove';
             });
             return hints;
         }
+        else {
+            console.log(`In the current position player '${player}' has NO forcedWinCreatingMoves`)
+        }
 
-        else if (gameLosingMoves().length > 0) {
+        // (6)
+        if (gameLosingMoves().length > 0) {
+            console.log(`There were no immediateWins, urgentDefences, doubleAttackCreatingMoves, or forcedWinCreatingMoves So i am checking for gameLosingMistkes.`)
             gameLosingMoves().forEach(mistakeMove => {
-                hints[mistakeMove] = 'gameLosingEarlyMistake';
+                hints[mistakeMove] = 'gameLosingMistake';
             });
             return hints;
         }
-        
-        console.log(`Searched for immediateWins, urgentDefences, doubleAttackCreatingMoves, and forcedWinCreatingMoves and found NONE. `)
+        else {
+            console.log(`In the current position player '${player}' has NO gameLosingMoves`)
+        }
+        // console.log(`Searched for immediateWins, urgentDefences, doubleAttackCreatingMoves, and forcedWinCreatingMoves, and gameLosingMistkes and found NONE. `)
         return hints;
     }
 
@@ -202,7 +219,7 @@ export default function TicTacToeGame() {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
                     winningSquares.push(square);
-                    // hints[square] = 'win'; This code used to be part of a bloated getBoardHints() method and at that time it had responsibility for actually assigning colors in the hints array that the method finally returned.
+                    // hints[square] = 'win'; This code used to be part of a bloated getBoardHints() method and at that time it had responsibility for actually assigning colors in the hints array to the square it now simply returns in a list.
                 }
             })
         })
@@ -225,8 +242,9 @@ export default function TicTacToeGame() {
     }
 
     function threatCreatingMoves(moveList = history) {
+        // This list may contain duplicates. A squareId that appears twice creates two separate two-in-a-line threats.
         const player = myTurn(moveList);
-        const threatCreatingMoves = []; // A squareId that appears here once creates a two-in-a-line threat.  A squareId that appears here twice creates two separate two-in-a-line threats.
+        const threatCreatingMoves = []; 
         linesWithOnlyOne(player, moveList).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square, moveList)) {                 // Don't add an already claimed square to the list of therat creating moves!
@@ -238,75 +256,73 @@ export default function TicTacToeGame() {
         return threatCreatingMoves;
     }
 
+    function singleAttackCreatingMoves(moveList = history) {
+        return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) === index);
+    }
+
     function doubleAttackCreatingMoves(moveList = history) {
         return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) !== index );
     }
 
+    function winningDoubleAttackCreatingMoves(moveList = history) {
+        let winningDoubleAttacksList = [];
+        // A doubleAttack is winning IFF it can be made without ignoring an urgentDefensiveMove.
+        // A doubleAttackCreatingMove is winning IF there were no urgentDefensiveMoves OR IF it is identical to the ONE urgentDefensiveMove.
+        doubleAttackCreatingMoves(moveList).forEach(keyAttackingMove => {
+            // IF there are ZERO urgentDefensiveMoves then every doubleAttackCreatingMove is winning.
+            if (urgentDefensiveMoves(moveList).length === 0 ) { 
+                winningDoubleAttacksList = winningDoubleAttacksList.concat(keyAttackingMove);
+            }
+            // IF there is ONE urgentDefensiveMove then the only doubleAttackCreatingMove is winning.
+            else if (urgentDefensiveMoves(moveList).length === 1) {
+                if (urgentDefensiveMoves(moveList)[0] === keyAttackingMove){
+                    winningDoubleAttacksList = winningDoubleAttacksList.concat(keyAttackingMove);
+                }
+            }
+            // ELSE there are TWO or more urgentDefensiveMoves then none of the doubleAttackCreatingMoves should be added to the winning.
+        })
+        // console.log(`winningDoubleAttacksList: ${winningDoubleAttacksList}`)
+        return winningDoubleAttacksList;
+    }
     
-    // Definition: forcedWinCreatingMoves 
     function forcedWinCreatingMoves(moveList = history) {
         let forcedWinCreatingMovesList = [];
-        const player = myTurn(moveList);
-        
-        // forcedWinCreatingMoves are IGNORED if there is an urgentDefensiveMove or a quicker way to win.
+        // forcedWinCreatingMoves are IGNORED by getBoardHints() if there is an urgentDefensiveMove or a quicker way to win.
         // forcedWinCreatingMoves must be forcing moves, that is, they must make the opponent's next move predictable by giving the opponent an urgentDefensiveMove
         // after a threat is created we assume the opponent makes the urgentDefensiveMove required and look for a doubleAttackCreatingMove in that position.
-        threatCreatingMoves(moveList).forEach(square => {  // At most we are examining 6 squares that might create a threat
-            let hypotheticalHistory = moveList.concat(square);
+        threatCreatingMoves(moveList).forEach(threatCreatingMove => {  // At most we are examining 6 squares that might create a threat
+            let hypotheticalHistory = moveList.concat(threatCreatingMove);
+            
             let keyDefensiveMove = urgentDefensiveMoves(hypotheticalHistory)[0];
-            
-            if (urgentDefensiveMoves(hypotheticalHistory).length === 1) {
-                console.log(`O will be forced to block with the only keyDefensiveMove: ${keyDefensiveMove}`);
-            } else {
-                console.error(`Something went wrong... expected to find exactly one keyDefensiveMove: ${urgentDefensiveMoves(hypotheticalHistory)}`);
+            if (urgentDefensiveMoves(hypotheticalHistory).length > 1 ) {
+                console.error(`Why am I looking for a forcedWinCreatingMove if there is already multiple urgentDefensiveMoves??`)
             }
-            
             hypotheticalHistory = hypotheticalHistory.concat(keyDefensiveMove);
-            console.log(`After adding the threatCreatingMove "${square}" and the urgentDefensiveMove "${keyDefensiveMove}" to the moveList the hypotheticalHistory is now: ${hypotheticalHistory}`);
+            console.log(`After adding the threatCreatingMove "${threatCreatingMove}" and the urgentDefensiveMove "${keyDefensiveMove}" to the moveList the hypotheticalHistory is now: ${hypotheticalHistory}`);
             
-            // At this point we have one hypothetical position to consider for each threat creating move. 
-            // We want to search among these for any one that gives us one or more **winning** doubleAttack.
+            // We reach this point once for each hypothetical position we have to consider. 
+            // We want to check each to see if it gives us one or more **winning** doubleAttacks.
             // A doubleAttack is winning IFF it can be made without giving the opponent an immediateWin. 
-            
-            
-            // From here we need to check if this X is free to do as they please or must block an urgent threat by O.
-            // If X's move is forced see if that move is on the list of double attacking moves.
-            // If X's move is not forced see if there are any double attacking moves att all.
-            
-            
-            // if (urgentDefensiveMoves(secondHypotheticalHistory).length === 1) {
-            //     console.log(`There is one urgentDefensiveMove. Does that defensive move also create a double attack?`);
-            //     if (doubleAttackCreatingMoves(secondHypotheticalHistory).includes(urgentDefensiveMoves(secondHypotheticalHistory)[0])) {
-            //         console.log('YES it does!');
-            //         console.log(`Adding ${square} to the forcedWinCreatingMovesList `);
-            //         forcedWinCreatingMovesList.push(square);
-            //     }
-            //     else {
-            //         console.log('NO, it does not.');
-            //     }
-            // } 
-            // else if (urgentDefensiveMoves(secondHypotheticalHistory).length === 0) {
-            //     console.log(`There are no urgentDefensiveMoves. Can you create any double attacks?`);
-            //     if (doubleAttackCreatingMoves(secondHypotheticalHistory).length > 0) {
-            //         console.log(`Adding ${square} to the forcedWinCreatingMovesList `);
-            //         forcedWinCreatingMovesList.push(square);
-            //     };
-            // } 
+            if (winningDoubleAttackCreatingMoves(hypotheticalHistory).length > 0) {
+                console.log(`In the hypotheticalHistory: ${hypotheticalHistory} these are the winningDoubleAttackCreatingMoves: ${winningDoubleAttackCreatingMoves(hypotheticalHistory)}`);
+                forcedWinCreatingMovesList = forcedWinCreatingMovesList.concat(threatCreatingMove);
+            }  
         })
-        
-        console.log(`forcedWinCreatingMoves() found the following list: ${forcedWinCreatingMovesList}`)
+        // console.log(`forcedWinCreatingMoves() found the following list: ${forcedWinCreatingMovesList}`)
         return forcedWinCreatingMovesList;
     }
     
     function gameLosingMoves(moveList = history) {  // This function should ONLY be called by getBoarHints when there are no forced Win Creating Moves
         let gameLosingMoves = [];
 
-        const player = myTurn(moveList);
-
-        // In order for a move to be a mistake it must make it so that the other player has a forced win, meaning you had a chance to draw and lost instead.
-        
-
-        console.log(`gameLosingMoves() found the following list: ${gameLosingMoves}`)
+        emptySquares().forEach(square => {
+            const hypotheticalHistory = moveList.concat(square);
+            if (thereIsAForcedWin(hypotheticalHistory)) {
+                console.log(`I think I found a forced win after the moves: ${hypotheticalHistory}`)
+                gameLosingMoves = gameLosingMoves.concat(square)
+            }
+        })
+        // console.log(`gameLosingMoves() found the following list: ${gameLosingMoves}`)
         return gameLosingMoves;
     }
 
@@ -483,6 +499,20 @@ export default function TicTacToeGame() {
     function wins(player, moveList = history) {
         return (lineCountsFor(player, moveList).includes(3));
     }
+
+    function thereIsAForcedWin(moveList = history) {
+        const thereIsAForcedWin = (immediateWins(moveList).length > 0
+            || winningDoubleAttackCreatingMoves(moveList).length > 0
+            || forcedWinCreatingMoves(moveList).length > 0)
+        // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
+        // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
+        // console.log(`forcedWinCreatingMoves(moveList).length: ${forcedWinCreatingMoves(moveList).length}`)
+        // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
+        return thereIsAForcedWin;
+    }
+
+
+
     function linesWithThree(player, moveList = history) {
         let linesList = [];
         // console.log(`lineCountsFor : ${lineCountsFor(player)}`)
@@ -556,7 +586,7 @@ export default function TicTacToeGame() {
                 emptySquaresList.push(i)
             }
         }
-        console.log(`List Empty Squares: ${emptySquaresList}`)
+        // console.log(`List Empty Squares: ${emptySquaresList}`)
         return emptySquaresList;
     }
     
