@@ -10,6 +10,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
+import { Box } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -42,7 +43,14 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
-    
+    hintColorCodeKey: {
+        border: 'solid red 1px',
+    },
+    keyItem: {
+        border: 'solid blue 1px',
+        width: '100%',
+        height: '5%',
+    },
 }));
 
 export default function HowToPlayModal() {
@@ -87,23 +95,32 @@ export default function HowToPlayModal() {
                 <Fade in={open}>
                     <div className={classes.paper}>
                         <h2 id="transition-modal-title">How To Play</h2>
-                        <ul id="transition-modal-description" >
-                            <li>
-                                X and O take turns claiming one of the 9 squares on the board.
-                            </li>
-                            <li>
-                                The first player to claim all 3 squares in a single row, column, or diagonal.
-                            </li>
-                            <li>
-                                By default, you go first and play against my Bot, which will never fail to get a draw.
-                            </li>
-                            <li>
-                                In the Settings you can adjust whether you play as X or O and against the computer or not.
-                            </li>
-                            <li>
-                                You can also adjust whether to show/hide commentary and move hints.
-                            </li>
-                        </ul>
+                        <p id="transition-modal-description" >
+                            X and O take turns clicking on squares to claim them.
+                            The first player to claim all 3 squares in a single row, column, or diagonal wins!
+                        </p>
+                        <h2 id="transition-modal-title">Coach's Commentary</h2>
+                        <p id="transition-modal-description" >
+                            The commentary is on by default and may be turned off in the Settings.
+                            It provides a verbal description of the current position and in certain
+                            positions offers advice to help you find your best move.  
+                        </p>
+                        <h2 id="transition-modal-title">Winning and Losing Moves</h2>
+                        <p id="transition-modal-description" >
+                            Color-coded hints shown on the board that warn of all possible mistakes and highlight all winning opportunities.
+                            These are hidden by default and may be turned on in the Settings.
+                        </p>
+                        <Box className={classes.hintColorCodeKey} >
+                            <Box className={classes.keyItem} >
+
+                            </Box>
+                            <Box className={classes.keyItem} >
+
+                            </Box>
+                            <Box className={classes.keyItem} >
+
+                            </Box>
+                        </Box>
                     </div>
                 </Fade>
             </Modal>
