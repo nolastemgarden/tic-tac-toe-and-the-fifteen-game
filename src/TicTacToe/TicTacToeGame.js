@@ -174,8 +174,8 @@ export default function TicTacToeGame() {
         // (5) 
         if (thereIsAForcedWin()) {
             console.log(`In the current position player '${player}' has ${forcedWinCreatingMoves().length} forcedWinCreatingMoves`)
-            forcedWinCreatingMoves().forEach(keyAttackingMove => {
-                hints[keyAttackingMove] = 'forcedWinCreatingMove';
+            forcedWinCreatingMoves().forEach(thereIsAForcedWin => {
+                hints[thereIsAForcedWin] = 'forcedWinCreatingMove';
             });
             return hints;
         }
@@ -256,7 +256,7 @@ export default function TicTacToeGame() {
         // This list may contain duplicates. A squareId that appears twice creates two separate two-in-a-line threats.
         const player = myTurn(moveList);
         const threatCreatingMoves = []; 
-        linesWithOnlyOne(player, moveList).forEach((line) => {
+        linesWithOnlyOne(moveList).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square, moveList)) {                 // Don't add an already claimed square to the list of therat creating moves!
                     threatCreatingMoves.push(square);
@@ -316,8 +316,8 @@ export default function TicTacToeGame() {
         //     return forcedWinCreatingMovesList;
         // }
 
-
-        threatCreatingMoves(moveList).forEach(threatCreatingMove => {  // At most we are examining 6 squares that might create a threat
+        console.log(`forcedWinCreatingMoves found the following singleAttackCreatingMoves for player '${myTurn(moveList)}' based on the ${moveList} ==> ${singleAttackCreatingMoves(moveList)}`)
+        singleAttackCreatingMoves(moveList).forEach(threatCreatingMove => {  // At most we are examining 6 squares that might create a threat
             let hypotheticalHistory = moveList.concat(threatCreatingMove);
             let forcedDefensiveMove = urgentDefensiveMoves(hypotheticalHistory)[0];
             hypotheticalHistory = hypotheticalHistory.concat(forcedDefensiveMove);
@@ -333,7 +333,7 @@ export default function TicTacToeGame() {
         // forcedWinCreatingMoves must be forcing moves, that is, they must make the opponent's next move predictable by giving the opponent an urgentDefensiveMove
         // after a threat is created we assume the opponent makes the urgentDefensiveMove required and look for a doubleAttackCreatingMove in that position.
         
-        console.log(`forcedWinCreatingMoves() found the following list: ${forcedWinCreatingMovesList}`)
+        // console.log(`forcedWinCreatingMoves() found the following list: ${forcedWinCreatingMovesList}`)
         return forcedWinCreatingMovesList;
     }
     
@@ -347,7 +347,7 @@ export default function TicTacToeGame() {
                 gameLosingMoves = gameLosingMoves.concat(square)
             }
         })
-        // console.log(`gameLosingMoves() found the following list: ${gameLosingMoves}`)
+        console.log(`gameLosingMoves() found the following list: ${gameLosingMoves}`)
         return gameLosingMoves;
     }
 
@@ -410,7 +410,7 @@ export default function TicTacToeGame() {
         // If two moves has been made
         if (history.length === 2) {
             const player = myTurn();
-            const ones = linesWithOnlyOne(player).length
+            const ones = linesWithOnlyOne().length
             
             return `Each player has gone once and now X has ${ones} lines with a 1-0 advantage. Look for a forcing move that will set you up to make a double attack next turn!`
         }
@@ -531,7 +531,7 @@ export default function TicTacToeGame() {
             || forcedWinCreatingMoves(moveList).length > 0)
         // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
         // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
-        console.log(`forcedWinCreatingMoves(moveList): ${forcedWinCreatingMoves(moveList)}`)
+        console.log(`forcedWinCreatingMovesbased on the moves: ${moveList}==>  ${forcedWinCreatingMoves(moveList)}`)
         // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
         return thereIsAForcedWin;
     }
@@ -561,14 +561,15 @@ export default function TicTacToeGame() {
         return linesList;
     }
 
-    function linesWithOnlyOne(player, moveList = history) {
+    function linesWithOnlyOne(moveList = history) {
+        const player = myTurn(moveList);
         let linesList = [];
         lineCountsFor(player, moveList).forEach((count, line) => {
-            if (count === 1 && lineCountsFor(other(player, moveList))[line] === 0) {
+            if (count === 1 && lineCountsFor(other(player), moveList)[line] === 0) {
                 linesList.push(line)
             }
         })
-        // console.log(`List Unblocked Ones for player '${player}': ${list}`)
+        console.log(`List Unblocked Ones for player '${player}' based on moveList ${moveList} ==> ${linesList}`)
         return linesList;
     }
     function emptyLines(moveList = history) {
