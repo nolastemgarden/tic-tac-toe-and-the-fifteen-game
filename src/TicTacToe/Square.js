@@ -28,6 +28,7 @@ const useStyles = makeStyles({
         width: '80%',
         height: '80%',
     },
+
     immediateWin: {
         backgroundColor: '#00bb00'
     },
@@ -37,11 +38,15 @@ const useStyles = makeStyles({
     forcedWinCreatingMove: {
         backgroundColor: '#88ee33'
     },
+
+    urgentDefensiveMove: {
+        backgroundColor: '#ff6600'
+    },
     unavoidableDefeat: {
         backgroundColor: '#ff4433'
     },
-    urgentDefensiveMove: {
-        backgroundColor: '#ff6600'
+    gameLosingMove: {
+        backgroundColor: '#EEDD11'
     },
     
 });
@@ -91,6 +96,9 @@ export default function Square(props) {
         case 'forcedWinCreatingMove':
             className = `${classes.square} ${classes.forcedWinCreatingMove} `
             break;
+        case 'gameLosingMove':
+            className = `${classes.square} ${classes.gameLosingMove} `
+            break;    
         default:
             className = `${classes.square} `
     }
