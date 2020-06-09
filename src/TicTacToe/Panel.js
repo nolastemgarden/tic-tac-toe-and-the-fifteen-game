@@ -63,8 +63,9 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold'
     },
     commentary: {
-        fontSize: '2.2vmin',
-        paddingRight: '5vmin'
+        fontSize: 'max(1rem, 2.2vmin)',
+        paddingRight: '5vmin',
+        overflow: 'hidden'
     },
 }));
 
