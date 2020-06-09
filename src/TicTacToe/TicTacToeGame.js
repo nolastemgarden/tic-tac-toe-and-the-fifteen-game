@@ -298,13 +298,13 @@ export default function TicTacToeGame() {
                 console.error(`Why am I looking for a forcedWinCreatingMove if there is already multiple urgentDefensiveMoves??`)
             }
             hypotheticalHistory = hypotheticalHistory.concat(keyDefensiveMove);
-            console.log(`After adding the threatCreatingMove "${threatCreatingMove}" and the urgentDefensiveMove "${keyDefensiveMove}" to the moveList the hypotheticalHistory is now: ${hypotheticalHistory}`);
+            // console.log(`After adding the threatCreatingMove "${threatCreatingMove}" and the urgentDefensiveMove "${keyDefensiveMove}" to the moveList the hypotheticalHistory is now: ${hypotheticalHistory}`);
             
             // We reach this point once for each hypothetical position we have to consider. 
             // We want to check each to see if it gives us one or more **winning** doubleAttacks.
             // A doubleAttack is winning IFF it can be made without giving the opponent an immediateWin. 
             if (winningDoubleAttackCreatingMoves(hypotheticalHistory).length > 0) {
-                console.log(`In the hypotheticalHistory: ${hypotheticalHistory} these are the winningDoubleAttackCreatingMoves: ${winningDoubleAttackCreatingMoves(hypotheticalHistory)}`);
+                // console.log(`In the hypotheticalHistory: ${hypotheticalHistory} these are the winningDoubleAttackCreatingMoves: ${winningDoubleAttackCreatingMoves(hypotheticalHistory)}`);
                 forcedWinCreatingMovesList = forcedWinCreatingMovesList.concat(threatCreatingMove);
             }  
         })
@@ -312,7 +312,7 @@ export default function TicTacToeGame() {
         return forcedWinCreatingMovesList;
     }
     
-    function gameLosingMoves(moveList = history) {  // This function should ONLY be called by getBoarHints when there are no forced Win Creating Moves
+    function gameLosingMoves(moveList = history) {  // This function should ONLY be called by getBoardHints when there are no forced Win Creating Moves
         let gameLosingMoves = [];
 
         emptySquares().forEach(square => {
@@ -506,7 +506,7 @@ export default function TicTacToeGame() {
             || forcedWinCreatingMoves(moveList).length > 0)
         // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
         // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
-        // console.log(`forcedWinCreatingMoves(moveList).length: ${forcedWinCreatingMoves(moveList).length}`)
+        console.log(`forcedWinCreatingMoves(moveList): ${forcedWinCreatingMoves(moveList)}`)
         // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
         return thereIsAForcedWin;
     }
