@@ -341,7 +341,7 @@ export default function TicTacToeGame() {
         emptySquares().forEach(square => {
             const hypotheticalHistory = moveList.concat(square);
             if (thereIsAForcedWin(hypotheticalHistory)) {
-                console.log(`I think I found a forced win after the moves: ${hypotheticalHistory}`)
+                // console.log(`I think I found a forced win after the moves: ${hypotheticalHistory}`)
                 gameLosingMoves = gameLosingMoves.concat(square)
             }
         })
@@ -386,37 +386,40 @@ export default function TicTacToeGame() {
 
         // If no moves have been made
         if (history.length === 0) {
-            return `X goes first. It may look like there are 9 different options but 
-            when you consider symmetry there are really only 3: Center, Edge, or Corner.`
+            return `It may look like X has  9 different options but 
+            when you consider symmetry there are really only 3: Center, Edge, or Corner.
+            In starting position, all of X's choices are safe and each leads to different follow up strategies.`
         }
 
+        
+        
         // If one move has been made
-        if (history.length === 1 && history[0] === 4) {
-            return `X went in the center. O has two options. One is good and lets O
-            force a draw. The other is bad and gives X a chance to win.`
-        }
-        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
-            return `X went in the corner. O has five non-symmetrical options. Only 
-            one of them prevents X from being able to force a win.`
-        }
-        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 1) {
-            return `X went on the edge. O has five non-symmetrical options. __ are
-            good and let O force a draw. The other __ are mistakes that give X a 
-            chance to win.`
-        }
+        // if (history.length === 1 && history[0] === 4) {
+        //     return `X went in the center. O has two options. One is good and lets O
+        //     force a draw. The other is bad and gives X a chance to win.`
+        // }
+        // if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
+        //     return `X went in the corner. O has five non-symmetrical options. Only 
+        //     one of them prevents X from being able to force a win.`
+        // }
+        // if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 1) {
+        //     return `X went on the edge. O has five non-symmetrical options. __ are
+        //     good and let O force a draw. The other __ are mistakes that give X a 
+        //     chance to win.`
+        // }
 
-        // If two moves has been made
-        if (history.length === 2) {
-            const player = myTurn();
-            const ones = linesWithOnlyOne().length
+        // // If two moves has been made
+        // if (history.length === 2) {
+        //     const player = myTurn();
+        //     const ones = linesWithOnlyOne().length
             
-            return `Each player has gone once and now X has ${ones} lines with a 1-0 advantage. Look for a forcing move that will set you up to make a double attack next turn!`
-        }
+        //     return `Each player has gone once and now X has ${ones} lines with a 1-0 advantage. Look for a forcing move that will set you up to make a double attack next turn!`
+        // }
 
-        // If three moves have been made
-        if (history.length === 3 && forcedWinCreatingMoves()) {
-            return `O's first move was a mistake and now X has set up a forced win in two moves!`
-        }
+        // // If three moves have been made
+        // if (history.length === 3 && forcedWinCreatingMoves()) {
+        //     return `O's first move was a mistake and now X has set up a forced win in two moves!`
+        // }
 
     }
 
@@ -529,7 +532,7 @@ export default function TicTacToeGame() {
             || forcedWinCreatingMoves(moveList).length > 0)
         // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
         // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
-        console.log(`forcedWinCreatingMoves based on the moves: ${moveList} ==>  ${forcedWinCreatingMoves(moveList)}`)
+        // console.log(`forcedWinCreatingMoves based on the moves: ${moveList} ==>  ${forcedWinCreatingMoves(moveList)}`)
         // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
         return thereIsAForcedWin;
     }
