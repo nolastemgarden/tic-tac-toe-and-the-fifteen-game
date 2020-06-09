@@ -221,7 +221,7 @@ export default function TicTacToeGame() {
 
     function immediateWins(moveList = history){
         let winningSquares = [];
-        const player = myTurn();
+        const player = myTurn(moveList);
         linesWithOnlyTwo(player, moveList).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square)) {
@@ -305,6 +305,8 @@ export default function TicTacToeGame() {
         let forcedWinCreatingMovesList = [];
         if (thereIsAnImmediateWin(moveList) || thereIsAWinningDoubleAttack(moveList)) {
             console.log(`Returning Early (list of length 0) from forcedWinCreatingMoves() because there is a quicker way to win.`)
+            console.log(`thereIsAnImmediateWin(moveList): ${thereIsAnImmediateWin(moveList)}  MoveList: ${moveList}`)
+            console.log(`thereIsAWinningDoubleAttack(moveList): ${thereIsAWinningDoubleAttack(moveList)}`)
             return forcedWinCreatingMovesList;
         }
         // 
@@ -528,7 +530,7 @@ export default function TicTacToeGame() {
         // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
         // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
         console.log(`forcedWinCreatingMoves based on the moves: ${moveList} ==>  ${forcedWinCreatingMoves(moveList)}`)
-        console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
+        // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
         return thereIsAForcedWin;
     }
 
