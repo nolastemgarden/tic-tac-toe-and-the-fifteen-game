@@ -187,14 +187,14 @@ export default function TicTacToeGame() {
         if (gameLosingMoves().length > 0) {
             console.log(`In the current position player '${player}' has ${gameLosingMoves().length} gameLosingMoves`)
             gameLosingMoves().forEach(mistakeMove => {
-                hints[mistakeMove] = 'gameLosingMistake';
+                hints[mistakeMove] = 'gameLosingMove';
             });
             return hints;
         }
         else {
             console.log(`In the current position player '${player}' has NO gameLosingMoves`)
         }
-        // console.log(`Searched for immediateWins, urgentDefences, doubleAttackCreatingMoves, and forcedWinCreatingMoves, and gameLosingMistkes and found NONE. `)
+        // console.log(`Searched for immediateWins, urgentDefences, doubleAttackCreatingMoves, and forcedWinCreatingMoves, and gameLosingMoves and found NONE. `)
         return hints;
     }
 
@@ -307,32 +307,28 @@ export default function TicTacToeGame() {
             console.log(`Returning Early (list of length 0) from forcedWinCreatingMoves() because there is a quicker way to win.`)
             return forcedWinCreatingMovesList;
         }
-        // if (thereIsAnUrgentDefensiveMove()) {
-        //     console.log(`Since thereIsAnUrgentDefensiveMove forcedWinCreatingMoves() because there is a quicker way to win.`)
-        //     return forcedWinCreatingMovesList;
-        // }
+        // 
         // if (thereIsAWinningDoubleAttack(moveList)) {
         //     console.log(`Returning Early (list of length 0) from forcedWinCreatingMoves() because there is a quicker way to win.`)
         //     return forcedWinCreatingMovesList;
         // }
 
-        console.log(`forcedWinCreatingMoves found the following singleAttackCreatingMoves for player '${myTurn(moveList)}' based on the ${moveList} ==> ${singleAttackCreatingMoves(moveList)}`)
+        // console.log(`forcedWinCreatingMoves found the following singleAttackCreatingMoves for player '${myTurn(moveList)}' based on the ${moveList} ==> ${singleAttackCreatingMoves(moveList)}`)
         singleAttackCreatingMoves(moveList).forEach(threatCreatingMove => {  // At most we are examining 6 squares that might create a threat
             let hypotheticalHistory = moveList.concat(threatCreatingMove);
             let forcedDefensiveMove = urgentDefensiveMoves(hypotheticalHistory)[0];
             hypotheticalHistory = hypotheticalHistory.concat(forcedDefensiveMove);
             // console.log(`After adding the threatCreatingMove "${threatCreatingMove}" and the urgentDefensiveMove "${keyDefensiveMove}" to the moveList the hypotheticalHistory is now: ${hypotheticalHistory}`);
             if (thereIsAWinningDoubleAttack(hypotheticalHistory)) {
-                console.log(`In the hypotheticalHistory: ${hypotheticalHistory} these are the winningDoubleAttackCreatingMoves: ${winningDoubleAttackCreatingMoves(hypotheticalHistory)}`);
+                // console.log(`In the hypotheticalHistory: ${hypotheticalHistory} these are the winningDoubleAttackCreatingMoves: ${winningDoubleAttackCreatingMoves(hypotheticalHistory)}`);
                 forcedWinCreatingMovesList = forcedWinCreatingMovesList.concat(threatCreatingMove);
             }
         })
-
-
-        // forcedWinCreatingMoves are IGNORED by getBoardHints() if there is an urgentDefensiveMove or a quicker way to win.
-        // forcedWinCreatingMoves must be forcing moves, that is, they must make the opponent's next move predictable by giving the opponent an urgentDefensiveMove
-        // after a threat is created we assume the opponent makes the urgentDefensiveMove required and look for a doubleAttackCreatingMove in that position.
-        
+        // After finding all the 
+        if (thereIsAnUrgentDefensiveMove()) {
+            console.log(`Since thereIsAnUrgentDefensiveMove the forcedWinCreatingMovesList must be filtered.`)
+            forcedWinCreatingMovesList = forcedWinCreatingMovesList.filter(move => move === urgentDefensiveMoves(moveList)[0]);
+        }
         // console.log(`forcedWinCreatingMoves() found the following list: ${forcedWinCreatingMovesList}`)
         return forcedWinCreatingMovesList;
     }
@@ -531,8 +527,8 @@ export default function TicTacToeGame() {
             || forcedWinCreatingMoves(moveList).length > 0)
         // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
         // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
-        console.log(`forcedWinCreatingMovesbased on the moves: ${moveList}==>  ${forcedWinCreatingMoves(moveList)}`)
-        // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
+        console.log(`forcedWinCreatingMoves based on the moves: ${moveList} ==>  ${forcedWinCreatingMoves(moveList)}`)
+        console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
         return thereIsAForcedWin;
     }
 
@@ -569,7 +565,7 @@ export default function TicTacToeGame() {
                 linesList.push(line)
             }
         })
-        console.log(`List Unblocked Ones for player '${player}' based on moveList ${moveList} ==> ${linesList}`)
+        // console.log(`List Unblocked Ones for player '${player}' based on moveList ${moveList} ==> ${linesList}`)
         return linesList;
     }
     function emptyLines(moveList = history) {
