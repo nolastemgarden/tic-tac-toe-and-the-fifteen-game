@@ -122,6 +122,7 @@ export default function TicTacToeGame() {
         
         // (1) 
         if (immediateWins().length > 0) {
+            console.log(`In the current position player '${player}' has ${immediateWins().length} doubleAttackCreatingMoves`)
             immediateWins().forEach(winningSquare => {
                 hints[winningSquare] = 'immediateWin';
             });
@@ -133,7 +134,7 @@ export default function TicTacToeGame() {
         
         // (2) If there are multiple urgentDefensiveMoves that means you face unavoidableDefeat.
         if (urgentDefensiveMoves().length > 1) {
-            console.log(`In the current position player '${player}' has MULTIPLE urgentDefensiveMoves`)
+            console.log(`In the current position player '${player}' has MULTIPLE (${urgentDefensiveMoves().length}) urgentDefensiveMoves`)
             urgentDefensiveMoves().forEach(keySquare => {
                 hints[keySquare] = 'unavoidableDefeat';
             });
@@ -159,6 +160,7 @@ export default function TicTacToeGame() {
         // If we reach this point without returning we are sure there are no immediateWins or urgentDefences. 
         // (4) 
         if (doubleAttackCreatingMoves().length > 0) {  
+            console.log(`In the current position player '${player}' has ${doubleAttackCreatingMoves().length} doubleAttackCreatingMoves`)
             doubleAttackCreatingMoves().forEach(keyAttackingMove => {
                 hints[keyAttackingMove] = 'doubleAttackCreatingMove';
             }); 
@@ -171,6 +173,7 @@ export default function TicTacToeGame() {
         // If we reach this point without returning we are sure there are no immediateWins, no urgentDefences, and no doubleAttackCreatingMoves.
         // (5) 
         if (forcedWinCreatingMoves().length > 0) {
+            console.log(`In the current position player '${player}' has ${forcedWinCreatingMoves().length} doubleAttackCreatingMoves`)
             forcedWinCreatingMoves().forEach(keyAttackingMove => {
                 hints[keyAttackingMove] = 'forcedWinCreatingMove';
             });
@@ -285,6 +288,7 @@ export default function TicTacToeGame() {
         return winningDoubleAttacksList;
     }
     
+    // By Definition: There are NO forcedWinCreatingMoves if there is a quicker way to win OR if the opponent already made a forcedWinCreatingMove
     function forcedWinCreatingMoves(moveList = history) {
         let forcedWinCreatingMovesList = [];
         // forcedWinCreatingMoves are IGNORED by getBoardHints() if there is an urgentDefensiveMove or a quicker way to win.
