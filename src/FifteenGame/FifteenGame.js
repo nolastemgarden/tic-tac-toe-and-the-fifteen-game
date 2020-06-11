@@ -6,29 +6,24 @@ import Panel from "./Panel";
 
 
 // MUI  components
-import Link from '@material-ui/core/Link';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuIcon from '@material-ui/icons/Menu';
-import AppBar from '@material-ui/core/AppBar'
-import Typography from '@material-ui/core/Typography'
-
-
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
+        height: '100%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        // justifyContent: 'flex-end',
         alignItems: 'center',
         // backgroundColor: '#4AC9FD'
+
     },
     boardArea: {
         backgroundColor: '#bbffff',
-        height: '50vmin',
-        width: 'calc(100% - 3vmin)',
+        height: '60%',
+        width: '95%',
         display: 'flex',
         justifyContent: 'center',
     },
@@ -36,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid blue 1px',
         // backgroundColor: '#4AC9FD',
         boxSizing: 'border-box',
-        width: '100%',
-        height: '32vmin',
+        width: '95%',
+        height: '40%',
 
         display: 'flex',
         flexDirection: 'row',
@@ -50,9 +45,109 @@ const useStyles = makeStyles((theme) => ({
 export default function FifteenGame() {
     const classes = useStyles();
 
-    let [history, setHistory] = useState(Array());
-    // let [showMoves, setShowMoves] = useState(false);
-    // let [showCommentary, setShowCommentary] = useState(false);
+    let [history, setHistory] = useState([]);
+    // let [showMoves, setShowMoves] = useState(false); 
+    let [showMoves, setShowMoves] = useState(true);
+    // let [showCommentary, setShowCommentary] = useState(false);  
+    let [showCommentary, setShowCommentary] = useState(true);
+
+    // return (
+    //     <div className={classes.root} >
+    //         <div className={classes.boardArea} >
+    //             <Board
+    //                 boardSymbols={getBoardSymbols()}
+    //                 boardColors={getBoardColors()}
+    //                 handleSquareClick={handleSquareClick}
+    //             />
+    //         </div>
+    //         <div className={classes.panelArea}>
+    //             <Panel
+    //                 // data={getPanelData(history)} 
+    //                 status={getStatus()}
+    //                 commentary={getCommentary()}
+    //                 showMoves={showMoves}
+    //                 showCommentary={showCommentary}
+    //                 handleUndoButtonClick={handleUndoButtonClick}
+    //                 handleNewGameButtonClick={handleNewGameButtonClick}
+    //                 toggleShowMovesSwitch={toggleShowMovesSwitch}
+    //                 toggleShowCommentarySwitch={toggleShowCommentarySwitch}
+    //             />
+    //         </div>
+    //     </div>
+    // );
+
+    // The <Game> holds all state and most helper and handler function definitions.
+    // It passes what it needs to to the board to render and to the panel.
+
+    // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button.  May add a Make Computer Move
+    // function getBoardSymbols(moveList = history) {
+    // function getBoardColors() 
+    // function getBoardHints() 
+    
+
+
+    // // MID-LEVEL HELPERS for getBoardColors() and getBoardHints()
+    // function highlightWins()
+    // function thereIsAnImmediateWin(moveList = history) 
+    // function immediateWins(moveList = history) 
+    // function thereIsAnUrgentDefensiveMove(moveList = history) 
+    // function urgentDefensiveMoves(moveList = history) 
+    // function threatCreatingMoves(moveList = history) 
+    // function singleAttackCreatingMoves(moveList = history)
+    // function doubleAttackCreatingMoves(moveList = history) 
+    // function thereIsAWinningDoubleAttack(moveList = history)
+    // function winningDoubleAttackCreatingMoves(moveList = history) 
+    // function forcedWinCreatingMoves(moveList = history) 
+    // function gameLosingMoves(moveList = history) 
+
+
+    // // HIGH-LEVEL PANEL HELPERS no params
+    // function getStatus() {
+    // function getCommentary() 
+
+
+    // // CLICK HANDLERS
+    // function handleSquareClick(squareClicked) {
+    // function handleUndoButtonClick() 
+    // function handleNewGameButtonClick()
+    // function toggleShowMovesSwitch() 
+    // function toggleShowCommentarySwitch() 
+
+    // // TURN HELPERS
+    // // High-Level Methods that need to know whose turn it is can deduce that info by using these helpers to look at the history directly, rather than having to be invoked with a player param. 
+    // function myTurn(moveList = history) {
+    //     return (moveList.length % 2 === 0) ? 'x' : 'o';
+    // }
+    // function notMyTurn(moveList = history) {
+    //     return (moveList.length % 2 === 0) ? 'o' : 'x';
+    // }
+    // function other(player) {
+    //     if (player !== 'o' && player !== 'x') { console.error(`other(player) called with invalid player: ${player}`) }
+    //     return (player === 'o') ? 'x' : 'o';
+    // }
+
+    // // LOW-LEVEL HELPERS
+    // // need to be told which player you care about b/c they may be used on EITHER the player whose turn it is or the other player.
+    // function squaresClaimedByPlayer(player, moveList = history) 
+    // function lineCountsFor(player, moveList = history) 
+    // function wins(player, moveList = history)
+    // function thereIsAForcedWin(moveList = history)
+    // function linesWithThree(player, moveList = history) 
+    // function linesWithOnlyTwo(player, moveList = history) 
+    // function linesWithOnlyOne(moveList = history) 
+    // function emptyLines(moveList = history)
+    // function blockedLines(moveList = history) 
+    // function allLines() 
+    // function emptySquares(moveList = history)
+    // function squaresInLine(lineId) 
+
+    // // BOOLEAN helpers for getStatus() and handleSquareClick()
+    // function squareIsEmpty(square, moveList = history)
+    // function gameDrawn() 
+    // function gameOver(moveList = history) 
+
+
+
 
     console.log(`FifteenGame has history as: ${history}`)
     
@@ -99,19 +194,10 @@ export default function FifteenGame() {
     }
 
 
-
-    // function handleUndoButtonClick() {
-    //     const shortenedHistory = history.slice(0, history.length - 1)
-    //     console.log(`${history[history.length - 1]} removed. Shortened history: ${shortenedHistory}`);
-    //     setHistory(shortenedHistory);
-    // }
-    // function toggleShowMovesSwitch() {
-    //     setShowMoves(!showMoves)
-    // }
-    // function toggleShowCommentarySwitch() {
-    //     setShowCommentary(!showCommentary)
-    // }
-
+    function gameOver() {
+        return false;
+        // return (history.length >= 9 || xWins() || oWins());  // Board full or there's a 3-in-a-row
+    }
 
     function handleCardClick(numberClicked) {
         if (gameOver()) {
@@ -127,86 +213,7 @@ export default function FifteenGame() {
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
 
-
-    // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
-    // function xLines() {
-    //     const xLines = getLines(history.filter((squareId, index) => index % 2 === 0));
-    //     console.log(`Number of X in each line: ${xLines}`)
-    //     return xLines;
-    // }
-    // function oLines() {
-    //     const oLines = getLines(history.filter((squareId, index) => index % 2 === 1));
-    //     console.log(`Number of O in each line: ${oLines}`)
-    //     return oLines;
-    // }
-    // function getLines(claimedSquares) {
-    //     let status = Array(8).fill(0);
-    //     // For each square this player has claimed make 2, 3, or 4 updates
-    //     for (let i = 0; i < claimedSquares.length; i++) {
-    //         const squareId = claimedSquares[i];
-
-    //         // Update Row
-    //         const row = Math.floor(squareId / 3)    // number 0, 1, or 2
-    //         status[row]++;
-
-    //         // Update Col
-    //         const col = (squareId % 3)            // number 0, 1, or 2  +3 to account for the three indexes set asside for rows
-    //         status[col + 3]++;
-
-    //         // UpSlash ?
-    //         if (squareId === 2 || squareId === 4 || squareId === 6) {
-    //             status[6]++
-    //         }
-
-    //         // DownSlash ?
-    //         if (squareId === 0 || squareId === 4 || squareId === 8) {
-    //             status[7]++
-    //         }
-    //     }
-    //     // console.log(`Status: ${status}`)
-    //     return status;
-    // }
-
-
-    // BOOLEAN helpers for getStatus() and handleSquareClick()
-    // function xWins() {
-    //     return (xLines().includes(3));
-    // }
-    // function oWins() {
-    //     return (oLines().includes(3));
-    // }
-    // function gameDrawn() {
-    //     return (history.length >= 9 && !xWins() && !oWins());  // Board full and neither player has a win
-    // }
-    function gameOver() {
-        return false;
-        // return (history.length >= 9 || xWins() || oWins());  // Board full or there's a 3-in-a-row
-    }
-
-
-    // function getStatus() {
-    //     if (xWins()) {
-    //         const winningLine = getLines(history.filter((squareId, index) => index % 2 === 0)).indexOf(3);
-    //         return (`X wins on line ${winningLine}`)
-    //     }
-    //     else if (oWins()) {
-    //         return (`O wins!`)
-    //     }
-    //     else if (gameDrawn()) {
-    //         return (`Draw.`)
-    //     }
-    //     else if (history.length % 2 === 0) {
-    //         return (`X to move.`)
-    //     }
-    //     else if (history.length % 2 === 1) {
-    //         return (`O to move.`)
-    //     }
-    //     else {
-    //         console.error("getStatus() is broken!");
-    //         return
-    //     }
-    // }
-
+    
 }
 
 
