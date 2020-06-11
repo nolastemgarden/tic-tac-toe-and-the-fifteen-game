@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        
     },
     hintColorCodeKey: {
         border: 'solid red 1px',
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     keyItem: {
         border: 'solid blue 1px',
         width: '100%',
-        height: '5%',
+        height: '5vh',
     },
 }));
 
@@ -93,7 +94,7 @@ export default function HowToPlayModal() {
                 }}
             >
                 <Fade in={open}>
-                    <div className={classes.paper}>
+                    <div className={classes.paper}   >
                         <h2 id="transition-modal-title">How To Play</h2>
                         <p id="transition-modal-description" >
                             X and O take turns clicking on squares to claim them.
@@ -111,6 +112,15 @@ export default function HowToPlayModal() {
                             These are hidden by default and may be turned on in the Settings.
                         </p>
                         <Box className={classes.hintColorCodeKey} >
+                            <Box className={classes.keyItem} >
+
+                            </Box>
+                            <Box className={classes.keyItem} >
+
+                            </Box>
+                            <Box className={classes.keyItem} >
+
+                            </Box>
                             <Box className={classes.keyItem} >
 
                             </Box>
