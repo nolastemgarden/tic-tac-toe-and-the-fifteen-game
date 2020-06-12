@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+// My Components
+import Square from "./Square";
+
 // MUI Components
 import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
@@ -42,7 +45,10 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        
+        height: 'min(100vw, 75vh)',
+        maxHeight: '900px',
+        width: 'min(60vh, 75vw)',
+        maxWidth: '675px',
     },
     hintColorCodeKey: {
         border: 'solid red 1px',
@@ -116,7 +122,7 @@ export default function HowToPlayModal() {
 
                             </Box>
                             <Box className={classes.keyItem} >
-
+                                {/* <Square></Square> */}
                             </Box>
                             <Box className={classes.keyItem} >
 
