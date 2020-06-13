@@ -47,8 +47,8 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        height: 'min(100vw, 75vh)',
-        maxHeight: '900px',
+        height: 'min(100vw, 80vh)',
+        maxHeight: '950px',
         width: 'min(60vh, 75vw)',
         maxWidth: '675px',
         display: 'flex',
@@ -130,6 +130,11 @@ export default function HowToPlayModal() {
                         <p id="transition-modal-description" className={classes.body} >
                             Color-coded hints shown on the board that warn of all possible mistakes and highlight all winning opportunities.
                             These are hidden by default and may be turned on in the Settings.
+                        </p>
+                        <p id="transition-modal-description" className={classes.body} >
+                            Squares that are white lead to a Draw. This is the outcome of every game of Tic Tac Toe <em> unless </em>
+                            one of the players makes a <strong>mistake</strong>. After a mistake, the other player will be able to win immediately or force their opponent's hand in a way that guarantees a them a win in one or two more turns.
+                            It isn't necesarily a problem to have to make an <strong>urgent defensive move</strong>, but if you have two or more of them at once then the game is lost.
                         </p>
                         <HintColorKey />
                     </div>
