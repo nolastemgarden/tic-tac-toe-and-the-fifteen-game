@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 // My Components
-import Square from "./Square";
+// import Square from "./Square";
+import HintColorKey from "./HintColorKey";
 
 // MUI Components
 import Button from '@material-ui/core/Button';
@@ -9,6 +10,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import Typography from '@material-ui/core/Typography';
 
 
 // Custom Styling
@@ -49,15 +51,21 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '900px',
         width: 'min(60vh, 75vw)',
         maxWidth: '675px',
+        display: 'flex',
+        flexDirection: 'column'
     },
-    hintColorCodeKey: {
-        border: 'solid red 1px',
+    heading: {
+        fontSize: 'min(max(1rem, 4vmin), 30px)',
+        fontWeight: 'bold',
+        marginBlockEnd: '0',
+        marginBlockStart: '1rem',
     },
-    keyItem: {
-        border: 'solid blue 1px',
-        width: '100%',
-        height: '5vh',
-    },
+    body: {
+        fontSize: 'theme.typography.pxToRem(20)',
+        fontWeight: 'regular',
+        marginBlockEnd: '0',
+        marginBlockStart: '0',
+    }
 }));
 
 export default function HowToPlayModal() {
@@ -101,42 +109,29 @@ export default function HowToPlayModal() {
             >
                 <Fade in={open}>
                     <div className={classes.paper}   >
-                        <h2 id="transition-modal-title">How To Play</h2>
-                        <p id="transition-modal-description" >
+                        <Typography id="transition-modal-title" className={classes.heading} >
+                        How To Play
+                        </Typography>
+                        <p id="transition-modal-description" className={classes.body} >
                             X and O take turns clicking on squares to claim them.
                             The first player to claim all 3 squares in a single row, column, or diagonal wins!
                         </p>
-                        <h2 id="transition-modal-title">Coach's Commentary</h2>
-                        <p id="transition-modal-description" >
+                        <Typography id="transition-modal-title" className={classes.heading} >
+                        Coach's Commentary
+                        </Typography>
+                        <p id="transition-modal-description" className={classes.body} >
                             The commentary is on by default and may be turned off in the Settings.
                             It provides a verbal description of the current position and in certain
                             positions offers advice to help you find your best move.  
                         </p>
-                        <h2 id="transition-modal-title">Winning and Losing Moves</h2>
-                        <p id="transition-modal-description" >
+                        <Typography id="transition-modal-title" className={classes.heading} >
+                        Winning and Losing Moves
+                        </Typography>
+                        <p id="transition-modal-description" className={classes.body} >
                             Color-coded hints shown on the board that warn of all possible mistakes and highlight all winning opportunities.
                             These are hidden by default and may be turned on in the Settings.
                         </p>
-                        <Box className={classes.hintColorCodeKey} >
-                            <Box className={classes.keyItem} >
-
-                            </Box>
-                            <Box className={classes.keyItem} >
-                                {/* <Square></Square> */}
-                            </Box>
-                            <Box className={classes.keyItem} >
-
-                            </Box>
-                            <Box className={classes.keyItem} >
-
-                            </Box>
-                            <Box className={classes.keyItem} >
-
-                            </Box>
-                            <Box className={classes.keyItem} >
-
-                            </Box>
-                        </Box>
+                        <HintColorKey />
                     </div>
                 </Fade>
             </Modal>
