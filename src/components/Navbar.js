@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     appBar: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'end',
+        alignItems: 'center',
         // backgroundColor: '#4AC9FD',
         height: '5%',
         width: '100%',
