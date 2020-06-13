@@ -48,8 +48,8 @@ export default function TicTacToeGame() {
     const classes = useStyles();
 
     let [history, setHistory] = useState([]); 
-    // let [showMoves, setShowMoves] = useState(false); 
-    let [showMoves, setShowMoves] = useState(true); 
+    let [showMoves, setShowMoves] = useState(false); 
+    // let [showMoves, setShowMoves] = useState(true); 
     // let [showCommentary, setShowCommentary] = useState(false);  
     let [showCommentary, setShowCommentary] = useState(true);  
 
@@ -200,6 +200,106 @@ export default function TicTacToeGame() {
         return hints;
     }
 
+    // HIGH-LEVEL PANEL HELPERS no params
+
+    function getStatus() {
+        if (wins('x')) {
+            return (`X wins!`)
+        }
+        else if (wins('o')) {
+            return (`O wins!`)
+        }
+        else if (gameDrawn()) {
+            return (`Draw.`)
+        }
+        else if (history.length % 2 === 0) {
+            return (`X's turn.`)
+        }
+        else if (history.length % 2 === 1) {
+            return (`O's turn.`)
+        }
+        else {
+            console.error("A call to getStatus() did not work!");
+            return
+        }
+    }
+    function getCommentary() {
+        console.log(`getCommentary() called while showCommentary = ${showCommentary}`)
+        if (gameOver()) {
+            return `Game Over`
+        }
+        if (!showCommentary) {
+            return `Coach's commentary would appear here if turned on in the settings.`
+        }
+
+        // If no moves have been made
+        if (history.length === 0) {
+            return `It may look like X has  9 different options but 
+            when you consider symmetry there are really only 3: Center, Edge, or Corner.
+            In starting position, all of X's choices are safe and each leads to different follow up strategies.`
+        }
+
+        // If one move has been made
+        if (history.length === 1 && history[0] === 4) {
+            return `O really only has two options, edge or corner. One is good and lets O
+            force a draw. The other is bad and gives X a chance to win.`
+        }
+        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
+            return `In the Corner opening O has five non-symmetrical options. All except one
+            are mistakes that let X force a win.`
+        }
+        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 1) {
+            return `The Edge opening has the most tricks and traps! 
+            O has five non-symmetrical options. Three are good and let O force a draw. 
+            The other two are mistakes that let X force a win.`
+        }
+
+        // If two moves has been made
+        if (history.length === 2) {
+            let message = '';
+            if (forcedWinCreatingMoves().length > 0) {
+                message = `O's first move was a mistake and now X can ensure victory! But how?`
+            }
+            else {
+                let answer = (gameLosingMoves().length > 0) ? 'Yes! So be careful.' : 'No! You\'re safe no matter what.';
+                message = `O's first move was sound. None of X's current options ensure victory, but do any actually lose?  ${answer}`
+            }
+            return message;
+        }
+
+        // If three moves have been made
+        if (history.length >= 3 ) {
+            let message = '';
+            if (thereIsAnImmediateWin()) {
+                message = `You have a winning move! Defensive moves are irrelevant.`
+            }
+            else if (thereIsAnUnstoppableAttack()) {
+                message = `You cannot win right now and cannot block all of your opponent's threats. Which move led you to from a draw to defeat?`
+            }
+            else if (thereIsAWinningDoubleAttack()) {
+                message = `You can set up a winning double attack! Don't settle for empty threats, 
+                think hard and be sure that you are setting yourself up to win no matter what!`
+            }
+            else if (thereIsAnUrgentDefensiveMove()) {
+                message = `You cannot win right now so you must defend the one key square.`
+            }
+            
+            else {
+                let answer = (gameLosingMoves().length > 0) ? 
+                    'Nonetheless, it is possible for you to make a mistake and lose right now. Play carefully!' : 
+                    'You\'re on track for a draw no matter what move you play in this position.';
+                message = `You have neither a winning attack nor an urgent defensive move. ${answer}`
+            }
+            return message;
+        }
+
+    }
+
+
+
+
+
+
 
     // MID-LEVEL HELPERS for getBoardColors() and getBoardHints()
     function highlightWins() {
@@ -235,6 +335,10 @@ export default function TicTacToeGame() {
         return winningSquares;
     }
 
+    function thereIsAnUnstoppableAttack(moveList = history) {
+        return (urgentDefensiveMoves(moveList).length > 1)
+    }
+    
     function thereIsAnUrgentDefensiveMove(moveList = history) {
         return (urgentDefensiveMoves(moveList).length > 0)
     }
@@ -354,81 +458,7 @@ export default function TicTacToeGame() {
 
 
     
-    // HIGH-LEVEL PANEL HELPERS no params
-
-    function getStatus() {
-        if (wins('x')) {
-            return (`X wins!`)
-        }
-        else if (wins('o')) {
-            return (`O wins!`)
-        }
-        else if (gameDrawn()) {
-            return (`Draw.`)
-        }
-        else if (history.length % 2 === 0) {
-            return (`X's turn.`)
-        }
-        else if (history.length % 2 === 1) {
-            return (`O's turn.`)
-        }
-        else {
-            console.error("A call to getStatus() did not work!");
-            return
-        }
-    }
-    function getCommentary() {
-        console.log(`getCommentary() called while showCommentary = ${showCommentary}`)
-        if (gameOver()) {
-            return `Game Over`
-        }
-        if (!showCommentary) {
-            return `Coach's commentary would appear here if turned on in the settings.`
-        }
-
-        // If no moves have been made
-        if (history.length === 0) {
-            return `It may look like X has  9 different options but 
-            when you consider symmetry there are really only 3: Center, Edge, or Corner.
-            In starting position, all of X's choices are safe and each leads to different follow up strategies.`
-        }
-
-        
-        
-        // If one move has been made
-        // if (history.length === 1 && history[0] === 4) {
-        //     return `X went in the center. O has two options. One is good and lets O
-        //     force a draw. The other is bad and gives X a chance to win.`
-        // }
-        // if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
-        //     return `X went in the corner. O has five non-symmetrical options. Only 
-        //     one of them prevents X from being able to force a win.`
-        // }
-        // if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 1) {
-        //     return `X went on the edge. O has five non-symmetrical options. __ are
-        //     good and let O force a draw. The other __ are mistakes that give X a 
-        //     chance to win.`
-        // }
-
-        // // If two moves has been made
-        // if (history.length === 2) {
-        //     const player = myTurn();
-        //     const ones = linesWithOnlyOne().length
-            
-        //     return `Each player has gone once and now X has ${ones} lines with a 1-0 advantage. Look for a forcing move that will set you up to make a double attack next turn!`
-        // }
-
-        // // If three moves have been made
-        // if (history.length === 3 && forcedWinCreatingMoves()) {
-        //     return `O's first move was a mistake and now X has set up a forced win in two moves!`
-        // }
-
-    }
-
-
-    
-
-    
+   
 
 
     // CLICK HANDLERS
