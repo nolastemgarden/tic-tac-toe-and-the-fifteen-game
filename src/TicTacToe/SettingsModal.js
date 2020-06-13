@@ -48,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        height: 'min(100vw, 80vh)',
+        maxHeight: '950px',
+        width: 'min(60vh, 75vw)',
+        maxWidth: '675px',
+        display: 'flex',
+        flexDirection: 'column'
     },
     switchBox: {
         // border: 'solid red 1px',
@@ -56,9 +62,23 @@ const useStyles = makeStyles((theme) => ({
 
     },
     switchLabel: {
-        fontSize: '2.2vmin',
-        width: '40%'
+        // fontSize: '2.2vmin',
+        fontSize: 'min(max(2rem, 4vmin), 30px)',
+        width: '60%'
 
+    },
+    heading: {
+        fontSize: 'min(max(1rem, 4vmin), 30px)',
+        fontWeight: 'bold',
+        marginBlockEnd: '0',
+        marginBlockStart: '1rem',
+    },
+    body: {
+        // fontSize: 'theme.typography.pxToRem(20)',
+        fontSize: '1.2rem',
+        fontWeight: 'regular',
+        marginBlockEnd: '0',
+        marginBlockStart: '0',
     }
 }));
 
@@ -92,8 +112,8 @@ export default function SettingsModal(props) {
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
             </Box>
-            <DialogContentText>
-                Show whether each possible move leads to a win, loss, or draw.
+            <DialogContentText className={classes.body} >
+                Show whether each possible move leads to a win, loss, or draw with color coded hints ont the board.
             </DialogContentText>
         </React.Fragment>
     );
@@ -103,7 +123,7 @@ export default function SettingsModal(props) {
             <Box className={classes.switchBox}>
                 <Typography className={classes.switchLabel}>
                     Show Commentary
-            </Typography>
+                </Typography>
                 <Switch
                     checked={showCommentary}
                     onChange={toggleShowCommentarySwitch}
@@ -112,8 +132,8 @@ export default function SettingsModal(props) {
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
             </Box>
-            <DialogContentText>
-                Show verbal hints about the position.
+            <DialogContentText className={classes.body} >
+                Show a verbal description of the position and the coach's advice about what to look out for.
             </DialogContentText>
         </React.Fragment>
         
@@ -140,12 +160,12 @@ export default function SettingsModal(props) {
                 onClose={handleClose} 
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">
-                    Settings
-                </DialogTitle>
+                
                 
                 <DialogContent>
-                    
+                    <div className={classes.heading} >
+                        Settings
+                    </div>
                     {showCommentarySwitch}
                     
                     {showMovesSwitch}
@@ -156,6 +176,7 @@ export default function SettingsModal(props) {
                         onClick={handleClose} 
                         color="primary"
                         variant="outlined"
+                        className={classes.body}
                     >
                         Apply
                     </Button>
