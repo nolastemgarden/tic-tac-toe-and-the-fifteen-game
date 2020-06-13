@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import './TicTacToe.css';
+
 // My Components
 import Board from "./Board";
 import Panel from "./Panel";
