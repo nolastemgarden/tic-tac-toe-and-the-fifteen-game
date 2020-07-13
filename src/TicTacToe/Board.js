@@ -27,7 +27,8 @@ export default function Board(props) {
     const classes = useStyles();
     const handleSquareClick = props.handleSquareClick
     const boardSymbols = props.boardSymbols;
-    const boardColors = props.boardColors; // Array of 9 strings '', 'immediateWin', 'unavoidableDefeat', 'doubleAttackCreatingMove', 'urgentDefensiveMove', 'forcedWinCreatingMove'
+    const boardColors = props.boardColors; // Array of 9 strings 'noColor', 'unclaimed', 'claimed', 'win', 'draw', 'lose'.
+            // Formerly and Array of 9 strings '', 'immediateWin', 'unavoidableDefeat', 'doubleAttackCreatingMove', 'urgentDefensiveMove', 'forcedWinCreatingMove', 'drawingMove'
     
     let board = [];
     for (let id = 0; id < 9; id++) {
