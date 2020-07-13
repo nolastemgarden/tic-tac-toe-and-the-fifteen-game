@@ -81,19 +81,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         // justifyContent: 'center',
     },
-    paper: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'start',
-
-        borderRadius: '1vmin',
-        backgroundColor: '#ffffff',
-        height: '90%',
-        width: '96%',
-        boxSizing: 'border-box',
-        padding: '0vmin',
-        // overflow: 'scroll',
-    },
+    
     footer: {
         display: 'flex',
         flexDirection: 'row-reverse',
