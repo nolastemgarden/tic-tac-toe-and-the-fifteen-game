@@ -18,7 +18,9 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FE3'
+        
+        // backgroundColor: '#DDD',
+        // backgroundColor: '#FE3'
     },
     iconX: {
         width: '100%',
@@ -28,6 +30,30 @@ const useStyles = makeStyles({
         width: '80%',
         height: '80%',
     },
+
+
+    noColor: {
+        // backgroundColor: '#FFF',  // This is used for Hints turned off mode.
+        backgroundColor: '#ddd',
+    },
+    claimed: {
+       backgroundColor: '#eee',
+    },
+    unclaimed: {
+        backgroundColor: '#ddd',
+    },
+    win: {
+        backgroundColor: '#00bb00'
+    },
+    draw: {
+        // backgroundColor: '#55bb00',
+        backgroundColor: '#EEDD11'
+    },
+    lose: {
+        // backgroundColor: '#88ee33'
+        backgroundColor: '#ff4433'
+    },
+
 
     immediateWin: {
         backgroundColor: '#00bb00'
@@ -50,6 +76,10 @@ const useStyles = makeStyles({
     gameLosingMove: {
         // backgroundColor: '#EEDD11'
     },
+
+    drawingMove: {
+        backgroundColor: '#EEDD11'
+    }
     
 });
 
@@ -83,27 +113,56 @@ export default function Square(props) {
     
     let className;
     switch (color) {
-        case 'immediateWin':
-            className = `${classes.square} ${classes.immediateWin} `
+
+        case 'claimed':
+            className = `${classes.square} ${classes.claimed} `
             break;
-        case 'unavoidableDefeat':
-            className = `${classes.square} ${classes.unavoidableDefeat} `
+        case 'unclaimed':
+            className = `${classes.square} ${classes.unclaimed} `
             break;
-        case 'urgentDefensiveMove':
-            className = `${classes.square} ${classes.urgentDefensiveMove} `
+        case 'noColor':
+            className = `${classes.square} ${classes.noColor} `
             break;
-        case 'doubleAttackCreatingMove':
-            className = `${classes.square} ${classes.doubleAttackCreatingMove} `
+        case 'draw':
+            className = `${classes.square} ${classes.draw} `
             break;
-        case 'forcedWinCreatingMove':
-            className = `${classes.square} ${classes.forcedWinCreatingMove} `
+        case 'win':
+            className = `${classes.square} ${classes.win} `
             break;
-        case 'gameLosingMove':
-            className = `${classes.square} ${classes.gameLosingMove} `
-            break;    
+        case 'lose':
+            className = `${classes.square} ${classes.lose} `
+            break;
         default:
             className = `${classes.square} `
     }
+    // switch (color) {
+    //     case 'noColor':
+    //         className = `${classes.square} ${classes.noColor} `
+    //         break;
+    //     case 'drawingMove':
+    //         className = `${classes.square} ${classes.drawingMove} `
+    //         break;
+    //     case 'immediateWin':
+    //         className = `${classes.square} ${classes.immediateWin} `
+    //         break;
+    //     case 'unavoidableDefeat':
+    //         className = `${classes.square} ${classes.unavoidableDefeat} `
+    //         break;
+    //     case 'urgentDefensiveMove':
+    //         className = `${classes.square} ${classes.urgentDefensiveMove} `
+    //         break;
+    //     case 'doubleAttackCreatingMove':
+    //         className = `${classes.square} ${classes.doubleAttackCreatingMove} `
+    //         break;
+    //     case 'forcedWinCreatingMove':
+    //         className = `${classes.square} ${classes.forcedWinCreatingMove} `
+    //         break;
+    //     case 'gameLosingMove':
+    //         className = `${classes.square} ${classes.gameLosingMove} `
+    //         break;    
+    //     default:
+    //         className = `${classes.square} `
+    // }
 
     return (
         <Paper
