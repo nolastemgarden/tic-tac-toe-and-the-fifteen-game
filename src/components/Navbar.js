@@ -5,9 +5,11 @@ import {
 
 
 // My Components
+import logo from "../images/nsgLogo100px.png";
 
 
 // MUI  components
+import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -30,11 +32,11 @@ const useStyles = makeStyles((theme) => ({
     //     padding: theme.spacing(2, 4, 3),
     // },
 
-    appBar: {
+    root: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        // backgroundColor: '#4AC9FD',
+        justifyContent: 'space-between',
         height: '5%',
         width: '100%',
         margin: '0',
@@ -42,12 +44,12 @@ const useStyles = makeStyles((theme) => ({
 
     },
     title: {
+        // border: 'solid red 1px',
         color: 'navy',
-        flexGrow: '1',
         marginLeft: '1rem',
-        // fontSize: '3vmin',
         fontSize: 'inherit',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
     menuListItem: {
         fontSize: 'min(max(0.7rem, 3vmin), 24px)',
@@ -55,8 +57,30 @@ const useStyles = makeStyles((theme) => ({
     icon: {
         color: 'navy',
         fontSize: 'larger',
-        marginRight: '1.5vmin',
+        marginRight: '1rem',
         marginTop: '0.5vmin'
+    },
+
+
+
+    logo: {
+        // border: 'solid red 1px',
+        marginLeft: '1rem',
+        width: '7%',
+        paddingTop: '7%',
+
+        backgroundImage: `
+            url(${logo})  
+        `,
+        backgroundPosition: 'center bottom',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '90%',
+
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+
     },
 }));
 
@@ -66,14 +90,19 @@ export default function Navbar(props) {
     const pageTitle = props.pageTitle;
 
     return (
-        <div className={classes.appBar} >
+        <Box className={classes.root} >
+            <Box className={classes.logo}  >
+            </Box>
+
+            
             <Typography className={classes.title} variant="h6" noWrap >
                 {pageTitle}
             </Typography>
-
-            
-            <SimpleMenu />
-        </div>
+              
+            <Box className={classes.Menu}  >
+                <SimpleMenu />
+            </Box>
+        </Box>
     );
 }
 
@@ -81,8 +110,7 @@ export default function Navbar(props) {
 function SimpleMenu(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    // const [pageTitle, setPageTitle] = React.useState("Welcome");
-
+    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -124,7 +152,7 @@ function SimpleMenu(props) {
                     onClick={handleClose}
                     className={classes.menuListItem}
                 >
-                    Home
+                    Welcome
                 </MenuItem>
                 <MenuItem
                     component={RouterLink}
@@ -156,7 +184,7 @@ function SimpleMenu(props) {
                     onClick={handleClose}
                     className={classes.menuListItem}
                 >
-                    Learn Tic Tac toe Strategy
+                    Learn Tic Tac Toe Strategy
                 </MenuItem>
                 <MenuItem
                     component={Link}
