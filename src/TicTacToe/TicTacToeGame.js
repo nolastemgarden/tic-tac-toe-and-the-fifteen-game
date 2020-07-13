@@ -150,6 +150,16 @@ export default function TicTacToeGame() {
         }
         return claimedSquaresList;
     }
+    function unknownSquares(hintList) {
+        let unknownSquares = [];
+        hintList.forEach((square, index) => {
+            if (square === 'unknown') {
+                unknownSquares = unknownSquares.concat(index)
+            }
+        });
+        console.log(`Squares with unknown value: ${unknownSquares}`);
+        return unknownSquares;
+    }
 
 
     // TODO
@@ -172,27 +182,29 @@ export default function TicTacToeGame() {
         // 5) Mark any forcing moves that keep the opponent busy this turn and allow you to create a double attack next turn.
         
         // (0)
-        const player = myTurn(history);
-        let hints = Array(9).fill('unclaimed');  // Start with an array representing a board of NINE squares.
+        // const player = myTurn(history);
+        let hints = Array(9).fill('unknown');  // Start with an array representing a board of NINE squares.
         
         // (1)
         claimedSquares().forEach(squareId => {
             hints[squareId] = 'claimed';
         });
 
-        //  (2)
+        //  (2) Mark my immediate wins
         immediateWins(history).forEach(winningSquare => {
             hints[winningSquare] = 'win';
         });
 
-        // (3)
-        // let unknownSquares = hints.filter(square => hints[square] === 'unknown');
-        // unknownSquares.forEach(square => {
-        //     let hypotheticalHistory = history.concat(square);
-        //     immediateWins(hypotheticalHistory).forEach(winningSquare => {
-        //         hints[winningSquare] = 'lose';
-        //     });
-        // })
+        // (3) Mark opponent's immediate wins that have not been marked yet.
+        unknownSquares(hints).forEach(testSquare => {
+            let hypotheticalHistory = history.concat(testSquare);
+            if (immediateWins(hypotheticalHistory).length > 0){  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
+                hints[testSquare] = 'lose';
+            }
+            else {  
+                // The test square does not create an immediate loss, leave it as 'unknown' for now.
+            }
+        })
 
 
         // (END)
