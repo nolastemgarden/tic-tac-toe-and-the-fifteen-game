@@ -32,6 +32,9 @@ const useStyles = makeStyles({
     },
 
 
+    unknown: {
+        backgroundColor: '#bbf',
+    },
     noColor: {
         // backgroundColor: '#FFF',  // This is used for Hints turned off mode.
         backgroundColor: '#ddd',
@@ -113,7 +116,9 @@ export default function Square(props) {
     
     let className;
     switch (color) {
-
+        case 'unknown':
+            className = `${classes.square} ${classes.unknown} `
+            break;
         case 'claimed':
             className = `${classes.square} ${classes.claimed} `
             break;
