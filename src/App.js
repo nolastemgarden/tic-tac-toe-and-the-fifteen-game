@@ -20,20 +20,24 @@ import StrategyPage from "./pages/StrategyPage";
 // MUI  components
 // import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 // import Button from '@material-ui/core/Button';
 // import Menu from '@material-ui/core/Menu';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import MenuIcon from '@material-ui/icons/Menu';
 // import AppBar from '@material-ui/core/AppBar'
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
+
+// THEMING
+import theme from "./theme";
+import {
+    makeStyles,
+    ThemeProvider
+} from '@material-ui/core/styles';
 
 
-
-
-import { makeStyles } from '@material-ui/core/styles';
-
-let availHeight = window.screen.availHeight;
-let availWidth = window.screen.availWidth;
+// let availHeight = window.screen.availHeight;
+// let availWidth = window.screen.availWidth;
 
 // let containerHeight;
 // let containerWidth;
@@ -50,7 +54,7 @@ let availWidth = window.screen.availWidth;
 // }
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
         width: '100vw',
@@ -71,13 +75,29 @@ const useStyles = makeStyles({
         // width: containerWidth,
         borderRadius: '2vmin',
         overflow: 'hidden',
+        
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
+        // justifyContent: 'center',
+    },
+    paper: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'start',
+
+        borderRadius: '1vmin',
+        backgroundColor: '#ffffff',
+        height: '90%',
+        width: '96%',
+        boxSizing: 'border-box',
+        padding: '0vmin',
+        // overflow: 'scroll',
     },
     footer: {
         display: 'flex',
         flexDirection: 'row-reverse',
-        height: '5%',
+        height: '3%',
         width: '100%',
         alignItems: 'bottom',
     },
@@ -85,15 +105,9 @@ const useStyles = makeStyles({
         paddingTop: '0.7vmin',
         paddingRight: '2.5vmin',
         color: 'navy',
-        fontSize: '1.6vmin'
-    },
-    // title: {
-    //     flexGrow: '1',
-    //     marginLeft: '1rem',
-    // },
-    
-    
-})
+        fontSize: '1.6vmin',
+    }
+}))
 
 
 export default function App() {
@@ -113,7 +127,7 @@ export default function App() {
         <div className={classes.root} >
             <div className={classes.container} >
                 <Router>
-                        <Switch>
+                    <Switch>
                         <Route exact path="/">
                             <Navbar pageTitle={"Welcome"} />
                             <WelcomePage />

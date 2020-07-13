@@ -8,33 +8,72 @@ import Panel from "./Panel";
 
 
 // MUI  components
+import Box from '@material-ui/core/Box';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
+
     root: {
-        height: '100%',
+        // border: 'solid navy 1px',
+
+        width: '100%',
+        height: '90%',
+
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        // justifyContent: 'center',
+        backgroundColor: '#4AC9FD',
+
+        overflowY: 'scroll',
+    },
+    paper: {
+
+        width: 'calc(100% - 4rem)',
+        height: 'auto',
+        minHeight: '86vh',
+
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'start',
+
+        
+
+        
+        // overflow: 'scroll',
+    },
+    root: {
+        border: 'solid blue 1px',
+        height: '90%',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        // justifyContent: 'flex-end',
+        justifyContent: 'start',
         alignItems: 'center',
         // backgroundColor: '#4AC9FD'
         
     },
     boardArea: {
-        backgroundColor: '#bbffff',
-        height: '60%',
-        width: '95%',
+        backgroundColor: '#ffffff',
+        borderRadius: '1vmin',
+        width: 'calc(100% - 4rem)',
+        padding: '1rem',
+        marginBottom: '1rem',
+
+        height: '55%',
+        
+        
         display: 'flex',
         justifyContent: 'center',
     },
     panelArea: {
         // border: 'solid blue 1px',
         // backgroundColor: '#4AC9FD',
-        boxSizing: 'border-box',
+        backgroundColor: '#ffffff',
+        borderRadius: '1vmin',
         width: '95%',
-        height: '40%',
+        height: 'calc(45% - 3rem)',
         
         display: 'flex',
         flexDirection: 'row',
@@ -54,15 +93,15 @@ export default function TicTacToeGame() {
     let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
-        <div className={classes.root} >
-            <div className={classes.boardArea} >
+        <Box className={classes.root} >
+            <Box className={classes.boardArea} >
                 <Board 
                     boardSymbols={getBoardSymbols()} 
                     boardColors={getBoardColors()}
                     handleSquareClick={handleSquareClick}
                 />
-            </div>
-            <div className={classes.panelArea}>
+            </Box>
+            <Box className={classes.panelArea}>
                 <Panel 
                     // data={getPanelData(history)} 
                     status={getStatus()}
@@ -74,8 +113,8 @@ export default function TicTacToeGame() {
                     toggleShowMovesSwitch={toggleShowMovesSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
                 />
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 
     // The <Game> holds all state and most helper and handler function definitions.
