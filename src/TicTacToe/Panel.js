@@ -19,36 +19,35 @@ import UndoIcon from '@material-ui/icons/Undo';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
-    panel: {
-        boxSizing: 'border-box',
-        marginTop: '3%',
+    root: {
+        // border: 'solid red 1px',
+        // marginTop: '3%',
         width: '100%',
-        height: '94%',
-        padding: '3%',
+        height: '100%',
+        // padding: '3%',
         
         display: 'flex',
         flexDirection: 'row',
         
     },
     infoArea: {
-        
+        maxHeight: '100%',
+        overflow: 'scroll',
     },
     buttonArea: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center',
     },
     button: {
-        // border: 'solid red 1px',
         width: '100%',
         height: '18%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        // display: 'flex',
+        // flexDirection: 'column',
+        // justifyContent: 'center',
+        // alignItems: 'center',
         fontSize: 'min(max(0.7rem, 3vmin), 24px)',
-        // lineHeight: '1vmin',
     },
     buttonIcon: {
         marginRight: '1vmin',
@@ -127,29 +126,22 @@ export default function Panel(props) {
     );
 
     return (
-        <Paper className={classes.panel}>
-            <Grid container>
-                <Grid item className={classes.infoArea} xs={8}>
-                    <Typography className={classes.statusText} noWrap >
-                        {status}
-                    </Typography>
-                    <Typography className={classes.commentary}  >
-                        {commentary}
-                    </Typography>
-                </Grid>
-                <Grid item className={classes.buttonArea} xs={4}>
-                    {undoButton}
-                    {newGameButton}
-                    {helpButton}
-                    {settingsButton}
-                </Grid>
+        <Grid container className={classes.root}>
+            <Grid item className={classes.infoArea} xs={8}>
+                <Typography className={classes.statusText} noWrap >
+                    {status}
+                </Typography>
+                <Typography className={classes.commentary}  >
+                    {commentary}
+                </Typography>
             </Grid>
-            
-            
-            
-                
-             
-        </Paper>
+            <Grid item className={classes.buttonArea} xs={4}>
+                {undoButton}
+                {newGameButton}
+                {helpButton}
+                {settingsButton}
+            </Grid>
+        </Grid>
     )
 
 }
