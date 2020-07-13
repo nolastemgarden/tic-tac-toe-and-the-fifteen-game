@@ -18,7 +18,7 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // backgroundColor: '#00CC00'
+        backgroundColor: '#FE3'
     },
     iconX: {
         width: '100%',
@@ -33,10 +33,12 @@ const useStyles = makeStyles({
         backgroundColor: '#00bb00'
     },
     doubleAttackCreatingMove: {
-        backgroundColor: '#55bb00'
+        // backgroundColor: '#55bb00',
+        backgroundColor: '#00bb00'
     },
     forcedWinCreatingMove: {
-        backgroundColor: '#88ee33'
+        // backgroundColor: '#88ee33'
+        backgroundColor: '#00bb00'
     },
 
     urgentDefensiveMove: {
@@ -46,7 +48,7 @@ const useStyles = makeStyles({
         backgroundColor: '#ff4433'
     },
     gameLosingMove: {
-        backgroundColor: '#EEDD11'
+        // backgroundColor: '#EEDD11'
     },
     
 });
