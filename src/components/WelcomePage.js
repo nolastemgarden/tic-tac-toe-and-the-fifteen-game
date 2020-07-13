@@ -29,13 +29,13 @@ const useStyles = makeStyles((theme) => ({
         // justifyContent: 'center',
         backgroundColor: '#4AC9FD',
 
-        overflowY: 'scroll',
+        
     },
     paper: {
         
         width: 'calc(100% - 4rem)',
-        height: 'auto',
-        minHeight: 'calc(99.5% - 2rem)',
+        height: 'calc(100% - 2rem)',
+        height: 'calc(99.5% - 2rem)',
 
         display: 'flex',
         flexDirection: 'column',
@@ -46,13 +46,16 @@ const useStyles = makeStyles((theme) => ({
         
         
         padding: '1rem',
-        // overflow: 'scroll',
+        overflowY: 'scroll',
+        overflowX: 'hidden',
     },
     title: {
         fontSize: '1.3rem',
+        paddingLeft: '0.5rem',
     },
     paragraph: {
         // textIndent: '1rem',
+        padding: '0.5rem',
         paddingBottom: '0.7rem',
     },
     buttonArea: {
@@ -60,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         marginBottom: '0.7rem',
         width: '100%',
+        padding: '0.5rem',
 
     },
     button: {
