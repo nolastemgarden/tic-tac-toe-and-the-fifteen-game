@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid navy 1px',
 
         width: '100%',
-        height: '90%',
+        height: '100%',
 
         display: 'flex',
         flexDirection: 'column',
@@ -26,54 +26,35 @@ const useStyles = makeStyles((theme) => ({
         // justifyContent: 'center',
         backgroundColor: '#4AC9FD',
 
-        overflowY: 'scroll',
-    },
-    paper: {
+        borderRadius: '1vmin',
 
-        width: 'calc(100% - 4rem)',
-        height: 'auto',
-        minHeight: '86vh',
-
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'start',
-
-        
-
-        
-        // overflow: 'scroll',
-    },
-    root: {
-        border: 'solid blue 1px',
-        height: '90%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'start',
-        alignItems: 'center',
-        // backgroundColor: '#4AC9FD'
         
     },
     boardArea: {
         backgroundColor: '#ffffff',
-        borderRadius: '1vmin',
+        borderRadius: 'inherit',
         width: 'calc(100% - 4rem)',
         padding: '1rem',
         marginBottom: '1rem',
-
-        height: '55%',
         
+
+        // height: '55%',
+        
+        flex: '0 1 55%',
         
         display: 'flex',
         justifyContent: 'center',
     },
     panelArea: {
-        // border: 'solid blue 1px',
-        // backgroundColor: '#4AC9FD',
         backgroundColor: '#ffffff',
-        borderRadius: '1vmin',
-        width: '95%',
-        height: 'calc(45% - 3rem)',
+        borderRadius: 'inherit',
+        width: 'calc(100% - 4rem)',
+        padding: '1rem',
+        marginBottom: '1rem',
+        
+        // height: 'calc(45% - 3rem)',
+
+        flex: '1 1 35%',
         
         display: 'flex',
         flexDirection: 'row',
