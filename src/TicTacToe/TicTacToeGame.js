@@ -586,15 +586,26 @@ export default function TicTacToeGame() {
         return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) === index);
     }
 
+    
+
+    // DEFINITION: a DoubleAttack is a board position where one player has two threats and the other player has none.  In other words, a double attack can only exist if it is winning and it is not called a 'double attack' if it is trumped by an immediate win for the opponent.
+    function thisIsADoubleAttackFor(player, moveList = history) {
+        let myThreatCount = linesWithOnlyTwo(player, moveList).length;
+        let opponentThreatCount = linesWithOnlyTwo(other(player), moveList).length;
+        return (myThreatCount === 2 && opponentThreatCount === 0);
+    }
+    
     function doubleAttackCreatingMoves(moveList = history) {
         // ERROR this fails to catch double attacks that are created by ignoring an immediateWin
         // let doubleAttackCreatingMoves = threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) !== index);
         let doubleAttackCreatingMoves = [];
-        emptySquares(moveList).forEach(square => {
-            // if any currently empty square being added to the hypotheticalHistory would leave the opponent wit Zero threats and me with TWO threats
-            // "threats" must be difine more losely than immediate wins because a threat counts even if its not your turn next whereas immediateWins only can exist for the player whose turn it is in the moveList being checked. 
+        let player = myTurn(moveList);
+        emptySquares(moveList).forEach(testSquare => {
+            let hypotheticalHistory = moveList.concat(testSquare);
+            if (thisIsADoubleAttackFor(player, hypotheticalHistory)){
+                doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
+            }
         })
-        
         console.log(`doubleAttackCreatingMoves in position: ${moveList} found these attacks: ${doubleAttackCreatingMoves}`);
         return doubleAttackCreatingMoves;
     }
@@ -737,6 +748,9 @@ export default function TicTacToeGame() {
         }
     }
 
+    
+    
+    
     function lineCountsFor(player, moveList = history) {
         // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
         // const player = myTurn(moveList); 
