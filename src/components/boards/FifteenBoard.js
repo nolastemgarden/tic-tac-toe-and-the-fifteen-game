@@ -1,7 +1,7 @@
 import React from 'react';
 
 // My Components
-import NumberCard from "./NumberCard";
+import NumberCard from "../../FifteenGame/NumberCard";
 
 // MUI  components
 import Paper from '@material-ui/core/Paper';
