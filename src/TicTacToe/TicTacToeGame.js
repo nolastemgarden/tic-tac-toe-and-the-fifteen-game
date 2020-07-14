@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import './TicTacToe.css';
 
 // My Components
-import Board from "./Board";
-import Panel from "./Panel";
+import Board from "../components/boards/TicTacToeBoard";
+import Panel from "../components/Panel";
 
 
 // MUI  components
@@ -447,7 +447,7 @@ export default function TicTacToeGame() {
     }
 
     function thereIsAWinningDoubleAttack(moveList = history) {
-        return (winningDoubleAttackCreatingMoves(moveList).length > 0)
+        return (doubleAttackCreatingMoves(moveList).length > 0)
     }
 
     function winningDoubleAttackCreatingMoves(moveList = history) {
