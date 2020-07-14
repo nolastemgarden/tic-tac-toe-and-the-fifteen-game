@@ -407,7 +407,7 @@ export default function TicTacToeGame() {
         linesWithOnlyTwo(other(player), moveList).forEach((line) => {
             // console.log(`urgentDefensiveMoves found line ${line} has only two ${other(player)}`)
             squaresInLine(line).forEach((square) => {
-                if (squareIsEmpty(square, moveList)) {
+                if (squareIsEmpty(square, moveList) && !urgentDefensiveMovesList.includes(square)) {
                     urgentDefensiveMovesList.push(square);
                 }
             })
@@ -437,11 +437,9 @@ export default function TicTacToeGame() {
 
     
 
-    // DEFINITION: a DoubleAttack is a board position where one player has two threats and the other player has none.  In other words, a double attack can only exist if it is winning and it is not called a 'double attack' if it is trumped by an immediate win for the opponent.
-    function thisIsADoubleAttackFor(player, moveList = history) {
-        let myThreatCount = linesWithOnlyTwo(player, moveList).length;
-        let opponentThreatCount = linesWithOnlyTwo(other(player), moveList).length;
-        return (myThreatCount === 2 && opponentThreatCount === 0);
+    // DEFINITION: a DoubleAttack position is created when the player whose turn it is has no immediateWins() && has 2 distinct urgentDefensiveMoves(). 
+    function thisIsADoubleAttack(moveList = history) {
+        return (!thereIsAnImmediateWin(moveList) && urgentDefensiveMoves(moveList).length > 1);
     }
     
     function doubleAttackCreatingMoves(moveList = history) {
@@ -451,7 +449,7 @@ export default function TicTacToeGame() {
         let player = myTurn(moveList);
         emptySquares(moveList).forEach(testSquare => {
             let hypotheticalHistory = moveList.concat(testSquare);
-            if (thisIsADoubleAttackFor(player, hypotheticalHistory)){
+            if (thisIsADoubleAttack(hypotheticalHistory)){
                 doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
             }
         })
