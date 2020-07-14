@@ -88,9 +88,9 @@ export default function WelcomePage() {
                     Welcome to Tic-Tac-Toe and the 15-Game!
                 </Typography>
                 <Typography variant='body1' className={classes.paragraph}>
-                    My name is Nigel, and I am a teacher with a passion for games where simple rules lead to complex
-                    strategies. I love to use games as a lens through which to teach math. They serve as a reminder
-                    that Math is alive! Though as it is based on disciplined reasoning, it is also based on play and exploration.
+                    My name is Nigel, and I am a math teacher who loves games where simple sets of rules open a door to complex strategic possibilities.
+                    I love to use games as a lens through which to teach math beacuse they remind us that, though math is based on disciplined reasoning, 
+                    it has a playful side which feeds the desire to explore.
                 </Typography>
                 <Typography variant='body1' className={classes.paragraph}>
                     In "How Not To Be Wrong", Jordan Elenberg explains, "Knowing mathematics is like wearing a pair of X-ray
