@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 // Custom Components
-import HelpModal from "./HelpModal";
-import SettingsModal from "./SettingsModal";
+import HelpModal from "../TicTacToe/HelpModal";
+import SettingsModal from "../TicTacToe/SettingsModal";
 
 // MUI Components
 import Box from '@material-ui/core/Box';
