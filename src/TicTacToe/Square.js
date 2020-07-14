@@ -46,15 +46,15 @@ const useStyles = makeStyles({
         backgroundColor: '#ddd',
     },
     win: {
-        backgroundColor: '#00bb00'
+        backgroundColor: '#3B3'
     },
     draw: {
         // backgroundColor: '#55bb00',
-        backgroundColor: '#EEDD11'
+        backgroundColor: '#FF3'
     },
     lose: {
         // backgroundColor: '#88ee33'
-        backgroundColor: '#ff4433'
+        backgroundColor: '#F44'
     },
 
 
