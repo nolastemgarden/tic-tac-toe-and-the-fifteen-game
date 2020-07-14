@@ -68,8 +68,8 @@ export default function TicTacToeGame() {
     const classes = useStyles();
 
     let [history, setHistory] = useState([]); 
-    let [showMoves, setShowMoves] = useState(false); 
-    // let [showMoves, setShowMoves] = useState(true); 
+    // let [showMoves, setShowMoves] = useState(false); 
+    let [showMoves, setShowMoves] = useState(true); 
     // let [showCommentary, setShowCommentary] = useState(false);  
     let [showCommentary, setShowCommentary] = useState(true);  
 
@@ -201,7 +201,7 @@ export default function TicTacToeGame() {
             if (immediateWins(hypotheticalHistory).length > 0){  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
                 hints[testSquare] = 'lose';
             }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
-        })
+        });
 
         // (4) Mark double attacking wins.  yet unknown squares that create a double attack.
         doubleAttackCreatingMoves(history).forEach(keyAttackingMove => {
@@ -216,7 +216,7 @@ export default function TicTacToeGame() {
             if (thereIsAWinningDoubleAttack(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
                 hints[testSquare] = 'lose';
             }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
-        })
+        });
 
 
         // (6) Mark distant win forcing moves.  yet unknown squares that initiate a 3 move win sequence.
@@ -226,18 +226,19 @@ export default function TicTacToeGame() {
             }
         });
 
-        // (7) Mark moves that grant the opponent a double attacking win. Only apply to yet unknown squares.
-        unknownSquares(hints).forEach(testSquare => {
-            let hypotheticalHistory = history.concat(testSquare);
-            if (forcedWinCreatingMoves(hypotheticalHistory).length > 0 ) {  // If there are any distant forced wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
-                hints[testSquare] = 'lose';
-            }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
-        })
+        // // (7) Mark moves that grant the opponent a distant win forcing moves. Only apply to yet unknown squares.
+        console.log(`Yet UNKNOWN squares in the hints: ${unknownSquares(hints)}`)
+        // unknownSquares(hints).forEach(testSquare => {
+        //     let hypotheticalHistory = history.concat(testSquare);
+        //     if (forcedWinCreatingMoves(hypotheticalHistory).length > 0 ) {  // If there are any distant forced wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
+        //         hints[testSquare] = 'lose';
+        //     }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
+        // });
 
         // (8) Mark yet unknown squares as leading to a draw.
         unknownSquares(hints).forEach(square => {
             hints[square] = 'draw';
-        })
+        });
         
         // console.log(`getBoardHints() made this list: ${hints}`)
         return hints;
@@ -503,7 +504,7 @@ export default function TicTacToeGame() {
     function gameLosingMoves(moveList = history) {  // This function should ONLY be called by getBoardHints when there are no forced Win Creating Moves
         let gameLosingMoves = [];
         emptySquares().forEach(square => {
-            const hypotheticalHistory = moveList.concat(square);
+            let hypotheticalHistory = moveList.concat(square);
             if (thereIsAForcedWin(hypotheticalHistory)) {
                 // console.log(`I think I found a forced win after the moves: ${hypotheticalHistory}`)
                 gameLosingMoves = gameLosingMoves.concat(square)
@@ -620,13 +621,13 @@ export default function TicTacToeGame() {
     }
 
     function thereIsAForcedWin(moveList = history) {
-        const thereIsAForcedWin = (immediateWins(moveList).length > 0
-            || winningDoubleAttackCreatingMoves(moveList).length > 0
-            || forcedWinCreatingMoves(moveList).length > 0)
+        const thereIsAForcedWin = (thereIsAnImmediateWin(moveList)
+            || thereIsADoubleAttackCreatingMove(moveList)
+            || thereIsAForcedWinCreatingMove(moveList))
         // console.log(`immediateWins(moveList).length: ${immediateWins(moveList).length}`)
         // console.log(`winningDoubleAttackCreatingMoves(moveList).length: ${winningDoubleAttackCreatingMoves(moveList).length}`)
         // console.log(`forcedWinCreatingMoves based on the moves: ${moveList} ==>  ${forcedWinCreatingMoves(moveList)}`)
-        // console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
+        console.log(`thereIsAForcedWin for the current player: ${thereIsAForcedWin}`)
         return thereIsAForcedWin;
     }
 
