@@ -172,6 +172,38 @@ export default function TicTacToeGame() {
         return immediatelyLosingMoves;
     }
 
+    // DEFINITION: a DoubleAttack position is created when the player whose turn it is has no immediateWins() && has 2 distinct urgentDefensiveMoves(). 
+    function thisIsADoubleAttack(moveList = history) {
+        return (!thereIsAnImmediateWin(moveList) && urgentDefensiveMoves(moveList).length > 1);
+    }
+    function doubleAttackCreatingMoves(moveList = history) {
+        let doubleAttackCreatingMoves = [];
+        emptySquares(moveList).forEach(testSquare => {
+            let hypotheticalHistory = moveList.concat(testSquare);
+            if (thisIsADoubleAttack(hypotheticalHistory)) {
+                doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
+            }
+        })
+        // console.log(`doubleAttackCreatingMoves in position: ${moveList} found these attacks: ${doubleAttackCreatingMoves}`);
+        return doubleAttackCreatingMoves;
+    }
+    function thereIsADoubleAttackCreatingMove(moveList = history) {
+        return (doubleAttackCreatingMoves(moveList).length > 0)
+    }
+
+    function doubleAttackGrantingMoves(moveList = history) {
+        let doubleAttackGrantingMoves = [];
+        emptySquares(moveList).forEach(testSquare => {
+            let hypotheticalHistory = moveList.concat(testSquare);
+            if (thereIsADoubleAttackCreatingMove(hypotheticalHistory) || thereIsAnImmediateWin(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
+                doubleAttackGrantingMoves = doubleAttackGrantingMoves.concat(testSquare);
+            }
+        })
+        return doubleAttackGrantingMoves;
+    }
+
+    
+
 
     // TODO
     function getBoardHints() {
@@ -221,7 +253,12 @@ export default function TicTacToeGame() {
             }
         });
         
-        // // (5) Mark moves that grant the opponent a double attacking win. Only apply to yet unknown squares.
+        // (5) Mark moves that grant the opponent a double attacking win. Only apply to yet unknown squares.
+        doubleAttackGrantingMoves(history).forEach(losingSquare => {
+            if (hints[losingSquare] === 'unknown') {
+                hints[losingSquare] = 'lose';
+            }
+        });
         // unknownSquares(hints).forEach(testSquare => {
         //     let hypotheticalHistory = history.concat(testSquare);
         //     if (thereIsADoubleAttackCreatingMove(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
@@ -437,29 +474,7 @@ export default function TicTacToeGame() {
 
     
 
-    // DEFINITION: a DoubleAttack position is created when the player whose turn it is has no immediateWins() && has 2 distinct urgentDefensiveMoves(). 
-    function thisIsADoubleAttack(moveList = history) {
-        return (!thereIsAnImmediateWin(moveList) && urgentDefensiveMoves(moveList).length > 1);
-    }
     
-    function doubleAttackCreatingMoves(moveList = history) {
-        // ERROR this fails to catch double attacks that are created by ignoring an immediateWin
-        // let doubleAttackCreatingMoves = threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) !== index);
-        let doubleAttackCreatingMoves = [];
-        let player = myTurn(moveList);
-        emptySquares(moveList).forEach(testSquare => {
-            let hypotheticalHistory = moveList.concat(testSquare);
-            if (thisIsADoubleAttack(hypotheticalHistory)){
-                doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
-            }
-        })
-        // console.log(`doubleAttackCreatingMoves in position: ${moveList} found these attacks: ${doubleAttackCreatingMoves}`);
-        return doubleAttackCreatingMoves;
-    }
-
-    function thereIsADoubleAttackCreatingMove(moveList = history) {
-        return (doubleAttackCreatingMoves(moveList).length > 0)
-    }
 
     function winningDoubleAttackCreatingMoves(moveList = history) {
         // A doubleAttack is winning IFF it can be made without ignoring an urgentDefensiveMove.
