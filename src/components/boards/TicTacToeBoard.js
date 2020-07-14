@@ -1,7 +1,7 @@
 import React from 'react';
 
 // My Components
-import Square from "./Square";
+import Square from "../../TicTacToe/Square";
 
 // MUI  components
 import Paper from '@material-ui/core/Paper';
