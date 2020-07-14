@@ -83,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
     },
     
     footer: {
+        border: 'solid red 1px',
         display: 'flex',
         flexDirection: 'row-reverse',
         height: '3%',
@@ -100,20 +101,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
     const classes = useStyles();
-    // const [pageTitle, setPageTitle] = React.useState("Welcome");
-    
     const [pageTitle, setPageTitle] = React.useState("Welcome");
   
-    // Similar to componentDidMount and componentDidUpdate:
-    React.useEffect(() => {
-        // Update the document title using the browser API
-        // document.title = `You clicked ${count} times`;
-
-    });
-
     return (
-        <div className={classes.root} >
-            <div className={classes.container} >
+        <Box className={classes.root} >
+            <Box className={classes.container} >
                 <Router>
                     <Switch>
                         <Route exact path="/">
@@ -143,8 +135,8 @@ export default function App() {
                     </Switch>
                 </Router>
                 <Footer />
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
 
