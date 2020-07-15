@@ -20,20 +20,31 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
     root: {
-        // border: 'solid red 1px',
-        // marginTop: '3%',
         width: '100%',
         height: '100%',
-        // padding: '3%',
         
         display: 'flex',
         flexDirection: 'row',
         
     },
     infoArea: {
-        maxHeight: '100%',
-        overflow: 'scroll',
+        height: '100%',
+        // maxHeight: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     },
+    gameStatus: {
+        fontSize: '5vmin',
+        fontWeight: 'bold'
+    },
+    commentary: {
+        // fontSize: 'max(1rem, 2.2vmin)',
+        // fontSize: '1rem',
+        paddingRight: '5vmin',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+    },
+
     buttonArea: {
         display: 'flex',
         flexDirection: 'column',
@@ -47,7 +58,8 @@ const useStyles = makeStyles((theme) => ({
         // flexDirection: 'column',
         // justifyContent: 'center',
         // alignItems: 'center',
-        fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        fontSize: 'min(20px, 1rem)',
     },
     buttonIcon: {
         marginRight: '1vmin',
@@ -57,15 +69,7 @@ const useStyles = makeStyles((theme) => ({
     switchLabel: {
         lineHeight: '1rem'
     },
-    statusText: {
-        fontSize: '5vmin',
-        fontWeight: 'bold'
-    },
-    commentary: {
-        fontSize: 'max(1rem, 2.2vmin)',
-        paddingRight: '5vmin',
-        overflow: 'hidden'
-    },
+    
 }));
 
 export default function Panel(props) {
@@ -128,10 +132,10 @@ export default function Panel(props) {
     return (
         <Grid container className={classes.root}>
             <Grid item className={classes.infoArea} xs={8}>
-                <Typography className={classes.statusText} noWrap >
+                <Typography className={classes.gameStatus} noWrap >
                     {status}
                 </Typography>
-                <Typography className={classes.commentary}  >
+                <Typography variant='body2' className={classes.commentary}  >
                     {commentary}
                 </Typography>
             </Grid>
