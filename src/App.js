@@ -58,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
         width: '100vw',
+        minHeight: '675px',
+        minWidth: '500px',
+
+
         // boxSizing: 'border-box',
         backgroundColor: '#ccFFFF',
         display: 'flex',
