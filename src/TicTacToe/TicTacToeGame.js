@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
         // height: '55%',
         
-        flex: '0 1 55%',
+        flex: '0 0 55%',
         
         display: 'flex',
         justifyContent: 'center',
@@ -259,20 +259,13 @@ export default function TicTacToeGame() {
                 hints[losingSquare] = 'lose';
             }
         });
-        // unknownSquares(hints).forEach(testSquare => {
-        //     let hypotheticalHistory = history.concat(testSquare);
-        //     if (thereIsADoubleAttackCreatingMove(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
-        //         hints[testSquare] = 'lose';
-        //     }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
-        // });
-
-
-        // // (6) Mark distant win forcing moves.  yet unknown squares that initiate a 3 move win sequence.
-        // distantForcedWinCreatingMoves(history).forEach(keyAttackingMove => {
-        //     if (hints[keyAttackingMove] === 'unknown') {
-        //         hints[keyAttackingMove] = 'win';
-        //     }
-        // });
+        
+        // (6) Mark distant win forcing moves.  yet unknown squares that initiate a 3 move win sequence.
+        distantForcedWinCreatingMoves(history).forEach(keyAttackingMove => {
+            if (hints[keyAttackingMove] === 'unknown') {
+                hints[keyAttackingMove] = 'win';
+            }
+        });
 
         // // // (7) Mark moves that grant the opponent a distant win forcing moves. Only apply to yet unknown squares.
         // console.log(`Yet UNKNOWN squares in the hints: ${unknownSquares(hints)}`)
