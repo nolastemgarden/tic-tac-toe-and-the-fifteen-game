@@ -150,27 +150,72 @@ export default function TicTacToeGame() {
         }
         return claimedSquaresList;
     }
-    function unknownSquares(hintList) {
+    
+    //  Squares for which the value of the Hint is yet to be determined. 
+    function unknownSquares(hints) {
         let unknownSquares = [];
-        hintList.forEach((square, index) => {
-            if (square === 'unknown') {
-                unknownSquares = unknownSquares.concat(index)
+        hints.forEach((value, index) => {
+            if (value === 'unknown'){
+                unknownSquares.push(index)
             }
-        });
-        // console.log(`Squares with unknown value: ${unknownSquares}`);
+        })
         return unknownSquares;
     }
 
+    // WON GAME defined: the player specified has all three squares in at least one line.
+    function wins(player, moveList = history) {
+        return (lineCountsFor(player, moveList).includes(3));
+    }
+    
+    // IMMEDIATE WIN defined: the player whose turn it is has an un-blocked two-in-a-line
+    function immediateWins(moveList = history) {
+        const player = myTurn(moveList);
+        let winningMoves = [];
+        linesWithOnlyTwo(player, moveList).forEach((line) => { // console.log(`urgentDefensiveMoves found line ${line} has only two ${other(player)}`)
+            squaresInLine(line).forEach((square) => {
+                if (squareIsEmpty(square, moveList) && !winningMoves.includes(square)) {
+                    winningMoves = winningMoves.concat(square);
+                }
+            })
+        })
+        return winningMoves;
+    }
+    function thereIsAnImmediateWin(moveList = history) {
+        return (immediateWins(moveList).length > 0)
+    }
+
+
+    // IMMEDIATELY LOSING MOVES: moves that make it so the opponent has an immediateWin.
     function immediatelyLosingMoves(moveList = history) {
         let immediatelyLosingMoves = [];
         emptySquares(moveList).forEach(testSquare => {
             let hypotheticalHistory = moveList.concat(testSquare);
-            if (thereIsAnImmediateWin(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
+            if (thereIsAnImmediateWin(hypotheticalHistory)) {  
                 immediatelyLosingMoves = immediatelyLosingMoves.concat(testSquare);
             }
         })
         return immediatelyLosingMoves;
     }
+
+
+    // URGENT DEFENSIVE MOVES are moves that claim the last square in a line where the opponent has a two-to-zero advantage.
+    function urgentDefensiveMoves(moveList = history) {
+        const player = myTurn(moveList);
+        let urgentDefensiveMoves = [];
+        linesWithOnlyTwo(other(player), moveList).forEach((line) => { // console.log(`urgentDefensiveMoves found line ${line} has only two ${other(player)}`)
+            squaresInLine(line).forEach((square) => {
+                if (squareIsEmpty(square, moveList) && !urgentDefensiveMoves.includes(square)) {
+                    urgentDefensiveMoves = urgentDefensiveMoves.concat(square);
+                }
+            })
+        })
+        // console.log(`urgentDefensiveMoves() found the following moves for ${player}: ${urgentDefensiveMovesList}`);
+        return urgentDefensiveMoves;
+    }
+    function thereIsAnUrgentDefensiveMove(moveList = history) {
+        return (urgentDefensiveMoves(moveList).length === 1)
+    }
+
 
     // DEFINITION: a DoubleAttack position is created when the player whose turn it is has no immediateWins() && has 2 distinct urgentDefensiveMoves(). 
     function thisIsADoubleAttack(moveList = history) {
@@ -195,7 +240,7 @@ export default function TicTacToeGame() {
         let doubleAttackGrantingMoves = [];
         emptySquares(moveList).forEach(testSquare => {
             let hypotheticalHistory = moveList.concat(testSquare);
-            if (thereIsADoubleAttackCreatingMove(hypotheticalHistory) || thereIsAnImmediateWin(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
+            if (thereIsADoubleAttackCreatingMove(hypotheticalHistory)) {  // If there are any wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
                 doubleAttackGrantingMoves = doubleAttackGrantingMoves.concat(testSquare);
             }
         })
@@ -233,12 +278,12 @@ export default function TicTacToeGame() {
             hints[squareId] = 'claimed';
         });
 
-        //  (2) Mark my immediate wins. 
+        //  (2) Mark my immediate wins.   GREEN
         immediateWins(history).forEach(winningSquare => {
             hints[winningSquare] = 'win';
         });
 
-        // (3) Mark immediate losses.  yet unknown squares that grant opponent an immediate win. yet unknown implies unclaimed and not an immediate win.
+        // (3) Mark immediate losses.  yet unknown squares that grant opponent an immediate win. yet unknown implies unclaimed and not an immediate win.  RED
         immediatelyLosingMoves(history).forEach(losingSquare => {
             if (hints[losingSquare] === 'unknown') {
                 hints[losingSquare] = 'lose';
@@ -246,40 +291,40 @@ export default function TicTacToeGame() {
         });
         
         
-        // (4) Mark double attacking wins.  yet unknown squares that create a double attack.
+        // (4) Mark double attacking wins.  yet unknown squares that create a double attack.  GREEN
         doubleAttackCreatingMoves(history).forEach(keyAttackingMove => {
             if (hints[keyAttackingMove] === 'unknown'){
                 hints[keyAttackingMove] = 'win';
             }
         });
         
-        // (5) Mark moves that grant the opponent a double attacking win. Only apply to yet unknown squares.
+        // (5) Mark moves that grant the opponent a double attacking win. Only apply to yet unknown squares.  RED
         doubleAttackGrantingMoves(history).forEach(losingSquare => {
             if (hints[losingSquare] === 'unknown') {
                 hints[losingSquare] = 'lose';
             }
         });
         
-        // (6) Mark distant win forcing moves.  yet unknown squares that initiate a 3 move win sequence.
+        // (6) Mark distant win forcing moves.  yet unknown squares that initiate a 3 move win sequence.  GREEN
         distantForcedWinCreatingMoves(history).forEach(keyAttackingMove => {
             if (hints[keyAttackingMove] === 'unknown') {
                 hints[keyAttackingMove] = 'win';
             }
         });
 
-        // // // (7) Mark moves that grant the opponent a distant win forcing moves. Only apply to yet unknown squares.
-        // console.log(`Yet UNKNOWN squares in the hints: ${unknownSquares(hints)}`)
-        // unknownSquares(hints).forEach(testSquare => {
-        //     let hypotheticalHistory = history.concat(testSquare);
-        //     if (thereIsADistantForcedWinCreatingMove(hypotheticalHistory)) {  // If there are any distant forced wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
-        //         hints[testSquare] = 'lose';
-        //     }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
-        // });
+        // (7) Mark moves that grant the opponent a distant win forcing moves. Only apply to yet unknown squares.  RED
+        console.log(`Yet UNKNOWN squares in the hints: ${unknownSquares(hints)}`)
+        unknownSquares(hints).forEach(testSquare => {
+            let hypotheticalHistory = history.concat(testSquare);
+            if (thereIsADistantForcedWinCreatingMove(hypotheticalHistory)) {  // If there are any distant forced wins for Opponent in this hypotheticalHistory then the testSquare is a losing move. 
+                hints[testSquare] = 'lose';
+            }  // else {  The test square does not create an immediate loss, leave it as 'unknown' for now.}
+        });
 
-        // // (8) Mark yet unknown squares as leading to a draw.
-        // unknownSquares(hints).forEach(square => {
-        //     hints[square] = 'draw';
-        // });
+        // (8) Mark yet unknown squares as leading to a draw.
+        unknownSquares(hints).forEach(square => {
+            hints[square] = 'draw';
+        });
         
         // console.log(`getBoardHints() made this list: ${hints}`)
         return hints;
@@ -287,7 +332,6 @@ export default function TicTacToeGame() {
 
     
     // HIGH-LEVEL PANEL HELPERS no params
-
     function getStatus() {
         if (wins('x')) {
             return (`X wins!`)
@@ -359,7 +403,7 @@ export default function TicTacToeGame() {
             if (thereIsAnImmediateWin()) {
                 message = `You have a winning move! Defensive moves are irrelevant.`
             }
-            else if (thereIsAnUnstoppableAttack()) {
+            else if (thisIsADoubleAttack()) {
                 message = `You cannot win right now and cannot block all of your opponent's threats. Which move led you to from a draw to defeat?`
             }
             else if (thereIsADoubleAttackCreatingMove()) {
@@ -403,48 +447,7 @@ export default function TicTacToeGame() {
         return highlightedSquares;
     } 
      
-    function thereIsAnImmediateWin(moveList = history) {
-        return (immediateWins(moveList).length > 0)
-    }
-
-    function immediateWins(moveList = history){
-        // LinesWithOnlyTwo intersected with emptySquares.
-        let winningSquares = [];
-        const player = myTurn(moveList);
-        linesWithOnlyTwo(player, moveList).forEach((line) => {
-            squaresInLine(line).forEach((square) => {
-                if (squareIsEmpty(square)) {
-                    winningSquares.push(square);
-                    // hints[square] = 'win'; This code used to be part of a bloated getBoardHints() method and at that time it had responsibility for actually assigning colors in the hints array to the square it now simply returns in a list.
-                }
-            })
-        })
-        // console.log(`immediateWins() used moveList ${moveList} and found the following winningMoves: ${winningSquares}`)
-        return winningSquares;
-    }
-
-    function thereIsAnUnstoppableAttack(moveList = history) {
-        return (urgentDefensiveMoves(moveList).length > 1)
-    }
     
-    function thereIsAnUrgentDefensiveMove(moveList = history) {
-        return (urgentDefensiveMoves(moveList).length > 0)
-    }
-    
-    function urgentDefensiveMoves(moveList = history) {
-        const player = myTurn(moveList);
-        let urgentDefensiveMovesList = [];
-        linesWithOnlyTwo(other(player), moveList).forEach((line) => {
-            // console.log(`urgentDefensiveMoves found line ${line} has only two ${other(player)}`)
-            squaresInLine(line).forEach((square) => {
-                if (squareIsEmpty(square, moveList) && !urgentDefensiveMovesList.includes(square)) {
-                    urgentDefensiveMovesList.push(square);
-                }
-            })
-        })
-        // console.log(`urgentDefensiveMoves() found the following moves for ${player}: ${urgentDefensiveMovesList}`);
-        return urgentDefensiveMovesList;
-    }
 
     function threatCreatingMoves(moveList = history) {
         // This list may contain duplicates. A squareId that appears twice creates two separate two-in-a-line threats.
@@ -477,56 +480,55 @@ export default function TicTacToeGame() {
     
 
 
-    // DEFINITION: theNextMoveIsForced IFF player who moved last has one unblocked threat and player whose turn it is has none.
-    function theNextMoveIsForced(moveList = history) {
-        let player = myTurn(moveList);
-        let myThreatCount = linesWithOnlyTwo(player, moveList).length;
-        let opponentThreatCount = linesWithOnlyTwo(other(player), moveList).length;
-        let isForced = (myThreatCount === 1 && opponentThreatCount === 0);
+    // DEFINITION: thisMoveIsForced IFF player who moved last has one unblocked threat and player whose turn it is has none.
+    function thisMoveIsForced(moveList = history) {
+        let isForced = (!thereIsAnImmediateWin(moveList) && thereIsAnUrgentDefensiveMove(moveList))
+        // console.log(`In position: ${moveList} The next move is forced: ${isForced}`)
         return (isForced);
     }
-
+    
+    // DEFINITION: ForcingMoves are the moves that give the opponent an urgentDefensiveMove and no immediateWin to take presidence over it.
     function forcingMoves(moveList = history) {
         let forcingMoves = [];
         emptySquares(moveList).forEach(testSquare => {
             let hypotheticalHistory = moveList.concat(testSquare);
-            if (theNextMoveIsForced(hypotheticalHistory)) {
+            if (thisMoveIsForced(hypotheticalHistory)) {
                 forcingMoves = forcingMoves.concat(testSquare)
             }
         })
+        // console.log(`forcingMoves found these: ${forcingMoves}`)
         return forcingMoves;
     }
     
     
-    // By Definition: There are NO distantForcedWinCreatingMoves IF there is a quicker way to win.
     // DEFINITION: A move that creates a position where you have one threat and your opponent has none &&
     //             once your opponent responds with their one urgentDefensiveMove you are left with the ability to create a double attack. 
     function distantForcedWinCreatingMoves(moveList = history) {
         let distantForcedWinCreatingMovesList = [];
-        let player = myTurn(moveList);
-        
-        console.log(`thereIsAnImmediateWin: ${thereIsAnImmediateWin(moveList)}`)
-        console.log(`thereIsADoubleAttackCreatingMove: ${thereIsADoubleAttackCreatingMove(moveList)}`)
-        if (thereIsAnImmediateWin(moveList) || thereIsADoubleAttackCreatingMove(moveList)) {
-            console.log(`Returning Early (list of length 0) from distantForcedWinCreatingMoves() because there is a quicker way to win.`)
+        // There cannot be a distantForcedWinCreatingMove unless there are at least 5 empty squares and playerTwo has has a chance to make an error on their first move.
+        if (moveList.length < 2 || moveList.length > 4){
             return distantForcedWinCreatingMovesList;
         }
-        
+        // To force a win you must force the first reply ... 
         forcingMoves(moveList).forEach(forcingMove => {
-            // confirm there is exactly one urgent defensive move
-            if (urgentDefensiveMoves().length > 1){
-                console.error(`forcingMoves is examinig a square when a double attack already exists.`)
+            // ... and ensure the forced reply leaves you able to create a double attack.
+            let hypotheticalHistory = moveList.concat(forcingMove);
+            if (urgentDefensiveMoves(hypotheticalHistory).length !== 1){
+                console.error(`There are ${urgentDefensiveMoves(hypotheticalHistory).length} urgentDefensiveMoves in the hypotheticalHistory being examined by distantForcedWinCreatingMoves.`)
             }
-            // Append the only urgentDefensive move then look for doubleAttack Creating Moves. 
-            let hypotheticalHistory = moveList.concat(urgentDefensiveMoves()[0])
+            let urgentDefensiveMove = urgentDefensiveMoves(hypotheticalHistory)[0];
+            hypotheticalHistory = hypotheticalHistory.concat(urgentDefensiveMove);
+            // console.log(`The one urgent defensive move is ${urgentDefensiveMove} leading to position: ${hypotheticalHistory}`);
             if (thereIsADoubleAttackCreatingMove(hypotheticalHistory)){
                 distantForcedWinCreatingMovesList = distantForcedWinCreatingMovesList.concat(forcingMove);
             }
         })
-        // console.log(`distantForcedWinCreatingMoves() found the following list: ${distantForcedWinCreatingMovesList}`)
+        console.log(`distantForcedWinCreatingMoves() found the following list: ${distantForcedWinCreatingMovesList}`)
         return distantForcedWinCreatingMovesList;
     }
     function thereIsADistantForcedWinCreatingMove(moveList = history) {
+        // There cannot be a distantForcedWinCreatingMove unless there are at least 5 empty squares and playerTwo has has a chance to make an error on their first move.
+        // return (moveList.length > 2 && moveList.length < 5 && distantForcedWinCreatingMoves(moveList).length > 0)
         return (distantForcedWinCreatingMoves(moveList).length > 0)
     }
 
@@ -648,9 +650,7 @@ export default function TicTacToeGame() {
         return lines;
     }
 
-    function wins(player, moveList = history) {
-        return (lineCountsFor(player, moveList).includes(3));
-    }
+    
 
     function thereIsAForcedWin(moveList = history) {
         const thereIsAForcedWin = (thereIsAnImmediateWin(moveList)
@@ -740,28 +740,28 @@ export default function TicTacToeGame() {
         let squareIds;
         switch (lineId) {
             case 0:
-                squareIds = [0, 1, 2];
+                squareIds = [0, 1, 2];  // x / 3 < 1
                 break;
             case 1:
-                squareIds = [3, 4, 5];
+                squareIds = [3, 4, 5];  // (x / 3).floor() === 1
                 break;
             case 2:
-                squareIds = [6, 7, 8];
+                squareIds = [6, 7, 8]; // (x / 3) > 1
                 break;
             case 3:
-                squareIds = [0, 3, 6];
+                squareIds = [0, 3, 6];  // congruent to 0 mod 3
                 break;
             case 4:
-                squareIds = [1, 4, 7];
+                squareIds = [1, 4, 7];  // congruent to 1 mod 3
                 break;
             case 5:
-                squareIds = [2, 5, 8];
+                squareIds = [2, 5, 8];  // congruent to 2 mod 3
                 break;
             case 6:
-                squareIds = [2, 4, 6];
+                squareIds = [2, 4, 6];  // diagonal
                 break;
             case 7:
-                squareIds = [0, 4, 8];
+                squareIds = [0, 4, 8];  // congruent to 0 mod 4
                 break;
             default:
                 console.error(`getSquares() was called with an invalid lineId.`)
