@@ -90,7 +90,7 @@ export default function Square(props) {
     const classes = useStyles();
     const id = props.id
     const symbol = props.symbol
-    const color = props.color  // String '', 'immediateWin', 'unavoidableDefeat', 'doubleAttackCreatingMove', 'urgentDefensiveMove', 'forcedWinCreatingMove'
+    const color = props.color  // String 'win', 'draw', 'lose', 'unknown', 'claimed',  
     const handleClick = props.handleClick
 
 
