@@ -54,25 +54,25 @@ export default function Board(props) {
     const handleCardClick = props.handleCardClick;
     
     // Is a given number card claimed? If so by who?
-    function getStatus(num){
-        // console.log(`Get Status called on Num: ${num}`)
+    // function getStatus(num){
+    //     // console.log(`Get Status called on Num: ${num}`)
         
-        const key = history.indexOf(num);
-        console.log(`Key: ${key}`)
-        if (key === -1){
-            return 'available';
-        }
-        else if (key % 2 === 0) {
-            return 'red';
-        }
-        else if (key % 2 === 1) {
-            return 'yellow';
-        }
-        else {
-            console.error(`getStatus(num) is returning undefined`)
-            return undefined;
-        }
-    }
+    //     // const key = history.indexOf(num);
+    //     console.log(`Key: ${key}`)
+    //     if (key === -1){
+    //         return 'available';
+    //     }
+    //     else if (key % 2 === 0) {
+    //         return 'red';
+    //     }
+    //     else if (key % 2 === 1) {
+    //         return 'yellow';
+    //     }
+    //     else {
+    //         console.error(`getStatus(num) is returning undefined`)
+    //         return undefined;
+    //     }
+    // }
 
     
     let board = [];
@@ -81,7 +81,7 @@ export default function Board(props) {
             <NumberCard
                 key={num}
                 num={num}
-                status={getStatus(num)} 
+                // status={getStatus(num)} 
                 handleClick={handleCardClick}
             />
         ;
