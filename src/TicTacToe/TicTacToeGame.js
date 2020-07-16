@@ -84,6 +84,7 @@ export default function TicTacToeGame() {
             </Box>
             <Box className={classes.panelArea}>
                 <Panel 
+                    gameType='TicTacToe'
                     // data={getPanelData(history)} 
                     status={getStatus()}
                     commentary={getCommentary()}

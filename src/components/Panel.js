@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
 // Custom Components
-import HelpModal from "../TicTacToe/HelpModal";
-import SettingsModal from "../TicTacToe/SettingsModal";
+import TicTacToeHelpModal from "./modals/TicTacToeHelpModal";
+import TicTacToeSettingsModal from "./modals/TicTacToeSettingsModal";
+import FifteenGameHelpModal from "./modals/FifteenGameHelpModal";
+import FifteenGameSettingsModal from "./modals/FifteenGameSettingsModal";
 
 // MUI Components
 import Box from '@material-ui/core/Box';
@@ -112,23 +114,48 @@ export default function Panel(props) {
         </Button>
     );
 
-    const helpButton = (
-        <div className={classes.button} >
-            <HelpModal />
-        </div>
-    );
+    let helpButton = "";
+    let settingsButton = "";
+    if (props.gameType === 'TicTacToe'){
+        helpButton = (
+            <Box className={classes.button} >
+                <TicTacToeHelpModal />
+            </Box>
+        );
+        settingsButton = (
+            <Box className={classes.button} >
+                <TicTacToeSettingsModal
+                    showMoves={showMoves}
+                    showCommentary={showCommentary}
+                    toggleShowMovesSwitch={toggleShowMovesSwitch}
+                    toggleShowCommentarySwitch={toggleShowCommentarySwitch}
+                />
+            </Box>
+        )
+    }
+    if (props.gameType === 'FifteenGame') {
+        helpButton = (
+            <Box className={classes.button} >
+                <FifteenGameHelpModal />
+            </Box>
+        );
+        settingsButton = (
+            <Box className={classes.button} >
+                <TicTacToeSettingsModal
+                    showMoves={showMoves}
+                    showCommentary={showCommentary}
+                    toggleShowMovesSwitch={toggleShowMovesSwitch}
+                    toggleShowCommentarySwitch={toggleShowCommentarySwitch}
+                />
+            </Box>
+        )
+    }
+    
+    
 
-    const settingsButton = (
-        <div className={classes.button} >
-            <SettingsModal 
-                showMoves={showMoves}
-                showCommentary={showCommentary}
-                toggleShowMovesSwitch={toggleShowMovesSwitch}
-                toggleShowCommentarySwitch={toggleShowCommentarySwitch}
-            />
-        </div>
-    );
+    
 
+    
     return (
         <Grid container className={classes.root}>
             <Grid item className={classes.infoArea} xs={8}>
