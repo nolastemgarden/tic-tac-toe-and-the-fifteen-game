@@ -141,7 +141,7 @@ export default function Panel(props) {
         );
         settingsButton = (
             <Box className={classes.button} >
-                <TicTacToeSettingsModal
+                <FifteenGameSettingsModal
                     showMoves={showMoves}
                     showCommentary={showCommentary}
                     toggleShowMovesSwitch={toggleShowMovesSwitch}
