@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#ccFFFF',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'start',
 
     },
     container: {
