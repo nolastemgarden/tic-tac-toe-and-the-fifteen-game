@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 // My Components
 // import Square from "./Square";
-import HintColorKey from "../../TicTacToe/HintColorKey";
+import HintColorKey from "./HintColorKey";
 
 // MUI Components
 import Button from '@material-ui/core/Button';

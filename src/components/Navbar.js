@@ -56,7 +56,8 @@ const useStyles = makeStyles((theme) => ({
     },
     icon: {
         color: 'navy',
-        fontSize: 'larger',
+        // fontSize: 'larger',
+        fontSize: '2rem',
         marginRight: '1rem',
         marginTop: '0.5vmin'
     },

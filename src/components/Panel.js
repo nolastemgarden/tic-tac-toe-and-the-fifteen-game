@@ -76,16 +76,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Panel(props) {
     const classes = useStyles();
+
+    const gameType = props.gameType;
     const status = props.status;
     const commentary = props.commentary;
+
+    const handleUndoButtonClick = props.handleUndoButtonClick
+    const handleNewGameButtonClick = props.handleNewGameButtonClick
 
     
     const showMoves = props.showMoves 
     const showCommentary = props.showCommentary 
-    const handleUndoButtonClick = props.handleUndoButtonClick
-    const handleNewGameButtonClick = props.handleNewGameButtonClick
     const toggleShowMovesSwitch = props.toggleShowMovesSwitch
     const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
+    
     
     const undoButton = (
         <Button
@@ -98,8 +102,6 @@ export default function Panel(props) {
             <UndoIcon className={classes.buttonIcon} />
             Undo
         </Button>
-
-        
     );
 
     const newGameButton = (
@@ -116,7 +118,8 @@ export default function Panel(props) {
 
     let helpButton = "";
     let settingsButton = "";
-    if (props.gameType === 'TicTacToe'){
+
+    if (gameType === 'TicTacToe'){
         helpButton = (
             <Box className={classes.button} >
                 <TicTacToeHelpModal />
@@ -133,7 +136,7 @@ export default function Panel(props) {
             </Box>
         )
     }
-    if (props.gameType === 'FifteenGame') {
+    if (gameType === 'FifteenGame') {
         helpButton = (
             <Box className={classes.button} >
                 <FifteenGameHelpModal />

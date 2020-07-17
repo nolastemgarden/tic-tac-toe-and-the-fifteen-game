@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 
 // MUI Components
+import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -28,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
         lineHeight: '0.8vmin',
     },
     buttonIcon: {
-        marginRight: '0.6rem'
+        marginRight: '1vmin',
+        fontSize: 'larger',
     },
     modal: {
         display: 'flex',
@@ -37,7 +41,9 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
+        // width: 'md',
+        height: '600px',
+        // border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
@@ -84,7 +90,24 @@ export default function HowToPlayModal() {
                 }}
             >
                 <Fade in={open}>
-                    <div className={classes.paper}>
+                    <Container maxWidth='md'> 
+                        <Box className={classes.paper} >
+                            <Typography variant='h5' id="transition-modal-title" className={classes.heading} >
+                                How To Play
+                        </Typography>
+                            <Typography variant='body1' id="transition-modal-title" className={classes.heading} gutterBottom >
+                                Two players take turns claiming one of the 9 numbered cards. <br />
+                            To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
+                        </Typography>
+                            <Typography variant='body1' id="transition-modal-title" className={classes.heading} >
+                                By default, you play against my bot but, if you wish, you can disable it in the settings.
+                                can change this to play against my bot.
+                            Two players take turns claiming one of the 9 numbered cards. <br />
+                            To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
+                        </Typography>
+                        </Box>
+                    </Container>
+                    {/* <div className={classes.paper}>
                         <h2 id="transition-modal-title">How To Play</h2>
                         <ul id="transition-modal-description" >
                             <li>
@@ -103,7 +126,7 @@ export default function HowToPlayModal() {
                                 You can also adjust whether to show/hide commentary and move hints.
                             </li>
                         </ul>
-                    </div>
+                    </div> */}
                 </Fade>
             </Modal>
         </div>

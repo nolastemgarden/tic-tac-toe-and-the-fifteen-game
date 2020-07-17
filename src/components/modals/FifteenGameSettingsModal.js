@@ -6,10 +6,6 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Switch from '@material-ui/core/Switch';
-
-
-
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -39,7 +35,9 @@ const useStyles = makeStyles((theme) => ({
         lineHeight: '0.8vmin',
     },
     buttonIcon: {
-        marginRight: '0.6rem'
+        marginRight: '1vmin',
+        fontSize: 'larger'
+        // fontSize: 'min(max(0.7rem, 3vmin), 22px)',
     },
     modal: {
         display: 'flex',
@@ -51,53 +49,100 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        height: 'min(100vw, 80vh)',
+        maxHeight: '950px',
+        width: 'min(60vh, 75vw)',
+        maxWidth: '675px',
+        display: 'flex',
+        flexDirection: 'column'
     },
+    switchBox: {
+        // border: 'solid red 1px',
+        display: 'flex',
+        alignItems: 'center',
 
+    },
     switchLabel: {
-        lineHeight: '1rem'
-    },
+        // fontSize: '2.2vmin',
+        fontSize: 'min(max(2rem, 4vmin), 30px)',
+        width: '60%'
 
+    },
+    heading: {
+        fontSize: 'min(max(1rem, 4vmin), 30px)',
+        fontWeight: 'bold',
+        marginBlockEnd: '0',
+        marginBlockStart: '1rem',
+    },
+    body: {
+        // fontSize: 'theme.typography.pxToRem(20)',
+        fontSize: '1.2rem',
+        fontWeight: 'regular',
+        marginBlockEnd: '0',
+        marginBlockStart: '0',
+    }
 }));
 
 export default function SettingsModal(props) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const showMoves = props.showMoves
+    const showCommentary = props.showCommentary
+    const toggleShowMovesSwitch = props.toggleShowMovesSwitch
+    const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
 
+    // Modal Open & Close 
+    const [open, setOpen] = React.useState(false);
     const openSettingsModal = () => {
         setOpen(true);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
 
     const showMovesSwitch = (
-        <Box className={classes.buttonBox}>
-            <Typography className={classes.switchLabel}>
-                Show Moves
-            </Typography>
-            <Switch
-                checked={props.showMoves}
-                onChange={props.toggleShowMovesSwitch}
-                color="primary"
-                name="checkedB"
-                inputProps={{ 'aria-label': 'primary checkbox' }}
-            />
-        </Box>
+        <React.Fragment>
+            <Box className={classes.switchBox}>
+                <Typography className={classes.switchLabel}>
+                    Show Moves
+                </Typography>
+                <Switch
+                    checked={showMoves}
+                    onChange={toggleShowMovesSwitch}
+                    color="primary"
+                    name="checkedB"
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+            </Box>
+            <DialogContentText className={classes.body} >
+                Show whether each possible move leads to a win, loss, or draw with color coded hints ont the board.
+            </DialogContentText>
+        </React.Fragment>
     );
 
     const showCommentarySwitch = (
-        <Switch
-            checked={props.showCommentary}
-            onChange={props.toggleShowCommentarySwitch}
-            color="primary"
-            name="checkedB"
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-        />
+        <React.Fragment>
+            <Box className={classes.switchBox}>
+                <Typography className={classes.switchLabel}>
+                    Show Commentary
+                </Typography>
+                <Switch
+                    checked={showCommentary}
+                    onChange={toggleShowCommentarySwitch}
+                    color="primary"
+                    name="checkedB"
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+            </Box>
+            <DialogContentText className={classes.body} >
+                Show a verbal description of the position and the coach's advice about what to look out for.
+            </DialogContentText>
+        </React.Fragment>
+
+
     );
 
     return (
-        <div className={classes.root} >
+        <div className={classes.root}>
             <Button
                 className={classes.button}
                 variant="contained"
@@ -106,43 +151,33 @@ export default function SettingsModal(props) {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
             >
-                <SettingsIcon 
-                    className={classes.buttonIcon}
-                />
+                <SettingsIcon className={classes.buttonIcon} />
                 Settings
             </Button>
-            
-            
-            <Dialog 
-                open={open} 
-                onClose={handleClose} 
+
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">
-                    Settings
-                </DialogTitle>
-                
+
+
                 <DialogContent>
-                    <DialogContentText>
-                            To subscribe to this website, please enter your email address here. We will send updates
-                            occasionally.
-                    </DialogContentText>
-                    {showMovesSwitch}
+                    <div className={classes.heading} >
+                        Settings
+                    </div>
                     {showCommentarySwitch}
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
-                        fullWidth
-                    />
+
+                    {showMovesSwitch}
+
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        onClick={handleClose} 
+                    <Button
+                        onClick={handleClose}
                         color="primary"
                         variant="outlined"
+                        className={classes.body}
                     >
                         Apply
                     </Button>
@@ -151,5 +186,3 @@ export default function SettingsModal(props) {
         </div>
     );
 }
-
-

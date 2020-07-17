@@ -11,21 +11,16 @@ import './App.css';
 
 // My Components & Pages
 import Navbar from './components/Navbar';
-import WelcomePage from "./components/WelcomePage";
-import TicTacToeGame from './TicTacToe/TicTacToeGame';
-import FifteenGame from './FifteenGame/FifteenGame';
-import MagicSquares from "./MagicSquares/MagicSquares";
-import StrategyPage from "./pages/StrategyPage";
+import WelcomePage from "./components/pages/WelcomePage";
+import TicTacToeGame from './components/games/TicTacToeGame';
+import FifteenGame from './components/games/FifteenGame';
+import MagicSquares from "./components/pages/MagicSquares";
+import StrategyPage from "./components/pages/StrategyPage";
 
 // MUI  components
 // import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
-// import Button from '@material-ui/core/Button';
-// import Menu from '@material-ui/core/Menu';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import MenuIcon from '@material-ui/icons/Menu';
-// import AppBar from '@material-ui/core/AppBar'
 import Typography from '@material-ui/core/Typography';
 
 // THEMING
@@ -35,23 +30,6 @@ import {
     ThemeProvider
 } from '@material-ui/core/styles';
 
-
-// let availHeight = window.screen.availHeight;
-// let availWidth = window.screen.availWidth;
-
-// let containerHeight;
-// let containerWidth;
-
-// if (availHeight * 3 / 4 < availWidth) {
-//     containerHeight = '100vh';
-//     containerWidth = '75vh';
-// } else if (availHeight * 3 / 4 > availWidth) {
-//     console.log(`orientation === "portrait"`);
-//     containerWidth = availWidth;
-//     containerHeight = availWidth * 4 / 3;
-// } else {
-//     console.log("The availHeight and availWidth API isn't supported in this browser :(");
-// }
 
 
 const useStyles = makeStyles((theme) => ({
@@ -70,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     container: {
+        // border: 'solid red 1px',
         backgroundColor: '#4AC9FD',
         height: 'min(133vw, 100vh)',
         maxHeight: '1200px',
@@ -87,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     },
     
     footer: {
-        border: 'solid red 1px',
+        // border: 'solid red 1px',
         display: 'flex',
         flexDirection: 'row-reverse',
         height: '3%',

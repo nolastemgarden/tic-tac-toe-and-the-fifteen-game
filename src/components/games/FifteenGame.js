@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 
 
 // My Components
-import Board from "../components/boards/FifteenBoard";
-import Panel from "../components/Panel";
+import Board from "../boards/FifteenBoard";
+import Panel from "../Panel";
 
 
 // MUI  components
@@ -53,11 +53,10 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 'inherit',
         width: 'calc(100% - 4rem)',
         padding: '1rem',
-        marginBottom: '1rem',
-
-        height: '35%',
-
-        flex: '1 1 35%',
+        
+        marginBottom: '0rem',
+        height: '37%',
+        flex: '1 1 37%',
 
         display: 'flex',
         flexDirection: 'row',
@@ -93,21 +92,6 @@ export default function FifteenGame() {
     // let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(false);
     let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(true);
 
-    function getBoardStatus(moveList = history) {
-        let boardStatus = Array(9).fill('unclaimed')
-        moveList.forEach((numberClaimed, turnNumber) => {
-            boardStatus[numberClaimed] = (turnNumber % 2 === 0) ? 'playerOne' : 'playerTwo';
-        })
-        return boardStatus;
-    }
-
-
-    function handleCardClick() {
-        
-    }
-
-
-
 
     return (
         <Box className={classes.root} >
@@ -122,7 +106,7 @@ export default function FifteenGame() {
                 <Panel
                     gameType='FifteenGame'
                     // data={getPanelData(history)} 
-                    // status={getStatus()}
+                    status={gameStatus()}
                     // commentary={getCommentary()}
                     // showMoves={showMoves}
                     // showCommentary={showCommentary}
@@ -177,6 +161,10 @@ export default function FifteenGame() {
         setBotMovesFirst(!botMovesFirst)
     }
 
+
+    function gameStatus(moveList = history) {
+        
+    }
 
     function gameOver(moveList = history) {
         

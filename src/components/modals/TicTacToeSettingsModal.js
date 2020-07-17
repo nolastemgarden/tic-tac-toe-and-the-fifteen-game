@@ -114,7 +114,7 @@ export default function SettingsModal(props) {
                 />
             </Box>
             <DialogContentText className={classes.body} >
-                Show whether each possible move leads to a win, loss, or draw with color coded hints ont the board.
+                Show whether each possible move leads to a win, loss, or draw with color coded hints on the board.
             </DialogContentText>
         </React.Fragment>
     );

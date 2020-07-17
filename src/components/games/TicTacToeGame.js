@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import './TicTacToe.css';
 
 // My Components
-import Board from "../components/boards/TicTacToeBoard";
-import Panel from "../components/Panel";
+import Board from "../boards/TicTacToeBoard";
+import Panel from "../Panel";
 
 
 // MUI  components
@@ -38,9 +38,9 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '1rem',
         
 
-        // height: '55%',
+        height: '55%',
         
-        flex: '0 0 55%',
+        
         
         display: 'flex',
         justifyContent: 'center',
@@ -50,12 +50,11 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 'inherit',
         width: 'calc(100% - 4rem)',
         padding: '1rem',
-        marginBottom: '1rem',
         
-        // height: 'calc(45% - 3rem)',
-
-        flex: '1 1 35%',
-        
+        marginBottom: '0rem',
+        height: '37%',
+        flex: '1 1 37%',
+                
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center'
@@ -68,10 +67,10 @@ export default function TicTacToeGame() {
     const classes = useStyles();
 
     let [history, setHistory] = useState([]); 
-    // let [showMoves, setShowMoves] = useState(false); 
-    let [showMoves, setShowMoves] = useState(true); 
-    // let [showCommentary, setShowCommentary] = useState(false);  
-    let [showCommentary, setShowCommentary] = useState(true);  
+    let [showMoves, setShowMoves] = useState(false); 
+    // let [showMoves, setShowMoves] = useState(true); 
+    let [showCommentary, setShowCommentary] = useState(false);  
+    // let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
         <Box className={classes.root} >
