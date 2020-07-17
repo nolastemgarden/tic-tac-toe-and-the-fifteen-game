@@ -40,7 +40,7 @@ export default function NumberCard(props) {
     const status = props.status;  // unclaimed, playerOne, or playerTwo
     const handleClick = props.handleClick
     
-    console.log(`NumCard Id: ${id} has status: ${status}`)
+    // console.log(`NumCard Id: ${id} has status: ${status}`)
     
     const num = props.num
     // function handleSquareClick(id) = props.handleSquareClick
