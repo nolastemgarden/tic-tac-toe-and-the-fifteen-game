@@ -69,6 +69,11 @@ const useStyles = makeStyles((theme) => ({
 export default function FifteenGame() {
     const classes = useStyles();
 
+    // CONVENTION: History refers to actual game state.  A moveList is similar but may be a hypotetical position. 
+    // a moveList implies that it is a sequential list of the number cards claimed turn by turn.  
+    // A moveSet on the other hand is a subset of a moveList, numbers that have all been claimed by the same player. 
+    // 
+
     let [history, setHistory] = useState([]);
     
     // HINTS shown on board. May not implement in this game.
@@ -200,6 +205,7 @@ export default function FifteenGame() {
     // WON GAME defined: the player specified has all three squares in at least one line.
     function wins(player, moveList = history) {
         let myMoves = filterMoves(player, moveList = history)
+        sumsOfTwo(myMoves)
         
         return (false);
     }
@@ -220,9 +226,33 @@ export default function FifteenGame() {
         }
         let num = (player === "playerOne") ? 0 : 1;
         let myMoves = moveList.filter((move, turnNumber) => turnNumber % 2 === num)
-        console.log(`filterMoves() called for ${player} found these moves: ${myMoves}`)
+        // console.log(`filterMoves() called for ${player} found these moves: ${myMoves}`)
         return (myMoves);
     }
+
+    // An array listing the element-sums of each three-element subset of the moveSet. 
+    function sumsOfThree(moveSet) {  
+        // nested loops don't scale but here they don't need to! 5 choose 3 is only 10!
+        // for (let i = 0, i > )
+    }
+
+    
+    // An array listing the element-sums of each two-element subset of the moveSet. 
+    function sumsOfTwo(moveSet) {
+        // nested loops don't scale but here they don't need to! 5 choose 2 is only 10!
+        let sums = [];
+        for (let i = 0; i < moveSet.length - 1; i++){
+            for (let j = i + 1; j < moveSet.length; j++){
+                let sum = moveSet[i] + moveSet[j];
+                console.log(`Sum of i + j: ${sum}`)
+                sums.push(sum);
+            }
+        }
+        console.log(`Sums of two-element subsets of ${moveSet} are: ${sums}`)
+        return sums;
+    }
+
+
 }
 
 
