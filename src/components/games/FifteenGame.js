@@ -123,7 +123,7 @@ export default function FifteenGame() {
 
 
     function getBoardStatus(moveList = history) {
-        let boardStatus = Array(9).fill('unclaimed')
+        let boardStatus = Array(10).fill('unclaimed')
         moveList.forEach((numberClaimed, turnNumber) => {
             boardStatus[numberClaimed] = (turnNumber % 2 === 0) ? 'playerOne' : 'playerTwo';
         })
@@ -131,6 +131,7 @@ export default function FifteenGame() {
     }
 
 
+    // CLICK HANDLERS
     function handleCardClick(cardClicked) {
         if (gameOver()) {
             console.log("return without effects from handleCardClick(). The Game is already over.")
@@ -163,7 +164,25 @@ export default function FifteenGame() {
 
 
     function gameStatus(moveList = history) {
-        
+        if (wins('playerOne', moveList)) {
+            return (`Player one wins!`)
+        }
+        else if (wins('playerTwo', moveList)) {
+            return (`Player two wins!`)
+        }
+        else if (gameDrawn(moveList)) {
+            return (`Draw.`)
+        }
+        else if (moveList.length % 2 === 0) {
+            return (`Player ones's turn.`)
+        }
+        else if (moveList.length % 2 === 1) {
+            return (`Player two's turn.`)
+        }
+        else {
+            console.error("A call to gameStatus() did not work!");
+            return
+        }
     }
 
     function gameOver(moveList = history) {
@@ -178,6 +197,32 @@ export default function FifteenGame() {
         return (moveList.includes(cardClicked));
     }
 
+    // WON GAME defined: the player specified has all three squares in at least one line.
+    function wins(player, moveList = history) {
+        let myMoves = filterMoves(player, moveList = history)
+        
+        return (false);
+    }
+
+    function gameDrawn(moveList = history) {
+        return (false);
+    }
+
+
+
+
+
+    // FILTER MOVES: Reduce a movesList to only the moves by the specified player
+    function filterMoves(player, moveList = history) {
+        if (player !== "playerOne" && player !== "playerTwo"){
+            console.error(`filterMoves() recieved an invalid player prop.`)
+            return 1;
+        }
+        let num = (player === "playerOne") ? 0 : 1;
+        let myMoves = moveList.filter((move, turnNumber) => turnNumber % 2 === num)
+        console.log(`filterMoves() called for ${player} found these moves: ${myMoves}`)
+        return (myMoves);
+    }
 }
 
 

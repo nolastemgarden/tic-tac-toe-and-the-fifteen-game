@@ -85,7 +85,7 @@ export default function Board(props) {
             <NumberCard
                 key={num}
                 id={num}
-                status={boardStatus[num-1]}     // boardStatus is a 0-indexed array but the number cards start with One.
+                status={boardStatus[num]}     // number cards start with One.
                 handleClick={handleCardClick}
             />
         ;

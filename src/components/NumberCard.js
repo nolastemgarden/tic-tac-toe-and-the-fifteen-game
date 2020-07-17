@@ -18,7 +18,7 @@ const useStyles = makeStyles({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '5rem',
+        fontSize: '500%',
         fontWeight: 'bold',
     },
     playerOne: {
@@ -64,7 +64,7 @@ export default function NumberCard(props) {
         <Paper
             elevation={4}
             className={className}
-            onClick={() => handleClick(id - 1)}   // squareIds are 0-indexed but the number cards start with One.
+            onClick={() => handleClick(id)}  // number cards start with One.
         >
             {id}
         </Paper>

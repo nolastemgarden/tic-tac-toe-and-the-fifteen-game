@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         textOverflow: 'ellipsis',
     },
     gameStatus: {
-        fontSize: '5vmin',
+        fontSize: '2rem',
         fontWeight: 'bold'
     },
     commentary: {
