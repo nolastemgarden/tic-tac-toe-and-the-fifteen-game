@@ -191,9 +191,10 @@ export default function FifteenGame() {
     }
 
     function gameOver(moveList = history) {
-        
-        // TODO //
-        return false;
+        if (moveList.length < 5){
+            return false;
+        } 
+        return (moveList.length === 9 || wins("playerOne") || wins("playerTwo"));
     }
 
     function cardClaimed(cardClicked, moveList = history){
@@ -204,21 +205,20 @@ export default function FifteenGame() {
 
     // WON GAME defined: the player specified has all three squares in at least one line.
     function wins(player, moveList = history) {
-        let myMoves = filterMoves(player, moveList = history)
-        sumsOfTwo(myMoves)
-        
-        return (false);
+        let myMoves = filterMoves(player, moveList)
+        return (sumsOfThree(myMoves).includes(15));
     }
 
     function gameDrawn(moveList = history) {
-        return (false);
+        // Thanks to short circuit evaluation this is fairly efficient, not making many superfluous calls to wins().
+        return (moveList.length === 9 && !wins("playerOne") && !wins("playerTwo"));
     }
 
 
 
 
 
-    // FILTER MOVES: Reduce a movesList to only the moves by the specified player
+    // FILTER MOVES: Reduce a movesList to only the moves by the specified "playerOne" or "playerTwo"
     function filterMoves(player, moveList = history) {
         if (player !== "playerOne" && player !== "playerTwo"){
             console.error(`filterMoves() recieved an invalid player prop.`)
@@ -232,19 +232,32 @@ export default function FifteenGame() {
 
     // An array listing the element-sums of each three-element subset of the moveSet. 
     function sumsOfThree(moveSet) {  
-        // nested loops don't scale but here they don't need to! 5 choose 3 is only 10!
-        // for (let i = 0, i > )
+        // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 3 is only 10!
+        let sums = [];
+        if (moveSet.length < 3){
+            return sums;
+        }
+        for (let i = 0; i < moveSet.length - 2; i++) {
+            for (let j = i + 1; j < moveSet.length - 1; j++) {
+                for (let k = j + 1; k < moveSet.length; k++) {
+                    let sum = moveSet[i] + moveSet[j] + moveSet[k];
+                    // console.log(`Sum of i + j + k: ${sum}`)
+                    sums.push(sum);
+                }
+            }
+        }
+        console.log(`Sums of three-element subsets of ${moveSet} are: ${sums}`)
+        return sums;
     }
-
     
     // An array listing the element-sums of each two-element subset of the moveSet. 
     function sumsOfTwo(moveSet) {
-        // nested loops don't scale but here they don't need to! 5 choose 2 is only 10!
+        // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 2 is only 10!
         let sums = [];
         for (let i = 0; i < moveSet.length - 1; i++){
             for (let j = i + 1; j < moveSet.length; j++){
                 let sum = moveSet[i] + moveSet[j];
-                console.log(`Sum of i + j: ${sum}`)
+                // console.log(`Sum of i + j: ${sum}`)
                 sums.push(sum);
             }
         }
