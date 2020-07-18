@@ -195,6 +195,7 @@ export default function FifteenGame() {
             return false;
         } 
         return (moveList.length === 9 || wins("playerOne") || wins("playerTwo"));
+        // I was tempted to rewrite this to useState() because it was calling wins() a lot. Decided in the end that it was enough to add the early return for the turn numbers before which the game can possibly be won.
     }
 
     function cardClaimed(cardClicked, moveList = history){
