@@ -30,7 +30,11 @@ const useStyles = makeStyles((theme) => ({
         
     },
     infoArea: {
+        // border: 'solid red 1px',
         height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        // alignItems: 'stretch',
         // maxHeight: '100%',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
@@ -45,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
         paddingRight: '5vmin',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+        flex: '1 0 70%'
     },
 
     buttonArea: {

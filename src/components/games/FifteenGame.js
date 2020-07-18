@@ -73,9 +73,14 @@ const useStyles = makeStyles((theme) => ({
     }, 
     sumsOfTwoList: {
         // border: 'solid navy 1px',
+        height: '5rem',
         display: 'flex',
         justifyContent: 'center',
-        marginX: '1rem'
+        marginX: '1rem',
+        // paddingBottom: '3rem'
+    },
+    record: {
+        alignSelf: 'bottom'
     }
 }));
 
@@ -88,6 +93,7 @@ export default function FifteenGame() {
     // A moveSet on the other hand is a subset of a moveList, numbers that have all been claimed by the same player. 
     // 
 
+    let [record, setRecord] = useState([1,0,0]);
     let [history, setHistory] = useState([]);
     
     // HINTS shown on board. May not implement in this game.
@@ -165,9 +171,12 @@ export default function FifteenGame() {
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
     function handleUndoButtonClick() {
-        const shortenedHistory = history.slice(0, history.length - 1)
-        console.log(`handleUndoButtonClick() removed ${history[history.length - 1]} . New Shortened history: ${shortenedHistory}`);
-        setHistory(shortenedHistory);
+        const shortenedHistory = history.slice(0, history.length - 2)
+        console.log(`handleUndoButtonClick() removes both the most recent player move and bot move ${shortenedHistory}`);
+        setHistory(history.slice(0, history.length - 1));
+        setTimeout(() => {
+            setHistory(shortenedHistory);
+        }, 500);
     }
     function handleNewGameButtonClick() {
         const empty = [];
@@ -182,7 +191,7 @@ export default function FifteenGame() {
     }
 
     function getCommentary(moveList = history) {
-        if (moveList.length < 3){  // TODO AND Win Loss Draw SCORE === 0, 0, 0,
+        if (moveList.length < 3 && record === [0,0,0]){ 
             let explanation =
                 <Grid container className={classes.explanation}>
                     <Grid item xs={12}>
@@ -221,12 +230,12 @@ export default function FifteenGame() {
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="subtitle1">
-                            <strong>Player One</strong>
+                            <strong>Player</strong>
                         </Typography>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="subtitle1">
-                            <strong>Player Two</strong>
+                            <strong>Bot</strong>
                         </Typography>
                     </Grid>
                     <Grid item xs={4} className={classes.sumsOfTwoList}>
@@ -238,6 +247,23 @@ export default function FifteenGame() {
                         <Typography variant="subtitle1" >
                             {playerTwoSums.join(", ")}
                         </Typography>
+                    </Grid>
+                    <Grid item xs={12} container className={classes.record}>
+                        <Grid item xs={4}>
+                            <Typography variant="subtitle1">
+                                <strong>Wins:</strong> {record[0]}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Typography variant="subtitle1">
+                                <strong>Losses:</strong> {record[1]}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Typography variant="subtitle1">
+                                <strong>Draws:</strong> {record[2]}
+                            </Typography>
+                        </Grid>
                     </Grid>
                 </Grid>
             return hints;
