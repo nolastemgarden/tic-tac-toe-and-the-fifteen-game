@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        fontSize: 'min(20px, 1rem)',
         lineHeight: '0.8vmin',
     },
     buttonIcon: {

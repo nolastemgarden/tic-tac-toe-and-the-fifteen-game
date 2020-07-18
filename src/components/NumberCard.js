@@ -9,15 +9,16 @@ import Paper from '@material-ui/core/Paper';
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
-    square: {
-        margin: '1vmin',
-        width: '13vmin',
-        height: '13vmin',
+    numCard: {
+        margin: '0.5rem',
+        marginBottom: '1.5rem',
+        width: '18%',
+        height: '75%',
         boxSizing: 'border-box',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '10vmin',
+        fontSize: '500%',
         fontWeight: 'bold',
     },
     playerOne: {
@@ -34,22 +35,26 @@ const useStyles = makeStyles({
 
 export default function NumberCard(props) {
     const classes = useStyles();
-    const status = props.status
-    console.log(`NumCard called with status = ${status}`)
+    
+    const id = props.id
+    const status = props.status;  // unclaimed, playerOne, or playerTwo
+    const handleClick = props.handleClick
+    
+    // console.log(`NumCard Id: ${id} has status: ${status}`)
     
     const num = props.num
     // function handleSquareClick(id) = props.handleSquareClick
 
     let className;
     switch (status) {
-        case 'red':
-            className = `${classes.square} ${classes.playerOne} `
+        case 'playerOne':
+            className = `${classes.numCard} ${classes.playerOne} `
             break;
-        case 'yellow':
-            className = `${classes.square} ${classes.playerTwo} `
+        case 'playerTwo':
+            className = `${classes.numCard} ${classes.playerTwo} `
             break;
-        case 'available':
-            className = `${classes.square} `
+        case 'unclaimed':
+            className = `${classes.numCard} `
             break;
         default:
             throw console.error("number card passed invalid status");
@@ -57,10 +62,11 @@ export default function NumberCard(props) {
     //className={`${classes.square} ${classes.red} `}
     return (
         <Paper
+            elevation={4}
             className={className}
-            onClick={() => props.handleClick(num)}
+            onClick={() => handleClick(id)}  // number cards start with One.
         >
-            {num}
+            {id}
         </Paper>
         
     )

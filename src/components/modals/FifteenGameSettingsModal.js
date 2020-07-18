@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
+        fontSize: 'min(20px, 1rem)',
         lineHeight: '0.8vmin',
     },
     buttonIcon: {
@@ -136,8 +137,8 @@ export default function SettingsModal(props) {
                 Show a verbal description of the position and the coach's advice about what to look out for.
             </DialogContentText>
         </React.Fragment>
-        
-        
+
+
     );
 
     return (
@@ -148,32 +149,32 @@ export default function SettingsModal(props) {
                 color="primary"
                 onClick={openSettingsModal}
                 aria-controls="simple-menu"
-                aria-haspopup="true" 
+                aria-haspopup="true"
             >
                 <SettingsIcon className={classes.buttonIcon} />
                 Settings
             </Button>
-            
-            
-            <Dialog 
-                open={open} 
-                onClose={handleClose} 
+
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
-                
-                
+
+
                 <DialogContent>
                     <div className={classes.heading} >
                         Settings
                     </div>
                     {showCommentarySwitch}
-                    
+
                     {showMovesSwitch}
-                    
+
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        onClick={handleClose} 
+                    <Button
+                        onClick={handleClose}
                         color="primary"
                         variant="outlined"
                         className={classes.body}
@@ -185,5 +186,3 @@ export default function SettingsModal(props) {
         </div>
     );
 }
-
-

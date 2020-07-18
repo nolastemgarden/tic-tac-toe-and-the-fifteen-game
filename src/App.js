@@ -11,57 +11,44 @@ import './App.css';
 
 // My Components & Pages
 import Navbar from './components/Navbar';
-import WelcomePage from "./components/WelcomePage";
-import TicTacToeGame from './TicTacToe/TicTacToeGame';
-import FifteenGame from './FifteenGame/FifteenGame';
-import MagicSquares from "./MagicSquares/MagicSquares";
-import StrategyPage from "./pages/StrategyPage";
+import WelcomePage from "./components/pages/WelcomePage";
+import TicTacToeGame from './components/games/TicTacToeGame';
+import FifteenGame from './components/games/FifteenGame';
+import MagicSquares from "./components/pages/MagicSquares";
+import StrategyPage from "./components/pages/StrategyPage";
 
 // MUI  components
 // import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
-// import Button from '@material-ui/core/Button';
-// import Menu from '@material-ui/core/Menu';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import MenuIcon from '@material-ui/icons/Menu';
-// import AppBar from '@material-ui/core/AppBar'
-import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
+// THEMING
+import theme from "./theme";
+import {
+    makeStyles,
+    ThemeProvider
+} from '@material-ui/core/styles';
 
 
 
-
-import { makeStyles } from '@material-ui/core/styles';
-
-let availHeight = window.screen.availHeight;
-let availWidth = window.screen.availWidth;
-
-// let containerHeight;
-// let containerWidth;
-
-// if (availHeight * 3 / 4 < availWidth) {
-//     containerHeight = '100vh';
-//     containerWidth = '75vh';
-// } else if (availHeight * 3 / 4 > availWidth) {
-//     console.log(`orientation === "portrait"`);
-//     containerWidth = availWidth;
-//     containerHeight = availWidth * 4 / 3;
-// } else {
-//     console.log("The availHeight and availWidth API isn't supported in this browser :(");
-// }
-
-
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
         width: '100vw',
+        minHeight: '675px',
+        minWidth: '500px',
+
+
         // boxSizing: 'border-box',
         backgroundColor: '#ccFFFF',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'start',
 
     },
     container: {
+        // border: 'solid red 1px',
         backgroundColor: '#4AC9FD',
         height: 'min(133vw, 100vh)',
         maxHeight: '1200px',
@@ -71,13 +58,18 @@ const useStyles = makeStyles({
         // width: containerWidth,
         borderRadius: '2vmin',
         overflow: 'hidden',
+        
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
+        // justifyContent: 'center',
     },
+    
     footer: {
+        // border: 'solid red 1px',
         display: 'flex',
         flexDirection: 'row-reverse',
-        height: '5%',
+        height: '3%',
         width: '100%',
         alignItems: 'bottom',
     },
@@ -85,35 +77,20 @@ const useStyles = makeStyles({
         paddingTop: '0.7vmin',
         paddingRight: '2.5vmin',
         color: 'navy',
-        fontSize: '1.6vmin'
-    },
-    // title: {
-    //     flexGrow: '1',
-    //     marginLeft: '1rem',
-    // },
-    
-    
-})
+        fontSize: '1.6vmin',
+    }
+}))
 
 
 export default function App() {
     const classes = useStyles();
-    // const [pageTitle, setPageTitle] = React.useState("Welcome");
-    
     const [pageTitle, setPageTitle] = React.useState("Welcome");
   
-    // Similar to componentDidMount and componentDidUpdate:
-    React.useEffect(() => {
-        // Update the document title using the browser API
-        // document.title = `You clicked ${count} times`;
-
-    });
-
     return (
-        <div className={classes.root} >
-            <div className={classes.container} >
+        <Box className={classes.root} >
+            <Box className={classes.container} >
                 <Router>
-                        <Switch>
+                    <Switch>
                         <Route exact path="/">
                             <Navbar pageTitle={"Welcome"} />
                             <WelcomePage />
@@ -141,8 +118,8 @@ export default function App() {
                     </Switch>
                 </Router>
                 <Footer />
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }
 

@@ -1,22 +1,46 @@
 import React from 'react';
 
 // My Components
-import NumberCard from "./NumberCard";
+import NumberCard from "../NumberCard";
 
 // MUI  components
 import Paper from '@material-ui/core/Paper';
-import ClearIcon from '@material-ui/icons/Clear';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import Box from '@material-ui/core/Box';
+
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     board: {
-        width: '50vmin',
-        height: '50vmin',
+        // border: 'solid red 1px',
+        width: '100%',
+        height: '100%',
         display: 'flex',
-        flexWrap: 'wrap',
-        alignContent: 'center',
+        flexDirection: 'column',
+        
+        // alignContent: 'center',
+        // justifyContent: 'center',
+    },
+    row1: {
+        // border: 'solid red 1px',
+        width: '100%',
+        height: '50%',
+        
+        display: 'flex',
+        flexDirection: 'row',
+
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+    },
+    row2: {
+        // border: 'solid red 1px',
+        width: '100%',
+        height: '50%',
+
+        display: 'flex',
+        flexDirection: 'row',
+
+        alignItems: 'start',
         justifyContent: 'center',
     },
 });
@@ -49,39 +73,19 @@ const useStyles = makeStyles({
 export default function Board(props) {
     const classes = useStyles();
     
-    const history = props.history;
-    console.log(`Board recieved history: ${history}`)
-    const handleCardClick = props.handleCardClick;
-    
-    // Is a given number card claimed? If so by who?
-    function getStatus(num){
-        // console.log(`Get Status called on Num: ${num}`)
-        
-        const key = history.indexOf(num);
-        console.log(`Key: ${key}`)
-        if (key === -1){
-            return 'available';
-        }
-        else if (key % 2 === 0) {
-            return 'red';
-        }
-        else if (key % 2 === 1) {
-            return 'yellow';
-        }
-        else {
-            console.error(`getStatus(num) is returning undefined`)
-            return undefined;
-        }
-    }
+    // const history = props.history;
+    // console.log(`Board recieved history: ${history}`)
 
+    const boardStatus = props.boardStatus;
+    const handleCardClick = props.handleCardClick;
     
     let board = [];
     for (let num = 1; num <= 9; num++) {
         let newNumberCard =
             <NumberCard
                 key={num}
-                num={num}
-                status={getStatus(num)} 
+                id={num}
+                status={boardStatus[num]}     // number cards start with One.
                 handleClick={handleCardClick}
             />
         ;
@@ -91,9 +95,14 @@ export default function Board(props) {
     
 
     return (
-        <div className={classes.board}>
-            {board}
-        </div>
+        <Box className={classes.board}>
+            <Box className={classes.row1}>
+                {board.slice(0, 5)}
+            </Box>
+            <Box className={classes.row2}>
+                {board.slice(5)}
+            </Box>
+        </Box>
     )
 }
 
