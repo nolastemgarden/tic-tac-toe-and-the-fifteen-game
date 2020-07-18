@@ -38,20 +38,17 @@ const useStyles = makeStyles((theme) => ({
         // maxHeight: '100%',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+        paddingRight: '5vmin',
     },
     gameStatus: {
         fontSize: '2rem',
         fontWeight: 'bold'
     },
     commentary: {
-        // fontSize: 'max(1rem, 2.2vmin)',
-        // fontSize: '1rem',
-        paddingRight: '5vmin',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         flex: '1 0 70%'
     },
-
     buttonArea: {
         display: 'flex',
         flexDirection: 'column',
@@ -170,9 +167,10 @@ export default function Panel(props) {
                 <Typography className={classes.gameStatus} noWrap >
                     {status}
                 </Typography>
-                <Typography variant='body2' className={classes.commentary}  >
+                {/* <Typography variant='body2' className={classes.commentary}  >
                     {commentary}
-                </Typography>
+                </Typography> */}
+                {commentary}
             </Grid>
             <Grid item className={classes.buttonArea} xs={4}>
                 {undoButton}
