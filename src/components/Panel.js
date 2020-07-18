@@ -99,7 +99,7 @@ export default function Panel(props) {
             color="primary"
             className={classes.button}
             onClick={() => handleUndoButtonClick()}
-            
+            disabled={(status === "Player one wins!" || status === "Player two wins!" || status === "Draw.")}
         >
             <UndoIcon className={classes.buttonIcon} />
             Undo

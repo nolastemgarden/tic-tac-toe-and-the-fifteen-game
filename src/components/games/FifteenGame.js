@@ -172,7 +172,12 @@ export default function FifteenGame() {
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     
         console.log(`History updated for player move: ${history.concat(cardClicked)}  Now finding best move for Bot...`)
-    
+        if (wins("playerOne", updatedHistory) || updatedHistory.length === 9) {
+            console.log("return from handleCardClick() without a Bot move as the player just won.")
+            return;
+        }
+        
+        
         let botMove = getBotMove(updatedHistory);
         setTimeout(() => {
             setHistory(updatedHistory.concat(botMove));
@@ -180,6 +185,10 @@ export default function FifteenGame() {
     
     }
     function handleUndoButtonClick() {
+        // if (gameOver()){
+        //     console.log("return early from handleUndoButtonClick() as you can't undo when the game is over. Hit New Game instead")
+        //     return;
+        // }  // This code wasn't what actually disabled the button: it was teh disabled={true} prop in the Panel
         const shortenedHistory = history.slice(0, history.length - 2)
         console.log(`handleUndoButtonClick() removes both the most recent player move and bot move ${shortenedHistory}`);
         setHistory(history.slice(0, history.length - 1));
@@ -198,6 +207,10 @@ export default function FifteenGame() {
     function toggleBotMovesFirst() {
         setBotMovesFirst(!botMovesFirst)
     }
+    function handleGameOver(result) {
+        
+    }
+
 
     function getCommentary(moveList = history) {
         if (moveList.length < 3 && record === [0,0,0]){ 
@@ -312,10 +325,10 @@ export default function FifteenGame() {
         return (moveList.includes(cardClicked));
     }
 
-    // WON GAME defined: the player specified has all three squares in at least one line.
+    // WON GAME: the player specified has a subset of three numbers that sum to 15.  player = either "playerOne" or "playerTwo"
     function wins(player, moveList = history) {
         let myMoves = filterMoves(player, moveList)
-        return (sumsOfThree(myMoves).includes(15));
+        return (sumsOfThree(myMoves).includes(15)); // sumsOfThree() has a built in early return in case myMoves.length > 3
     }
 
     function gameDrawn(moveList = history) {
