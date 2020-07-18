@@ -9,11 +9,12 @@ import Panel from "../Panel";
 
 // MUI  components
 import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
 
 // Custom Styling
 // import './TicTacToe.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { CardContent } from '@material-ui/core';
+import { CardContent, Typography } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
 
     root: {
@@ -63,6 +64,19 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center'
 
     },
+    hintsGridContainer: {
+        // border: 'solid navy 1px',
+        width: '100%',
+        height: '100%',
+        textAlign: 'center',
+        justifyContent: 'space-around',
+    }, 
+    sumsOfTwoList: {
+        // border: 'solid navy 1px',
+        display: 'flex',
+        justifyContent: 'center',
+        marginX: '1rem'
+    }
 }));
 
 
@@ -112,7 +126,7 @@ export default function FifteenGame() {
                     gameType='FifteenGame'
                     // data={getPanelData(history)} 
                     status={gameStatus()}
-                    // commentary={getCommentary()}
+                    commentary={getCommentary()}
                     // showMoves={showMoves}
                     // showCommentary={showCommentary}
                     handleUndoButtonClick={handleUndoButtonClick}
@@ -167,7 +181,68 @@ export default function FifteenGame() {
         setBotMovesFirst(!botMovesFirst)
     }
 
+    function getCommentary(moveList = history) {
+        if (moveList.length < 3){  // TODO AND Win Loss Draw SCORE === 0, 0, 0,
+            let explanation =
+                <Grid container className={classes.explanation}>
+                    <Grid item xs={12}>
+                        <Typography variant="body2">
+                            Play the 15-Game against my bot until you have mastered it! You will take turns making the first move. 
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="body2">
+                            In hard mode my bot never makes a mistake and the best you can do is get a draw.
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="body2">
+                            In easy mode my bot makes exactly one mistake each game and you should be able to win every single time!
+                        </Typography>
+                    </Grid>
+                </Grid>
+            return explanation;
+        }
+        else {
+            
+            let playerOneSums = sumsOfTwo(filterMoves("playerOne", moveList))
+            playerOneSums.sort((a, b) => a - b)
 
+            let playerTwoSums = sumsOfTwo(filterMoves("playerTwo", moveList))
+            playerTwoSums.sort((a, b) => a - b)
+            
+
+            let hints = 
+                <Grid container className={classes.hintsGridContainer}>
+                    <Grid item xs={12}>
+                        <Typography variant="h6">
+                            Sums of Two-Element Subsets
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="subtitle1">
+                            <strong>Player One</strong>
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="subtitle1">
+                            <strong>Player Two</strong>
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={4} className={classes.sumsOfTwoList}>
+                        <Typography variant="subtitle1" >
+                            {playerOneSums.join(", ")}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={4} className={classes.sumsOfTwoList}>
+                        <Typography variant="subtitle1" >
+                            {playerTwoSums.join(", ")}
+                        </Typography>
+                    </Grid>
+                </Grid>
+            return hints;
+        }
+    }
     function gameStatus(moveList = history) {
         if (wins('playerOne', moveList)) {
             return (`Player one wins!`)
@@ -179,7 +254,7 @@ export default function FifteenGame() {
             return (`Draw.`)
         }
         else if (moveList.length % 2 === 0) {
-            return (`Player ones's turn.`)
+            return (`Player one's turn.`)
         }
         else if (moveList.length % 2 === 1) {
             return (`Player two's turn.`)
@@ -199,8 +274,6 @@ export default function FifteenGame() {
     }
 
     function cardClaimed(cardClicked, moveList = history){
-
-        // TODO //
         return (moveList.includes(cardClicked));
     }
 
@@ -214,9 +287,6 @@ export default function FifteenGame() {
         // Thanks to short circuit evaluation this is fairly efficient, not making many superfluous calls to wins().
         return (moveList.length === 9 && !wins("playerOne") && !wins("playerTwo"));
     }
-
-
-
 
 
     // FILTER MOVES: Reduce a movesList to only the moves by the specified "playerOne" or "playerTwo"
@@ -265,6 +335,8 @@ export default function FifteenGame() {
         console.log(`Sums of two-element subsets of ${moveSet} are: ${sums}`)
         return sums;
     }
+
+
 
 
 }
