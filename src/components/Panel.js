@@ -164,9 +164,9 @@ export default function Panel(props) {
     return (
         <Grid container className={classes.root}>
             <Grid item className={classes.infoArea} xs={8}>
-                <Typography className={classes.gameStatus} noWrap >
+                {/* <Typography className={classes.gameStatus} noWrap >
                     {status}
-                </Typography>
+                </Typography> */}
                 {/* <Typography variant='body2' className={classes.commentary}  >
                     {commentary}
                 </Typography> */}
