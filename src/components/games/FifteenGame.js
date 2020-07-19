@@ -105,8 +105,8 @@ export default function FifteenGame() {
     let [showCommentary, setShowCommentary] = useState(true);
 
     // PLAY AGAINST BOT. Default is two human players. 
-    let [playAgainstBot, setPlayAgainstBot] = useState(false);  
-    // let [playAgainstBot, setPlayAgainstBot] = useState(true);
+    // let [playAgainstBot, setPlayAgainstBot] = useState(false);  
+    let [playAgainstBot, setPlayAgainstBot] = useState(true);
 
     // BOT MOVES FIRST. Disabled switch unless playAgainstBot mode is set to true. 
     let [botMovesFirst, setBotMovesFirst] = useState(false);
@@ -114,8 +114,8 @@ export default function FifteenGame() {
 
     // BOT PLAYS PERFECT. Disabled switch unless playAgainstBot mode is set to true. 
     // Easy vs Hard Mode. In easy mode Bot makes 1 game losing mistake per game. in Hard mode the Bot always gets a draw. 
-    // let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(false);
-    let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(true);
+    let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(false);
+    // let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(true);
 
 
     return (
@@ -198,7 +198,8 @@ export default function FifteenGame() {
     }
     function handleNewGameButtonClick() {
         const empty = [];
-        console.log(`History reset to: ${empty}`);
+        console.log(`History reset to: ${empty} and botMovesFirst toggles to ${!botMovesFirst}`);
+        setBotMovesFirst(!botMovesFirst);
         setHistory(empty);
     }
     function togglePlayAgainstBot() {
@@ -245,6 +246,23 @@ export default function FifteenGame() {
 
             let hints = 
                 <Grid container className={classes.hintsGridContainer}>
+                    <Grid item xs={12} container className={classes.record}>
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                <strong>Wins:</strong> {record[0]}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                <strong>Losses:</strong> {record[1]}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Typography variant="h6">
+                                <strong>Draws:</strong> {record[2]}
+                            </Typography>
+                        </Grid>
+                    </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h6">
                             Sums of Two-Element Subsets
@@ -270,42 +288,54 @@ export default function FifteenGame() {
                             {playerTwoSums.join(", ")}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} container className={classes.record}>
-                        <Grid item xs={4}>
-                            <Typography variant="subtitle1">
-                                <strong>Wins:</strong> {record[0]}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography variant="subtitle1">
-                                <strong>Losses:</strong> {record[1]}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography variant="subtitle1">
-                                <strong>Draws:</strong> {record[2]}
-                            </Typography>
-                        </Grid>
-                    </Grid>
                 </Grid>
             return hints;
         }
     }
     function gameStatus(moveList = history) {
-        if (wins('playerOne', moveList)) {
-            return (`Player one wins!`)
+        if (botMovesFirst){
+            if (moveList.length === 0) {
+                return (`Bot moves first`);
+            }
+            if (gameOver()) {
+                if (wins('playerOne', moveList)) {
+                    return (`Bot Wins!`)
+                }
+                if (wins('playerTwo', moveList)) {
+                    return (`Player Wins!`)
+                }
+                else {
+                    return (`Game Over. Draw.`)
+                }
+            }
+            if (moveList.length % 2 === 0) {
+                return (`Bot's turn.`)
+            }
+            if (moveList.length % 2 === 1) {
+                return (`Player's turn.`)
+            }
         }
-        else if (wins('playerTwo', moveList)) {
-            return (`Player two wins!`)
-        }
-        else if (gameDrawn(moveList)) {
-            return (`Draw.`)
-        }
-        else if (moveList.length % 2 === 0) {
-            return (`Player one's turn.`)
-        }
-        else if (moveList.length % 2 === 1) {
-            return (`Player two's turn.`)
+        else if (!botMovesFirst) {
+            if (moveList.length === 0) {
+                return (`Player moves first`);
+            }
+            if (gameOver()) {
+                if (wins('playerOne', moveList)) {
+                    return (`Player Wins!`)
+                }
+                if (wins('playerTwo', moveList)) {
+                    return (`Bot Wins!`)
+                }
+                else {
+                    return (`Game Over. Draw.`)
+                }
+            }
+            if (moveList.length % 2 === 0) {
+                return (`Player's turn.`)
+            }
+            if (moveList.length % 2 === 1) {
+                return (`Bot's turn.`)
+            }
         }
         else {
             console.error("A call to gameStatus() did not work!");
