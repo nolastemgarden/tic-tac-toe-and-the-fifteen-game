@@ -170,7 +170,7 @@ export default function FifteenGame() {
             return 1;
         }
         else {
-            console.log(`HandleCardClick(${cardClicked}) is NOT returning early for any reason.`)
+            // console.log(`HandleCardClick(${cardClicked}) is NOT returning early for any reason.`)
         }
         
         let updatedHistory = history.concat(cardClicked);
@@ -185,13 +185,8 @@ export default function FifteenGame() {
         console.log(`handleCardClick calling to handleBotsTurn with moveList: ${updatedHistory}.`)
         handleBotsTurn(updatedHistory);
             
-        
-
-        
         // Now it is the Bot's turn
         // The Bot's Turn handler is responsible for ensuring it does not move if the game is already over. 
-        
-
         
         return 0;
     }
@@ -219,7 +214,7 @@ export default function FifteenGame() {
         if (botMovesFirst()){
             
             console.log(`callinghandleBotsTurn() NOW`)
-            handleBotsTurn();
+            handleBotsTurn([]);
         }
         
         
@@ -395,20 +390,19 @@ export default function FifteenGame() {
 
     
     function gameOver(moveList = history) {
+        // This low level helper may be called many times in a given render cycle so it is optomized to return early in as many cases as possible. 
+        // Return early if not enough moves have been made OR if the game record has been updated but not the game number. handleGameOver updates the record and handleNewGameClick updates the gameNumber. 
         if (moveList.length < 5){
-            console.log(`GameOver(${moveList}) returning FALSE since moveList.length is only ${moveList.length} `)
+            // console.log(`GameOver(${moveList}) returning FALSE since moveList.length is only ${moveList.length} `)
             return false;
+        } 
+        if (sumsOfThree(record) === gameNumber) {
+            console.log(`GameOver(${moveList}) returning TRUE since the W-L-D total equals the number of games started.`)
+            return true;
         } 
         let player = myTurn(moveList)
         let gameOver = (moveList.length === 9 || wins(other(player), moveList) || wins(player, moveList));
         return gameOver;
-
-        // console.log(`GameOver(${moveList}) returning ${(moveList.length === 9 || wins('playerOne', moveList) || wins('playerTwo', moveList)).toString().toUpperCase()}.`)
-        // console.log(`GameOver(${moveList}) found moveList.length: ${moveList.length}`)
-        // console.log(`GameOver(${ moveList }) called wins('playerOne') and got ${ wins('playerOne', moveList)}`)
-        // console.log(`GameOver(${ moveList }) called wins('playerTwo') and got ${ wins('playerTwo', moveList)}`)
-        // return (moveList.length === 9 || wins('playerOne') || wins('playerTwo'))  // the final || wins(player) should never come back true because the history should not accept new moves once the other(player) has won.
-        // I was tempted to rewrite this to useState() because it was calling wins() a lot. Decided in the end that it was enough to add the early return for the turn numbers before which the game can possibly be won.
     }
 
     // WON GAME: the player specified has a subset of three numbers that sum to 15.  player = either "playerOne" or "playerTwo"
@@ -416,7 +410,7 @@ export default function FifteenGame() {
         let myMoves = filterMoves(player, moveList)
         return (sumsOfThree(myMoves).includes(15)); // sumsOfThree() has a built in early return in case myMoves.length > 3
     }
-
+    
    
 
     // FILTER MOVES: Reduce a movesList to only the moves by the specified "playerOne" or "playerTwo"
@@ -471,7 +465,7 @@ export default function FifteenGame() {
 
     function intersect(listOne, listTwo) {
         let intersection = Array(0).concat(listOne.filter(number => listTwo.includes(number)))
-        console.log(`intersection of listOne: ${listOne} andlistTwo: ${listTwo} is: ${intersection} `)
+        // console.log(`intersection of listOne: ${listOne}  and listTwo: ${listTwo}  is: ${intersection} `)
         return intersection;
     }
 
@@ -501,7 +495,7 @@ export default function FifteenGame() {
 
     // Find and make a move for the Bot with a 1/2 second delay. Responsibility for obly calling this method when the game is not over yet falls on the caller!
     function handleBotsTurn(moveList) {
-        console.log(`handleBotsTurn called with moveList: ${moveList}`);
+        // console.log(`handleBotsTurn called with moveList: ${moveList}`);
         // if (gameOver(moveList)){
         //     console.log(`handleBotsTurn returning early because game is over.`);
         //     return 1;
@@ -510,9 +504,17 @@ export default function FifteenGame() {
         //     console.log(`handleBotsTurn returning early because it is NOT the bots turn.`);
         //     return 1;
         // }
+        
         let botMove = getBotMove(moveList);
+        let updatedHistory = moveList.concat(botMove);
+
         setTimeout(() => {
-            setHistory(moveList.concat(botMove));
+            setHistory(updatedHistory);
+            if (gameOver(updatedHistory)) {
+                console.log("Don't let player move again. Call handleGameOver instead.")
+                handleGameOver(updatedHistory);
+                return 1;
+            }
         }, 500);
     }
 
@@ -523,29 +525,43 @@ export default function FifteenGame() {
         // if botPlaysPerfectly = false && turn number == 1 or 2 make a mistaken move.
 
         let botMove = getRandomMove(bestMovesList(moveList))
-        
+        console.log(`Selecting Bot Move from list of "best moves": ${bestMovesList(moveList)}`)
         return botMove;
     }
 
-    // The intersection of unclaimedNumbers and winningNumbers.
+    // The intersection of unclaimedNumbers and MY winningNumbers.
     function immediateWins(moveList) {
         let player = myTurn(moveList)
         let myMoves = filterMoves(player, moveList);
+        // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
         let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins}`)
         return immediateWins;
     }
-
 
     function urgentDefensiveMoves(moveList = history) {
         let player = myTurn(moveList)
         let opponentsMoves = filterMoves(other(player), moveList);
-        let urgentDefensiveMoves = intersect(winningNumbers(opponentsMoves), unclaimedNumbers(moveList));   
+        // console.log(`URGENT DEFENSIVE MOVES (${moveList}) found opponentsMoves: ${opponentsMoves}, winningNumbers: ${winningNumbers(opponentsMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
+        let urgentDefensiveMoves = intersect(winningNumbers(opponentsMoves), unclaimedNumbers(moveList)); 
+        console.log(`URGENT DEFENSIVE MOVES (${moveList}) found: ${urgentDefensiveMoves}`)  
         return urgentDefensiveMoves;
+    }
+
+    // This method should not be called if there is an immediate win or an urgentDefensiveMove. 
+    function doubleAttacks(moveList) {
+        let player = myTurn(moveList)
+        let myMoves = filterMoves(player, moveList);
+        // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
+        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins}`)
+        return immediateWins;
     }
 
 
 
-    // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those
+    // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those.
+    // WHEREAS Tic-Tac-Toe has a "complete" solution, this Bot only does the best it can and will attempt an urgentDefensiveMove even if there are too many to block them all. 
     function bestMovesList(moveList = history) {
         let player = myTurn(moveList)
         let myMoves = filterMoves(player, moveList)
@@ -553,6 +569,10 @@ export default function FifteenGame() {
         if (immediateWins(moveList).length > 0){
             console.log(`Bot will choose a move from a list of Immediate Wins!`)
             return immediateWins(moveList);
+        }
+        else if (urgentDefensiveMoves(moveList).length > 0) {
+            console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
+            return urgentDefensiveMoves(moveList);
         }
         else if (urgentDefensiveMoves(moveList).length > 0) {
             console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
