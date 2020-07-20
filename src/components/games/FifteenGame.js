@@ -425,43 +425,7 @@ export default function FifteenGame() {
         return (myMoves);
     }
 
-    // An array listing the element-sums of each three-element subset of the moveSet. 
-    function sumsOfThree(moveSet) {  
-        // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 3 is only 10!
-        let sums = [];
-        if (moveSet.length < 3){
-            return sums;
-        }
-        for (let i = 0; i < moveSet.length - 2; i++) {
-            for (let j = i + 1; j < moveSet.length - 1; j++) {
-                for (let k = j + 1; k < moveSet.length; k++) {
-                    let sum = moveSet[i] + moveSet[j] + moveSet[k];
-                    // console.log(`Sum of i + j + k: ${sum}`)
-                    sums.push(sum);
-                }
-            }
-        }
-        // console.log(`Sums of three-element subsets of ${moveSet} are: ${sums}`)
-        return sums;
-    }
-    
-    // An array listing the element-sums of each two-element subset of the moveSet. 
-    function sumsOfTwo(moveSet) {
-        // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 2 is only 10!
-        let sums = [];
-        if (moveSet.length < 2) {
-            return sums;
-        }
-        for (let i = 0; i < moveSet.length - 1; i++){
-            for (let j = i + 1; j < moveSet.length; j++){
-                let sum = moveSet[i] + moveSet[j];
-                // console.log(`Sum of i + j: ${sum}`)
-                sums.push(sum);
-            }
-        }
-        // console.log(`Sums of two-element subsets of ${moveSet} are: ${sums}`)
-        return sums;
-    }
+   
 
     function intersect(listOne, listTwo) {
         let intersection = Array(0).concat(listOne.filter(number => listTwo.includes(number)))
@@ -483,14 +447,52 @@ export default function FifteenGame() {
         return unclaimed;
     }
 
+    
+    
     // winning numbers are numbers that would create a subset that sums to 15. They are "winning numbers" regardless of whether they are already claimed or not. 
     function winningNumbers(moveSet) {
-        let partialSums = sumsOfTwo(moveSet).filter(sum => sum < 14)
+        let partialSums = sumsOfTwo(moveSet).filter(sum => sum < 15); // the only thing that matters are two-element sets that sum to less than 15.
         let winningNumbers = partialSums.map(sum => 15 - sum);
-        // console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
+        console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
         return winningNumbers;
     }
+    // An array listing the element-sums of each three-element subset of the moveSet. 
+    function sumsOfThree(moveSet) {
+        // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 3 is only 10!
+        let sums = [];
+        if (moveSet.length < 3) {
+            return sums;
+        }
+        for (let i = 0; i < moveSet.length - 2; i++) {
+            for (let j = i + 1; j < moveSet.length - 1; j++) {
+                for (let k = j + 1; k < moveSet.length; k++) {
+                    let sum = moveSet[i] + moveSet[j] + moveSet[k];
+                    // console.log(`Sum of i + j + k: ${sum}`)
+                    sums.push(sum);
+                }
+            }
+        }
+        // console.log(`Sums of three-element subsets of ${moveSet} are: ${sums}`)
+        return sums;
+    }
 
+    // An array listing the element-sums of each two-element subset of the moveSet. 
+    function sumsOfTwo(moveSet) {
+        // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 2 is only 10!
+        let sums = [];
+        if (moveSet.length < 2) {
+            return sums;
+        }
+        for (let i = 0; i < moveSet.length - 1; i++) {
+            for (let j = i + 1; j < moveSet.length; j++) {
+                let sum = moveSet[i] + moveSet[j];
+                // console.log(`Sum of i + j: ${sum}`)
+                sums.push(sum);
+            }
+        }
+        // console.log(`Sums of two-element subsets of ${moveSet} are: ${sums}`)
+        return sums;
+    }
 
 
     // Find and make a move for the Bot with a 1/2 second delay. Responsibility for obly calling this method when the game is not over yet falls on the caller!
@@ -520,14 +522,97 @@ export default function FifteenGame() {
 
     // this method is only called by handleBotsTurn. Depending on the settings it selects a random move from either the bestMoves list or the losingMoves list.
     // TODO This method is a skeleton that simply passes the call to getBestMoves()
-    function getBotMove(moveList = history) {
+    function getBotMove(moveList) {
         // let losing moves = ...
         // if botPlaysPerfectly = false && turn number == 1 or 2 make a mistaken move.
-
         let botMove = getRandomMove(bestMovesList(moveList))
         console.log(`Selecting Bot Move from list of "best moves": ${bestMovesList(moveList)}`)
         return botMove;
     }
+
+    // HOW TO GET A BEST MOVE:  
+    // 1) Make a winningMovesList based on a moveList.
+    //    This list is the intersection of unclaimedNumbers and winningNumbers. 
+    // 2) While this  that list has any elements in it return it as the list of best moves.  
+    //    else that list is of length 0 and should be replaced...
+    // 3) For Each unclaimedNumber, test if adding it to myMoves creates a Set where there are   Make a list of all unclaimedNumbers that are also winningNumbers.
+    // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those.
+    // WHEREAS Tic-Tac-Toe has a "complete" solution, this Bot only does the best it can and will attempt an urgentDefensiveMove even if there are too many to block them all. 
+    function bestMovesList(moveList) {
+        let player = myTurn(moveList)
+        let myMoves = filterMoves(player, moveList);
+
+        let hypotheticalMoveCount = 0;
+        let bestMoves = immediateWins(moveList);
+        
+        if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
+            return immediateWins(moveList)
+        }
+        // else {                                   // if not then forEach hypothetical next move see if 
+
+        // }
+
+
+
+        // if (bestMoves.length === 0){ 
+        //     hypotheticalMoveCount = 1   // If hypotheticalMoveCount is even try to win, if it is odd try not to let opponent win. 
+
+
+        //     unclaimedNumbers(moveList).forEach(testMove => {
+        //         let hypotheticalMoveList = moveList.concat(testMove)
+        //         if (winningMoves(hypotheticalMoveList).length > 0) {    // if there are immediately winning moves return the list of them. 
+        //             return winningMoves(hypotheticalMoveList)           // 
+        //         };
+        //     }) 
+
+
+            
+        //     for(let i = 0; i < hypotheticalMoveCount; i++){
+        //         unclaimedNumbers()
+
+        //         let hypotheticalMoveList = 
+        //     }
+        // }
+        
+        
+        // while (
+            
+        //     bestMoves.length === 0) {
+            
+        // }
+
+        // do {
+        //     add
+
+
+            
+
+        // } while (bestMoves.length === 0);
+
+
+
+        if (immediateWins(moveList).length > 0) {
+            console.log(`Bot will choose a move from a list of Immediate Wins!`)
+            return immediateWins(moveList);
+        }
+        else if (urgentDefensiveMoves(moveList).length > 0) {
+            console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
+            return urgentDefensiveMoves(moveList);
+        }
+        // else if (doubleAttackingMoves(moveList).length > 0) {
+        //     console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
+        //     return urgentDefensiveMoves(moveList);
+        // }
+
+        else {
+            return unclaimedNumbers(moveList)
+        }
+
+    }
+
+
+    
+
 
     // The intersection of unclaimedNumbers and MY winningNumbers.
     function immediateWins(moveList) {
@@ -549,41 +634,34 @@ export default function FifteenGame() {
     }
 
     // This method should not be called if there is an immediate win or an urgentDefensiveMove. 
-    function doubleAttacks(moveList) {
+    function doubleAttackingMoves(moveList) {
         let player = myTurn(moveList)
         let myMoves = filterMoves(player, moveList);
         // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins}`)
-        return immediateWins;
+        
+        // unclaimedNumbers(moveList).forEach(unclaimedNumber => {
+        //     let hypotheticalMoveSet = myMoves.concat(unclaimedNumber);
+        //     if ((hypotheticalMoveSet)) {
+        //         doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
+        //     }
+        // })
+        
+        
+        // unclaimedNumbers(moveList).forEach(unclaimedNumber => {
+        //     let hypotheticalHistory = moveList.concat(unclaimedNumber);
+        //     if (thisIsADoubleAttack(hypotheticalHistory)) {
+        //         doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
+        //     }
+        // })
+        
+        // let doubleAttackingMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        console.log(`Double Attacking Moves (${moveList}) isn't really built yet...`)
+        return doubleAttackingMoves = [];
     }
 
 
 
-    // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those.
-    // WHEREAS Tic-Tac-Toe has a "complete" solution, this Bot only does the best it can and will attempt an urgentDefensiveMove even if there are too many to block them all. 
-    function bestMovesList(moveList = history) {
-        let player = myTurn(moveList)
-        let myMoves = filterMoves(player, moveList)
-        
-        if (immediateWins(moveList).length > 0){
-            console.log(`Bot will choose a move from a list of Immediate Wins!`)
-            return immediateWins(moveList);
-        }
-        else if (urgentDefensiveMoves(moveList).length > 0) {
-            console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
-            return urgentDefensiveMoves(moveList);
-        }
-        else if (urgentDefensiveMoves(moveList).length > 0) {
-            console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
-            return urgentDefensiveMoves(moveList);
-        }
-        
-        else {
-            return unclaimedNumbers(moveList)
-        }
-
-    }
+    
 
     
 
