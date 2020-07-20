@@ -80,7 +80,9 @@ export default function Panel(props) {
     const classes = useStyles();
 
     const gameType = props.gameType;
-    const status = props.status;
+
+    const gameOver = props.gameOver;
+    const moveNumber = props.moveNumber;
     const commentary = props.commentary;
 
     const handleUndoButtonClick = props.handleUndoButtonClick
@@ -99,7 +101,7 @@ export default function Panel(props) {
             color="primary"
             className={classes.button}
             onClick={() => handleUndoButtonClick()}
-            disabled={(status === "Player one wins!" || status === "Player two wins!" || status === "Draw.")}
+            disabled={gameOver || moveNumber < 1}
         >
             <UndoIcon className={classes.buttonIcon} />
             Undo
@@ -112,6 +114,7 @@ export default function Panel(props) {
             color="primary"
             className={classes.button}
             onClick={() => handleNewGameButtonClick()} 
+            disabled={!gameOver}
         >
             <ReplayIcon className={classes.buttonIcon} />
             New&nbsp;Game
