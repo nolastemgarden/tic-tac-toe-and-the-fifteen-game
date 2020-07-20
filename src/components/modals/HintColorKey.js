@@ -22,7 +22,7 @@ import { Box, Typography } from '@material-ui/core';
 
 // How do I get this CSS var 
 const immediateWin = `var(--immediate-win-bg-color)`;
-console.log(`immediateWin: ${immediateWin}`)
+// console.log(`immediateWin: ${immediateWin}`)
 
 
 
