@@ -61,14 +61,14 @@ const useStyles = makeStyles((theme) => ({
 
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'left'
 
     },
     hintsGridContainer: {
         // border: 'solid navy 1px',
         width: '100%',
         height: '100%',
-        textAlign: 'center',
+        textAlign: 'left',
         justifyContent: 'space-around',
     }, 
     sumsOfTwoList: {
@@ -92,8 +92,10 @@ export default function FifteenGame() {
     // a moveList implies that it is a sequential list of the number cards claimed turn by turn.  
     // A moveSet on the other hand is a subset of a moveList, numbers that have all been claimed by the same player. 
     // 
+    // let [gameOver, setGameOver] = useState(false);
 
-    let [record, setRecord] = useState([1,0,0]);
+    let [gameNumber, setGameNumber] = useState(1);
+    let [record, setRecord] = useState([0,0,0]);
     let [history, setHistory] = useState([]);
     
     // HINTS shown on board. May not implement in this game.
@@ -108,14 +110,14 @@ export default function FifteenGame() {
     // let [playAgainstBot, setPlayAgainstBot] = useState(false);  
     let [playAgainstBot, setPlayAgainstBot] = useState(true);
 
-    // BOT MOVES FIRST. Disabled switch unless playAgainstBot mode is set to true. 
-    let [botMovesFirst, setBotMovesFirst] = useState(false);
+    // BOT MOVES FIRST. Disabled switch unless playAgainstBot mode is set to true. This will not be settable. It starts with player and alternates. 
+    // let [botMovesFirst, setBotMovesFirst] = useState(false);
     // let [botMovesFirst, setBotMovesFirst] = useState(true);
 
     // BOT PLAYS PERFECT. Disabled switch unless playAgainstBot mode is set to true. 
     // Easy vs Hard Mode. In easy mode Bot makes 1 game losing mistake per game. in Hard mode the Bot always gets a draw. 
-    let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(false);
-    // let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(true);
+    // let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(false);
+    let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(true);
 
 
     return (
@@ -130,17 +132,14 @@ export default function FifteenGame() {
             <Box className={classes.panelArea}>
                 <Panel
                     gameType='FifteenGame'
-                    // data={getPanelData(history)} 
-                    status={gameStatus()}
+                    gameOver={gameOver()}
+                    moveNumber={history.length}
                     commentary={getPanelCommentary()}
-                    // showMoves={showMoves}
-                    // showCommentary={showCommentary}
                     handleUndoButtonClick={handleUndoButtonClick}
                     handleNewGameButtonClick={handleNewGameButtonClick}
 
-
-                    togglePlayAgainstBotSwitch={togglePlayAgainstBot}
-                    toggleBotMovesFirstSwitch={toggleBotMovesFirst}
+                    // togglePlayAgainstBotSwitch={togglePlayAgainstBot}
+                    // toggleBotMovesFirstSwitch={toggleBotMovesFirst}
                 />
             </Box>
         </Box>
@@ -158,151 +157,188 @@ export default function FifteenGame() {
 
     // CLICK HANDLERS
     function handleCardClick(cardClicked) {
-        if (itIsTheBotsTurn()){
-            console.log("return without effects from handleCardClick(). It is currently the Bot's turn. Be patient.")
+        if (itIsTheBotsTurn(history)){
+            console.log("Be patient. It is currently the Bot's turn. return without effects from handleCardClick(). ")
             return;
         }
-        if (cardClaimed(cardClicked)) {
+        else if (history.includes(cardClicked)) {
             console.log("return without effects from handleCardClick(). That number has already been claimed.")
             return;
         }
-        if (gameOver()) {
+        else if (gameOver(history)) {
             console.log("return without effects from handleCardClick(). The Game is already over.")
-            return;
+            return 1;
         }
-        
+        else {
+            console.log(`HandleCardClick(${cardClicked}) is NOT returning early for any reason.`)
+        }
         
         let updatedHistory = history.concat(cardClicked);
         setHistory(updatedHistory);
 
+        if (gameOver(updatedHistory)) {
+            console.log("Don't call handleBotsTurn. Call handleGameOver instead.")
+            handleGameOver(updatedHistory);
+            return 1;
+        }
+
+        console.log(`handleCardClick calling to handleBotsTurn with moveList: ${updatedHistory}.`)
+        handleBotsTurn(updatedHistory);
+            
+        
+
         
         // Now it is the Bot's turn
         // The Bot's Turn handler is responsible for ensuring it does not move if the game is already over. 
-        handleBotsTurn(updatedHistory);
+        
+
+        
+        return 0;
+    }
+
+    function botMovesFirst() {
+        return (gameNumber % 2 === 0)
     }
 
     function handleUndoButtonClick() {
-        // if (gameOver()){
-        //     console.log("return early from handleUndoButtonClick() as you can't undo when the game is over. Hit New Game instead")
-        //     return;
-        // }  // This code wasn't what actually disabled the button: it was teh disabled={true} prop in the Panel
         const shortenedHistory = history.slice(0, history.length - 2)
         console.log(`handleUndoButtonClick() removes both the most recent player move and bot move ${shortenedHistory}`);
         setHistory(history.slice(0, history.length - 1));
         setTimeout(() => {
             setHistory(shortenedHistory);
         }, 500);
+        return 0;
     }
+    
+    // The New Game button is disabled until after handleGameOver has updated the record. 
     function handleNewGameButtonClick() {
-        const empty = [];
-        console.log(`History reset to: ${empty} and botMovesFirst toggles to ${!botMovesFirst}`);
-        setBotMovesFirst(!botMovesFirst);
-        setHistory(empty);
+        console.log(`New Game Clicked. History reset.`);
+        setGameNumber(++gameNumber);
+        setHistory([]);
 
-
-    }
-    function togglePlayAgainstBot() {
-        setPlayAgainstBot(!playAgainstBot)
-    }
-    function toggleBotMovesFirst() {
-        setBotMovesFirst(!botMovesFirst)
-    }
-    function handleGameOver(result) {
+        if (botMovesFirst()){
+            
+            console.log(`callinghandleBotsTurn() NOW`)
+            handleBotsTurn();
+        }
+        
         
     }
+  
+    function handleGameOver(moveList = history) {
+        console.log(`handleGameOver called!!!!!!!!!!!!!!!!!!!!`)
+        let result = gameStatus(moveList);
+        
+        if (result === "Game Over. Draw."){
+            setRecord([record[0], record[1], ++record[2]])
+        }
+        else if (result === "Player Wins!") {
+            setRecord([++record[0], record[1], record[2]])
+        }
+        else if (result === "Bot Wins!") {
+            setRecord([record[0], ++record[1], record[2]])
+        }
+        else {
+            console.error(`handleGameOver called with invalid game result: ${result}`)
+        }
+    }
+
+   
 
 
     function getPanelCommentary(moveList = history) {
-        if (moveList.length < 3 && record === [0,0,0]){ 
-            let explanation =
-                <Grid container className={classes.explanation}>
-                    <Grid item xs={12}>
-                        <Typography variant="body2">
-                            Play the 15-Game against my bot until you have mastered it! You will take turns making the first move. 
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="body2">
-                            In hard mode my bot never makes a mistake and the best you can do is get a draw.
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="body2">
-                            In easy mode my bot makes exactly one mistake each game and you should be able to win every single time!
-                        </Typography>
-                    </Grid>
+        // if (moveList.length < 3 && record === [0,0,0]){ 
+        //     let explanation =
+        //         <Grid container className={classes.explanation}>
+        //             <Grid item xs={12}>
+        //                 <Typography variant="body2">
+        //                     Play the 15-Game against my bot until you have mastered it! You will take turns making the first move. 
+        //                 </Typography>
+        //             </Grid>
+        //             <Grid item xs={12}>
+        //                 <Typography variant="body2">
+        //                     In hard mode my bot never makes a mistake and the best you can do is get a draw.
+        //                 </Typography>
+        //             </Grid>
+        //             <Grid item xs={12}>
+        //                 <Typography variant="body2">
+        //                     In easy mode my bot makes exactly one mistake each game and you should be able to win every single time!
+        //                 </Typography>
+        //             </Grid>
+        //         </Grid>
+        //     return explanation;
+        // }   
+        // let playerOneSums = sumsOfTwo(filterMoves("playerOne", moveList))
+        // playerOneSums.sort((a, b) => a - b)
+
+        // let playerTwoSums = sumsOfTwo(filterMoves("playerTwo", moveList))
+        // playerTwoSums.sort((a, b) => a - b)
+        
+
+        let panelCommentary = 
+            <Grid container className={classes.hintsGridContainer}>
+                <Grid item xs={12} container className={classes.record}>
+                    <Typography variant="h4" noWrap >
+                        {/* <strong>{gameStatus(moveList)}</strong> */}
+                        {gameStatus(moveList)}
+                    </Typography>
                 </Grid>
-            return explanation;
-        }
-        else {
-            
-            let playerOneSums = sumsOfTwo(filterMoves("playerOne", moveList))
-            playerOneSums.sort((a, b) => a - b)
-
-            let playerTwoSums = sumsOfTwo(filterMoves("playerTwo", moveList))
-            playerTwoSums.sort((a, b) => a - b)
-            
-
-            let hints = 
-                <Grid container className={classes.hintsGridContainer}>
-                    <Grid item xs={12} container className={classes.record}>
-                        <Typography variant="h4" noWrap >
-                            {/* <strong>{gameStatus(moveList)}</strong> */}
-                            {gameStatus(moveList)}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} container className={classes.record}>
-                        <Grid item xs={4}>
-                            <Typography variant="h6">
-                                <strong>Wins:</strong> {record[0]}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography variant="h6">
-                                <strong>Losses:</strong> {record[1]}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Typography variant="h6">
-                                <strong>Draws:</strong> {record[2]}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
+                <Grid item xs={12} container className={classes.gameNumber}>
+                    <Typography variant="h6" noWrap >
+                        <strong>Game Number:</strong> {gameNumber}
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} container className={classes.record}>
+                    <Grid item xs={4}>
                         <Typography variant="h6">
-                            Sums of Two-Element Subsets
+                            <strong>Wins:</strong> {record[0]}
                         </Typography>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle1">
-                            <strong>Player</strong>
+                    <Grid item xs={4}>
+                        <Typography variant="h6">
+                            <strong>Losses:</strong> {record[1]}
                         </Typography>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="subtitle1">
-                            <strong>Bot</strong>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4} className={classes.sumsOfTwoList}>
-                        <Typography variant="subtitle1" >
-                            {playerOneSums.join(", ")}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4} className={classes.sumsOfTwoList}>
-                        <Typography variant="subtitle1" >
-                            {playerTwoSums.join(", ")}
+                    <Grid item xs={4}>
+                        <Typography variant="h6">
+                            <strong>Draws:</strong> {record[2]}
                         </Typography>
                     </Grid>
                 </Grid>
-            return hints;
-        }
+                {/* <Grid item xs={12}>
+                    <Typography variant="h6">
+                        Sums of Two-Element Subsets
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant="subtitle1">
+                        <strong>Player</strong>
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant="subtitle1">
+                        <strong>Bot</strong>
+                    </Typography>
+                </Grid>
+                <Grid item xs={4} className={classes.sumsOfTwoList}>
+                    <Typography variant="subtitle1" >
+                        {playerOneSums.join(", ")}
+                    </Typography>
+                </Grid>
+                <Grid item xs={4} className={classes.sumsOfTwoList}>
+                    <Typography variant="subtitle1" >
+                        {playerTwoSums.join(", ")}
+                    </Typography>
+                </Grid> */}
+            </Grid>
+        return panelCommentary;
     }
     function gameStatus(moveList = history) {
-        if (botMovesFirst){
+        if (botMovesFirst()){
             if (moveList.length === 0) {
                 return (`Bot moves first`);
             }
-            if (gameOver()) {
+            if (gameOver(moveList)) {
                 if (wins('playerOne', moveList)) {
                     return (`Bot Wins!`)
                 }
@@ -320,11 +356,11 @@ export default function FifteenGame() {
                 return (`Player's turn.`)
             }
         }
-        else if (!botMovesFirst) {
+        else if (!botMovesFirst()) {
             if (moveList.length === 0) {
                 return (`Player moves first`);
             }
-            if (gameOver()) {
+            if (gameOver(moveList)) {
                 if (wins('playerOne', moveList)) {
                     return (`Player Wins!`)
                 }
@@ -349,8 +385,9 @@ export default function FifteenGame() {
     }
 
     function itIsTheBotsTurn(moveList = history) {
-        return ((botMovesFirst && moveList.length % 2 === 0) || (!botMovesFirst && moveList.length % 2 === 1))        
+        return ((botMovesFirst() && moveList.length % 2 === 0) || (!botMovesFirst() && moveList.length % 2 === 1))        
     }
+
     function other(player) {
         if (player !== 'playerOne' && player !== 'playerTwo') { console.error(`other(player) called with invalid player: ${player}`) }
         return (player === 'playerOne') ? 'playerTwo' : 'playerOne';
@@ -359,15 +396,19 @@ export default function FifteenGame() {
     
     function gameOver(moveList = history) {
         if (moveList.length < 5){
+            console.log(`GameOver(${moveList}) returning FALSE since moveList.length is only ${moveList.length} `)
             return false;
         } 
         let player = myTurn(moveList)
-        return (moveList.length === 9 || wins(other(player)) || wins(player));  // the final || wins(player) should never come back true because the history should not accept new moves once the other(player) has won.
-        // I was tempted to rewrite this to useState() because it was calling wins() a lot. Decided in the end that it was enough to add the early return for the turn numbers before which the game can possibly be won.
-    }
+        let gameOver = (moveList.length === 9 || wins(other(player), moveList) || wins(player, moveList));
+        return gameOver;
 
-    function cardClaimed(cardClicked, moveList = history){
-        return (moveList.includes(cardClicked));
+        // console.log(`GameOver(${moveList}) returning ${(moveList.length === 9 || wins('playerOne', moveList) || wins('playerTwo', moveList)).toString().toUpperCase()}.`)
+        // console.log(`GameOver(${moveList}) found moveList.length: ${moveList.length}`)
+        // console.log(`GameOver(${ moveList }) called wins('playerOne') and got ${ wins('playerOne', moveList)}`)
+        // console.log(`GameOver(${ moveList }) called wins('playerTwo') and got ${ wins('playerTwo', moveList)}`)
+        // return (moveList.length === 9 || wins('playerOne') || wins('playerTwo'))  // the final || wins(player) should never come back true because the history should not accept new moves once the other(player) has won.
+        // I was tempted to rewrite this to useState() because it was calling wins() a lot. Decided in the end that it was enough to add the early return for the turn numbers before which the game can possibly be won.
     }
 
     // WON GAME: the player specified has a subset of three numbers that sum to 15.  player = either "playerOne" or "playerTwo"
@@ -406,7 +447,7 @@ export default function FifteenGame() {
                 }
             }
         }
-        console.log(`Sums of three-element subsets of ${moveSet} are: ${sums}`)
+        // console.log(`Sums of three-element subsets of ${moveSet} are: ${sums}`)
         return sums;
     }
     
@@ -428,6 +469,12 @@ export default function FifteenGame() {
         return sums;
     }
 
+    function intersect(listOne, listTwo) {
+        let intersection = Array(0).concat(listOne.filter(number => listTwo.includes(number)))
+        console.log(`intersection of listOne: ${listOne} andlistTwo: ${listTwo} is: ${intersection} `)
+        return intersection;
+    }
+
     function myTurn(moveList = history) {
         return (moveList.length % 2 === 0) ? 'playerOne' : 'playerTwo';
     }
@@ -444,67 +491,81 @@ export default function FifteenGame() {
 
     // winning numbers are numbers that would create a subset that sums to 15. They are "winning numbers" regardless of whether they are already claimed or not. 
     function winningNumbers(moveSet) {
-        let winningNumbers = sumsOfTwo(moveSet).map(sum => 15 - sum);
-        console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
+        let partialSums = sumsOfTwo(moveSet).filter(sum => sum < 14)
+        let winningNumbers = partialSums.map(sum => 15 - sum);
+        // console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
         return winningNumbers;
     }
 
 
-    // Unless the game is over already, find and make a move for the Bot with a 1/2 second delay.
-    function handleBotsTurn(moveList = history) {
-        if (gameOver(moveList)){
-            console.log(`handleBotsTurn returning early because game is over.`);
-            return 1;
-        }
+
+    // Find and make a move for the Bot with a 1/2 second delay. Responsibility for obly calling this method when the game is not over yet falls on the caller!
+    function handleBotsTurn(moveList) {
+        console.log(`handleBotsTurn called with moveList: ${moveList}`);
+        // if (gameOver(moveList)){
+        //     console.log(`handleBotsTurn returning early because game is over.`);
+        //     return 1;
+        // }
+        // if (!itIsTheBotsTurn(moveList)) {
+        //     console.log(`handleBotsTurn returning early because it is NOT the bots turn.`);
+        //     return 1;
+        // }
         let botMove = getBotMove(moveList);
         setTimeout(() => {
             setHistory(moveList.concat(botMove));
         }, 500);
     }
 
-    // this method is only called by handleBotsTurn. Depending on the settings iit selects a random move from either the bestMoves list or the losingMoves list.
+    // this method is only called by handleBotsTurn. Depending on the settings it selects a random move from either the bestMoves list or the losingMoves list.
+    // TODO This method is a skeleton that simply passes the call to getBestMoves()
     function getBotMove(moveList = history) {
-        if (!itIsTheBotsTurn(moveList)){
-            console.log(`getBotMove was called with ${moveList} but it is not the Bot's turn!`)
-        }
-        // console.log(`getBotMove found these unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        // let randomMove = getRandomMove(unclaimedNumbers(moveList))
-        console.log(`bestMovesList length: ${bestMovesList(moveList).length}`)
-        console.log(`getBotMove randomly chose this unclaimedNumber from the bestMovesList: ${bestMovesList(moveList)}`)
+        // let losing moves = ...
+        // if botPlaysPerfectly = false && turn number == 1 or 2 make a mistaken move.
+
+        let botMove = getRandomMove(bestMovesList(moveList))
         
-        let bestMove = getRandomMove(bestMovesList(moveList))
-        
-        // return randomMove
-        return bestMove;
+        return botMove;
     }
+
+    // The intersection of unclaimedNumbers and winningNumbers.
+    function immediateWins(moveList) {
+        let player = myTurn(moveList)
+        let myMoves = filterMoves(player, moveList);
+        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        return immediateWins;
+    }
+
+
+    function urgentDefensiveMoves(moveList = history) {
+        let player = myTurn(moveList)
+        let opponentsMoves = filterMoves(other(player), moveList);
+        let urgentDefensiveMoves = intersect(winningNumbers(opponentsMoves), unclaimedNumbers(moveList));   
+        return urgentDefensiveMoves;
+    }
+
+
 
     // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those
     function bestMovesList(moveList = history) {
         let player = myTurn(moveList)
         let myMoves = filterMoves(player, moveList)
-        console.log(`getBotMove found these unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        console.log(`getBotMove found these winningNumbers(myMoves): ${winningNumbers(myMoves)}`)
         
-        
-        let immediateWins = unclaimedNumbers(moveList).filter(number => winningNumbers(myMoves).includes(number))  // Unclaimed numbers that result in a win. 
-        if (immediateWins.length > 0){
-            return immediateWins;
+        if (immediateWins(moveList).length > 0){
+            console.log(`Bot will choose a move from a list of Immediate Wins!`)
+            return immediateWins(moveList);
+        }
+        else if (urgentDefensiveMoves(moveList).length > 0) {
+            console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
+            return urgentDefensiveMoves(moveList);
         }
         
+        else {
+            return unclaimedNumbers(moveList)
+        }
 
-
-        let bestMoves = getRandomMove(unclaimedNumbers(moveList))
-        return bestMoves
-        
     }
 
-    function immediateWins(moveList) {
-        let player = myTurn(moveList)
-        let myMoves = filterMoves(player, moveList);
-        let winningNumbers = winningNumbers(myMoves);
-        let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-        return immediateWins;
-    }
+    
 
 
 
@@ -512,10 +573,17 @@ export default function FifteenGame() {
     function getRandomMove(moveSet) {
         // console.log(`getRandomMove found these unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
         let randomMove = moveSet[Math.floor(Math.random() * moveSet.length)]
-        console.log(`getRandomMove chose ${randomMove} from the given moveSet: ${moveSet}`)
+        // console.log(`getRandomMove chose ${randomMove} from the given moveSet: ${moveSet}`)
         return randomMove;
     }
 
+
+    // function togglePlayAgainstBot() {
+    //     setPlayAgainstBot(!playAgainstBot)
+    // }
+    // function toggleBotMovesFirst() {
+    //     setBotMovesFirst(!botMovesFirst)
+    // }
 
 
 }
