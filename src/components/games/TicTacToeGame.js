@@ -253,22 +253,6 @@ export default function TicTacToeGame() {
     // TODO
     function getBoardHints() {
         // PRIORITIES  
-        // 0) Start with an array of 9 filled with "unknown". this string cannot be a final value...
-        // 1) Mark all filled squares "noColor".
-        // 2) If there are any squares that would create an immediateWin 
-                // switch them from "unknown" to "win". ?? 
-                // ELSE there are no immidiateWins...
-        // 3) For each empty square, check if adding it to the history would create a situation where your opponent has an immediateWin(). 
-                // In the first version this is called failing to block an "urgentDefensiveMove"
-                // each one that does should be switched from "empty" to "lose".  switch all other empty squares to "draw". Return.
-        // 4) For each empty square, check if adding it to the history would create a doubleAttack(). 
-                // each one that does should be switched from "empty" to "win".  switch all other empty squares to "draw". Return.
-
-
-        // 
-        // ??? 4) Mark any hard to see mistakes that would allow opponent to create a double attack.
-        // 5) Mark any forcing moves that keep the opponent busy this turn and allow you to create a double attack next turn.
-        
         // (0)
         const player = myTurn(history);
         let hints = Array(9).fill('unknown');  // Start with an array representing a board of NINE squares.
