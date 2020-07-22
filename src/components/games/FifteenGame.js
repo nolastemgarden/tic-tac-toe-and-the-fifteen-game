@@ -529,12 +529,35 @@ export default function FifteenGame() {
         console.log(`Selecting Bot Move from list of "best moves": ${bestMovesList(moveList)}`)
         return botMove;
     }
-
+    // GETTING BEST MOVES WITH GRAPH SEARCH
+    // 
+    // 
+    // 
+    // and losing moves
+    // if there are no winning moves then generate a list of notImmediatelyLosingMoves and a list of the threatCreating moves  and take the intersection of these. 
+    //   because the best move never 
+    // Create a QUEUE of hypotheticalPositions where each position is the current movelist with a different notImmediatelyLosingMove concatenated onto it. 
+    // the queue is not full of positions where we 
+    // while Queue is not empty pop off the     
+    // 
+    //     
     // HOW TO GET A BEST MOVE:  
-    // 1) Make a winningMovesList based on a moveList.
+    // IN GENERAL start with a list of movesToConsider. in a given position make a list of winning moves and losing moves. 
+    //            if there are any winning moves return that list, if not remove all losing moves from the list of movesToConsider.
+    //            if there are no movesToConsider left return a random move
+    //            if there are movesToConsider make a list of hypotheticalPositions by adding each moveToConsider to the originalMoveList...
+    //            at this point we are guaranteed that none of the hypotheticalPositions contain an immediate win so we only need to list moves that are notImmediatelyLosing
+    //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition where it is the opponents move. 
+    // 
+    //              as we cycle thru the hypotheticalPositions we chech each to see if in it is myTurn or opponentsTurn by comparing it length % 2 with originalMoveList.length % 2 
+    //              if we are currently considering a position where it is the opponentsTurn we are guaranteed they can't win so we list moves they can make that are notImmediatelyLosing
+    //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition currently being considered. 
+    //              if we are currently considering a position where it is myTurn we make a list of winning moves and losing moves. 
+    //              
+    //  
+    // 1) Start with the current position and look for winning moves. if there are none...
     //    This list is the intersection of unclaimedNumbers and winningNumbers. 
-    // 2) While this  that list has any elements in it return it as the list of best moves.  
-    //    else that list is of length 0 and should be replaced...
+    // 2) 
     // 3) For Each unclaimedNumber, test if adding it to myMoves creates a Set where there are   Make a list of all unclaimedNumbers that are also winningNumbers.
     // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those.
     // WHEREAS Tic-Tac-Toe has a "complete" solution, this Bot only does the best it can and will attempt an urgentDefensiveMove even if there are too many to block them all. 
@@ -542,17 +565,25 @@ export default function FifteenGame() {
         let player = myTurn(moveList)
         let myMoves = filterMoves(player, moveList);
 
+        let movesToConsider = unclaimedNumbers(moveList);
+
+
         let hypotheticalMoveCount = 0;
-        let bestMoves = immediateWins(moveList);
+        let drawingMoves = unclaimedNumbers(moveList);
         
         if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
             return immediateWins(moveList)
         }
-        // else {                                   // if not then forEach hypothetical next move see if 
+        else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
 
-        // }
-
-
+        }
+        
+        
+        // I really want a way to define this process reecursively rather than step by step as I did in the Tic - Tac - Toe code.
+        // We will create a QUEUE of the positions that need to be checked.We will use this structure to facilitate a breadth - first - search for an immediatelyWinningMove()  
+        //  it progressively filters a list of "possibleWinningMoves()" that starts as all unclaimedNumbers().
+        // If there are no winning moves in the current position then look for losing moves and filter the possibleWinningMoves() to not include any definite losing move.  
+    
 
         // if (bestMoves.length === 0){ 
         //     hypotheticalMoveCount = 1   // If hypotheticalMoveCount is even try to win, if it is odd try not to let opponent win. 
