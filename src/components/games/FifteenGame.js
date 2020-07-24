@@ -529,6 +529,8 @@ export default function FifteenGame() {
         console.log(`Selecting Bot Move from list of "best moves": ${bestMovesList(moveList)}`)
         return botMove;
     }
+
+
     // GETTING BEST MOVES WITH GRAPH SEARCH
     // 
     // 
@@ -553,6 +555,9 @@ export default function FifteenGame() {
     //              if we are currently considering a position where it is the opponentsTurn we are guaranteed they can't win so we list moves they can make that are notImmediatelyLosing
     //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition currently being considered. 
     //              if we are currently considering a position where it is myTurn we make a list of winning moves and losing moves. 
+
+    // There will be a methd for getting immediate wins and one for filtering the unclaimed squares and removing immediatelyLosing movesToConsider
+    // movesToConsider need not be state, it can 
     //              
     //  
     // 1) Start with the current position and look for winning moves. if there are none...
@@ -561,11 +566,35 @@ export default function FifteenGame() {
     // 3) For Each unclaimedNumber, test if adding it to myMoves creates a Set where there are   Make a list of all unclaimedNumbers that are also winningNumbers.
     // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those.
     // WHEREAS Tic-Tac-Toe has a "complete" solution, this Bot only does the best it can and will attempt an urgentDefensiveMove even if there are too many to block them all. 
-    function bestMovesList(moveList) {
-        let player = myTurn(moveList)
-        let myMoves = filterMoves(player, moveList);
+    
+    // For this function to opperate recursively there must be two parameters, the position in which to look for winning moves, and the losing moves that have already been ruled out on previous calls. 
+    function bestMovesList(moveList, losingMoves) {
+        // Consider any move that is available and has not been previously marked as losing. 
+        let movesToConsider = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num));
+        
 
-        let movesToConsider = unclaimedNumbers(moveList);
+
+        
+        let winningMoves = [];
+        let losingMoves = [];
+        // Filter winningMoves into a separate list and remove losing moves from of movesToConsider.
+
+
+        
+        
+        // While movesToConsider is not empty and winningMoves is empty  
+        
+        //  An array of arrays, each one move longer than the parameter movelist
+        let hypotheticalPositions = []
+        
+        movesToConsider.forEach(number => {
+            let hypotheticalPosition = originalMoveList.concat(number)
+            hypotheticalPositions.push(hypotheticalPosition)
+        })
+        
+        
+        let wins = immediateWins(originalMoveList);
+
 
 
         let hypotheticalMoveCount = 0;
@@ -577,70 +606,23 @@ export default function FifteenGame() {
         else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
 
         }
+       
         
-        
-        // I really want a way to define this process reecursively rather than step by step as I did in the Tic - Tac - Toe code.
-        // We will create a QUEUE of the positions that need to be checked.We will use this structure to facilitate a breadth - first - search for an immediatelyWinningMove()  
-        //  it progressively filters a list of "possibleWinningMoves()" that starts as all unclaimedNumbers().
-        // If there are no winning moves in the current position then look for losing moves and filter the possibleWinningMoves() to not include any definite losing move.  
-    
-
-        // if (bestMoves.length === 0){ 
-        //     hypotheticalMoveCount = 1   // If hypotheticalMoveCount is even try to win, if it is odd try not to let opponent win. 
-
-
-        //     unclaimedNumbers(moveList).forEach(testMove => {
-        //         let hypotheticalMoveList = moveList.concat(testMove)
-        //         if (winningMoves(hypotheticalMoveList).length > 0) {    // if there are immediately winning moves return the list of them. 
-        //             return winningMoves(hypotheticalMoveList)           // 
-        //         };
-        //     }) 
-
-
-            
-        //     for(let i = 0; i < hypotheticalMoveCount; i++){
-        //         unclaimedNumbers()
-
-        //         let hypotheticalMoveList = 
-        //     }
-        // }
-        
-        
-        // while (
-            
-        //     bestMoves.length === 0) {
-            
-        // }
-
-        // do {
-        //     add
-
-
-            
-
-        // } while (bestMoves.length === 0);
-
-
-
-        if (immediateWins(moveList).length > 0) {
-            console.log(`Bot will choose a move from a list of Immediate Wins!`)
-            return immediateWins(moveList);
-        }
-        else if (urgentDefensiveMoves(moveList).length > 0) {
-            console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
-            return urgentDefensiveMoves(moveList);
-        }
-        // else if (doubleAttackingMoves(moveList).length > 0) {
-        //     console.log(`Bot will choose a move from a list of Urgent Defensive Moves!`)
-        //     return urgentDefensiveMoves(moveList);
-        // }
-
-        else {
-            return unclaimedNumbers(moveList)
-        }
-
     }
 
+    // Winning moves are moves that create a 15-sum
+    function winningMoves(moveList) {
+        let player = myTurn(moveList)
+        let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
+        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
+        return immediateWins;
+    }
+
+    // Losing Moves are moves that fail to block the opponent from creating a 15-sum
+    function losingMoves(params) {
+        
+    }
 
     
 
