@@ -410,6 +410,8 @@ export default function FifteenGame() {
         let myMoves = filterMoves(player, moveList)
         return (sumsOfThree(myMoves).includes(15)); // sumsOfThree() has a built in early return in case myMoves.length > 3
     }
+
+
     
    
 
@@ -452,7 +454,8 @@ export default function FifteenGame() {
     // winning numbers are numbers that would create a subset that sums to 15. They are "winning numbers" regardless of whether they are already claimed or not. 
     function winningNumbers(moveSet) {
         let partialSums = sumsOfTwo(moveSet).filter(sum => sum < 15); // the only thing that matters are two-element sets that sum to less than 15.
-        let winningNumbers = partialSums.map(sum => 15 - sum);
+        let winningNumbers = partialSums.map(sum => 15 - sum);  // Get the complement to each set.  
+        // Add removeDuplicates() helper? 
         console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
         return winningNumbers;
     }
@@ -525,8 +528,8 @@ export default function FifteenGame() {
     function getBotMove(moveList) {
         // let losing moves = ...
         // if botPlaysPerfectly = false && turn number == 1 or 2 make a mistaken move.
-        let botMove = getRandomMove(bestMovesList(moveList))
-        console.log(`Selecting Bot Move from list of "best moves": ${bestMovesList(moveList)}`)
+        let botMove = getRandomMove(soundMoves(moveList))
+        console.log(`Selecting Bot Move at random from "sound moves": ${soundMoves(moveList)}`)
         return botMove;
     }
 
@@ -568,47 +571,100 @@ export default function FifteenGame() {
     // WHEREAS Tic-Tac-Toe has a "complete" solution, this Bot only does the best it can and will attempt an urgentDefensiveMove even if there are too many to block them all. 
     
     // For this function to opperate recursively there must be two parameters, the position in which to look for winning moves, and the losing moves that have already been ruled out on previous calls. 
-    function bestMovesList(moveList, losingMoves) {
-        // Consider any move that is available and has not been previously marked as losing. 
-        let movesToConsider = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num));
-        
+    
+    // When it becomes the bot's turn it will first look for winning moves by making recursive calls : 
+    //   Both parameters are integer arrays. on the first recursive call losingMoves[] and winningMoves[] are empty.
+    // if creates a Queue as in breadth first graph search. 
+    
+    // 
+    // A move is winning IFF it leaves your opponent with no sound replies. 
+    //    because after they make a reply i WILL make a winning move.  Winning in the most
+    //    expedient way is the only "sound" practice.  Making this model less thorough than what I implemented for tic-tac-toe
+    // A move is sound if no matter how your opponent replies you will have a sound reply.
+    
 
 
+    // Returns a list of legal moves.  TODO make it only return 
+    function soundMoves(moveList) {
+        let losingMoves = []
+        let winningMoves = []
         
-        let winningMoves = [];
-        let losingMoves = [];
-        // Filter winningMoves into a separate list and remove losing moves from of movesToConsider.
+        let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
+        console.log(`A call to soundMoves found these unclaimednumbers: ${unclaimedNumbers(moveList)} `);
+        console.log(`It ruled out these numbers already found to lose: ${losingMoves} `)
+        console.log(`          and these numbers already found to win: ${winningMoves}  `)
+        console.log(`                 Leaving these undeterminedMoves: ${undeterminedMoves} \n\n`)
+
+        console.log(`for now we are operating as if all undeterined moves were safe... returning ${undeterminedMoves} \n`)
+
+        return undeterminedMoves;
+    }
+    
+    
+    
+    // function winningMovesList(moveList, losingMoves, winningMoves) {
+    //     // This routine will recursively call itself, building up its lists of  winningMoves and losingMoves
+    //     // It will stop when either the board fills up or all empty squares have been identified
+    //     // on either the winning or losing moves list. 
+    //     // V 1.0 it will use the least sophisticated way of looking for winning moves and losing moves. 
+    //     //      no notion here of a doubleAttack or a forcingMove. 
+        
+    //     // 1) identify uncertain moves
+    //     //      on the first recursive call this is all unclaimed numbers and both lists are empty.
+    //     // 1.5) if there are none return the winningMoves list, which may be empty
+
+    //     // 2) Create an array of hypothetical moveLists to test by concating each uncertain move to the param moveList
+        
+    //     // 3) Scan the hypothetical moveLists to see if I have won in any of them. 
 
 
-        
-        
-        // While movesToConsider is not empty and winningMoves is empty  
-        
-        //  An array of arrays, each one move longer than the parameter movelist
-        let hypotheticalPositions = []
-        
-        movesToConsider.forEach(number => {
-            let hypotheticalPosition = originalMoveList.concat(number)
-            hypotheticalPositions.push(hypotheticalPosition)
-        })
-        
-        
-        let wins = immediateWins(originalMoveList);
 
-
-
-        let hypotheticalMoveCount = 0;
-        let drawingMoves = unclaimedNumbers(moveList);
         
-        if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
-            return immediateWins(moveList)
-        }
-        else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
+    //     // Test each uncertain move by appending it to the move list and seeing if it caused a win
+    //         // if it did, add it to the winningMovesList
 
-        }
+    //     // 3) 
+        
+        
+    //     if (gameOver(moveList)) {
+    //         return winningMoves;
+    //     }
+    //     // Consider any move that is available and has not been previously marked as losing. 
+    //     let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
+    //     console.log(`A call to bestMovesList found these unclaimednumbers: ${unclaimedNumbers(moveList)} `);
+    //     console.log(`It ruled out these numbers already found to lose: ${losingMoves} `)
+    //     console.log(`          and these numbers already found to win: ${winningMoves}  `)
+    //     console.log(`                 Leaving these undeterminedMoves: ${undeterminedMoves} \n\n`)
+
+    //     console.log(`Testing each undeterminedMove : ${undeterminedMoves} `)
+        
+    //     // While movesToConsider is not empty and winningMoves is empty  
+        
+    //     //  An array of arrays, each one move longer than the parameter movelist
+    //     let hypotheticalPositions = []
+        
+    //     movesToConsider.forEach(number => {
+    //         let hypotheticalPosition = moveList.concat(number)
+    //         hypotheticalPositions.push(hypotheticalPosition)
+    //     })
        
         
-    }
+    //     let wins = immediateWins(moveList);
+
+
+
+    //     let hypotheticalMoveCount = 0;
+    //     let drawingMoves = unclaimedNumbers(moveList);
+        
+    //     if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
+    //         return immediateWins(moveList)
+    //     }
+    //     else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
+
+    //     }
+       
+        
+    // }
 
     // Winning moves are moves that create a 15-sum
     function winningMoves(moveList) {
