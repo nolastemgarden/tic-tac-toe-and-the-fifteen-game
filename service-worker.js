@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/tic-tac-toe-and-the-fifteen-game/precache-manifest.05919bf79b748aa851b758f0170ce5ea.js"
+  "/tic-tac-toe-and-the-fifteen-game/precache-manifest.ede7fb8313bb1f3f978d8dd9fd2a3f99.js"
 );
 
 self.addEventListener('message', (event) => {
