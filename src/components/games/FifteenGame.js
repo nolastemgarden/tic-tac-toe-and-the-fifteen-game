@@ -583,18 +583,69 @@ export default function FifteenGame() {
     // A move is sound if no matter how your opponent replies you will have a sound reply.
     
 
+    // From a moveList it determines the posible moves then removes those that lead to a lose or grant a forcing move that ... leads to a loss.
+    // Starting from an empty board... what are the sound moves? 
+    // turn 0 sound moves = [0,1,2,3,4,5,6,7,8]
+    // turn 1 sound moves = [0,1,2,3,4,5,6,7,8]  
 
-    // Returns a list of legal moves.  TODO make it only return 
-    function soundMoves(moveList) {
-        let losingMoves = []
-        let winningMoves = []
+
+    // Any moveList either contains a win or is sound
+    // sound moveLists are movelists that reach all the way to turn 9 with no wins occuring despite both players best effort.  
+
+    
+
+    // The game is "as good as over" if 8 moves have been made b/c the 9th is a forced. 
+    function gameOverDraw(moveList) {
+        if (moveList.length < 8) {
+            return false;
+        }
+        if (moveList.length === 8) {
+            let lastMove = unclaimedNumbers(moveList);
+        }
+    }
+    
+    // A move is sound if it completes a drawn game or if forEach legal reply there is a sound response
+    function moveIsSound(moveList, square) {
         
-        let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
-        console.log(`A call to soundMoves found these unclaimednumbers: ${unclaimedNumbers(moveList)} `);
-        console.log(`It ruled out these numbers already found to lose: ${losingMoves} `)
-        console.log(`          and these numbers already found to win: ${winningMoves}  `)
-        console.log(`                 Leaving these undeterminedMoves: ${undeterminedMoves} \n\n`)
 
+    }
+    
+    // Returns a list of legal moves.  TODO make it only return 
+    // Assumes player whose turn it is has not already made an unsound move
+    function soundMoves(moveList, undeterminedMoves = [], winningMoves = [], losingMoves = [] ) {
+        
+        // let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
+        console.log(`soundMoves called with moveList: ${moveList}} `);
+        console.log(`soundMoves found these yet unclaimedNumbers: ${unclaimedNumbers(moveList)}} `);
+        console.log(`soundMoves will filter these undeterminedMoves: ${undeterminedMoves}} `);
+        console.log(`   these numbers were previously found to lose: ${losingMoves} `)
+        console.log(`   these numbers were previously found to win:  ${winningMoves} \n\n`)
+
+        // If you can win immediately that is the sound thing to do... but it shouldn't happen.
+        if (winningMoves(moveList).length > 0) {
+            console.error(`soundMoves found a winning move!`)
+            return winningMoves(moveList);
+        }
+
+        // otherwise do not return while there are still undeterminedMoves  
+        // Ensure you don't let your opponent win
+
+        // But if you and your opponent both play soundly such an opportunity will never arise.
+        // If you can lose immediately that is an unsound thing to do.
+        // filter them out of the 
+        if (losingMoves(moveList).length > 0) {
+            
+            
+        }
+        
+        
+        
+        
+        // Filter the moves that we are 
+        
+        
+        
+        
         console.log(`for now we are operating as if all undeterined moves were safe... returning ${undeterminedMoves} \n`)
 
         return undeterminedMoves;
@@ -649,7 +700,7 @@ export default function FifteenGame() {
     //     })
        
         
-    //     let wins = immediateWins(moveList);
+        // let wins = immediateWins(moveList);
 
 
 
@@ -666,13 +717,13 @@ export default function FifteenGame() {
         
     // }
 
-    // Winning moves are moves that create a 15-sum
+    // Winning moves are moves that create a 15-sum right now.
     function winningMoves(moveList) {
         let player = myTurn(moveList)
         let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        let winningMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
         console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
-        return immediateWins;
+        return winningMoves;
     }
 
     // Losing Moves are moves that fail to block the opponent from creating a 15-sum
