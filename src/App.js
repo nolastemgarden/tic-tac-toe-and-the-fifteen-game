@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
         width: '100vw',
-        minHeight: '675px',
-        minWidth: '500px',
+        // minHeight: '675px',
+        // minWidth: '500px',
 
 
         // boxSizing: 'border-box',
@@ -50,13 +50,19 @@ const useStyles = makeStyles((theme) => ({
     container: {
         // border: 'solid red 1px',
         backgroundColor: '#4AC9FD',
-        height: 'min(133vw, 100vh)',
+        
+        
+        // height: 'min(133vw, 100vh)',
+        height: '100vh',
         maxHeight: '1200px',
-        width: 'min(75vh, 100vw)',
+        
+        // width: 'min(75vh, 100vw)',
+        width: '100vw',
         maxWidth: '900px',
         // height: containerHeight,
         // width: containerWidth,
-        borderRadius: '2vmin',
+        
+        // borderRadius: '2vmin',
         overflow: 'hidden',
         
         display: 'flex',
