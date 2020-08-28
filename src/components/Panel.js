@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
         // maxHeight: '100%',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        paddingRight: '5vmin',
+        paddingRight: '0.5rem',
     },
     gameStatus: {
         fontSize: '2rem',
@@ -47,9 +47,10 @@ const useStyles = makeStyles((theme) => ({
     commentary: {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        flex: '1 0 70%'
+        flex: '1 0 55%'
     },
     buttonArea: {
+        flex: '1 0 45%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
         // justifyContent: 'center',
         // alignItems: 'center',
         // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
-        fontSize: 'min(20px, 1rem)',
+        fontSize: 'min(18px, 0.8rem)',
     },
     buttonIcon: {
         marginRight: '1vmin',
