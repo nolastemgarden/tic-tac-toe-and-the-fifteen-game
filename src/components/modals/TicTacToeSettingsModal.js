@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
-        fontSize: 'min(20px, 1rem)',
+        // fontSize: 'min(20px, 1rem)',
+        fontSize: 'min(18px, 0.8rem)',
         lineHeight: '0.8vmin',
     },
     buttonIcon: {
