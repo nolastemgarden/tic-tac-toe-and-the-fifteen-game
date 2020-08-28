@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
     board: {
         // border: 'solid blue 1px',
-        width: '76.4%',
+        width: '100%',
         height: '100%',
         display: 'flex',
         flexWrap: 'wrap',
