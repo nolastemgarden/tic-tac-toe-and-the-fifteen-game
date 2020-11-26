@@ -4,7 +4,7 @@ import './TicTacToe.css';
 
 // My Components
 import Board from "./Board";
-import Panel from "./Panel";
+import Panel from "../Panel";
 
 
 // MUI  components
@@ -15,59 +15,50 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
 
     root: {
-        border: 'solid red 1px',
+        border: 'solid navy 1px',
+
         width: '100%',
-        height: 'calc(100% - 5rem)',
+        height: '100%',
+
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-    },
-    boardContainer: {
-        border: 'solid orange 1px',
-        width: '100%',
-        paddingTop: 'min(100%, 50vh)',
-        height: '0',
-        position: 'relative',
-
-        
-        // display: 'flex',
-        // flexDirection: 'column',
         // justifyContent: 'center',
-        // alignItems: 'center',
+        backgroundColor: '#4AC9FD',
 
-        
+        borderRadius: '1vmin',
+
+
     },
     boardArea: {
-        border: 'solid yellow 1px',
-        width: '100%',
-        height: '0',
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',  // The lesser of full and the height of the board area. 
-        height: '100%',
+        backgroundColor: '#ffffff',
+        borderRadius: 'inherit',
+        width: 'calc(100% - 4rem)',
+        padding: '1rem',
+        marginBottom: '1rem',
 
 
-        // display: 'flex',
-        // flexDirection: 'column',
-        // justifyContent: 'center',
-        // alignItems: 'center',
+        height: '55%',
 
 
+
+        display: 'flex',
+        justifyContent: 'center',
     },
     panelArea: {
         backgroundColor: '#ffffff',
-        width: '100%',
-        paddingTop: 'calc(100vh - 5rem - 105%)',
-        
+        borderRadius: 'inherit',
+        width: 'calc(100% - 4rem)',
+        padding: '1rem',
+
         marginBottom: '0rem',
         height: '37%',
         flex: '1 1 37%',
-                
+
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center'
-        
+
     },
 }));
 
@@ -75,45 +66,43 @@ const useStyles = makeStyles((theme) => ({
 export default function TicTacToeGame() {
     const classes = useStyles();
 
-    let [history, setHistory] = useState([]); 
-    let [showHints, setShowHints] = useState(false); 
-    // let [showHints, setShowHints] = useState(true); 
-    let [showCommentary, setShowCommentary] = useState(false);  
+    let [history, setHistory] = useState([]);
+    let [showMoves, setShowMoves] = useState(false);
+    // let [showMoves, setShowMoves] = useState(true); 
+    let [showCommentary, setShowCommentary] = useState(false);
     // let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
         <Box className={classes.root} >
-            <Box className={classes.boardContainer}>
-                <Box className={classes.boardArea} >
-                    <Board
-                        boardIcons={getBoardIcons()}
-                        boardColors={getBoardColors()}
-                        handleSquareClick={handleSquareClick}
-                    />
-                </Box>
+            <Box className={classes.boardArea} >
+                <Board
+                    boardSymbols={getBoardSymbols()}
+                    boardColors={getBoardColors()}
+                    handleSquareClick={handleSquareClick}
+                />
             </Box>
             <Box className={classes.panelArea}>
-                {/* <Panel 
+                <Panel
                     gameType='TicTacToe'
                     // data={getPanelData(history)} 
                     status={getStatus()}
                     commentary={getCommentary()}
-                    showHints={showHints}
+                    showMoves={showMoves}
                     showCommentary={showCommentary}
-                    handleUndoButtonClick={handleUndoButtonClick} 
+                    handleUndoButtonClick={handleUndoButtonClick}
                     handleNewGameButtonClick={handleNewGameButtonClick}
-                    toggleShowHintsSwitch={toggleShowHintsSwitch}
+                    toggleShowMovesSwitch={toggleShowMovesSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
-                /> */}
+                />
             </Box>
         </Box>
     );
 
     // The <Game> holds all state and most helper and handler function definitions.
     // It passes what it needs to to the board to render and to the panel.
-    
-    // The board data to render is always the latest entry in history.  We will have an 'undo' but not a 'redo' button.  May add a Make Computer Move
-    function getBoardIcons(moveList = history) {
+
+    // The board data to render is a the latest entry in history.  We will have an 'undo' but not a 'redo' button.  May add a Make Computer Move
+    function getBoardSymbols(moveList = history) {
         let data = Array(9).fill('');  // Start with an array representing a board of NINE empty squares
         squaresClaimedByPlayer('x').forEach(squareId => {
             data[squareId] = 'x';
@@ -130,17 +119,17 @@ export default function TicTacToeGame() {
             return highlightWins();
         }
         // If hints are turned off return colors [] filled with 'noColor' strings.
-        if (showHints === false) {
+        if (showMoves === false) {
             return Array(9).fill('noColor');
         }
         // If hints are turned on return colors [] filled by getBoardHints().
-        if (showHints === true) {
+        if (showMoves === true) {
             // console.log(`Board Hints: ${getBoardHints()}`)
             return getBoardHints();
         }
     }
 
-    
+
     // list all squareIds not appearing in the history or an 
     function emptySquares(moveList = history) {
         let emptySquaresList = [];
@@ -161,12 +150,12 @@ export default function TicTacToeGame() {
         }
         return claimedSquaresList;
     }
-    
+
     //  Squares for which the value of the Hint is yet to be determined. 
     function unknownSquares(hints) {
         let unknownSquares = [];
         hints.forEach((value, index) => {
-            if (value === 'unknown'){
+            if (value === 'unknown') {
                 unknownSquares.push(index)
             }
         })
@@ -177,7 +166,7 @@ export default function TicTacToeGame() {
     function wins(player, moveList = history) {
         return (lineCountsFor(player, moveList).includes(3));
     }
-    
+
     // IMMEDIATE WIN defined: the player whose turn it is has an un-blocked two-in-a-line
     function immediateWins(moveList = history) {
         const player = myTurn(moveList);
@@ -201,7 +190,7 @@ export default function TicTacToeGame() {
         let immediatelyLosingMoves = [];
         emptySquares(moveList).forEach(testSquare => {
             let hypotheticalHistory = moveList.concat(testSquare);
-            if (thereIsAnImmediateWin(hypotheticalHistory)) {  
+            if (thereIsAnImmediateWin(hypotheticalHistory)) {
                 immediatelyLosingMoves = immediatelyLosingMoves.concat(testSquare);
             }
         })
@@ -258,7 +247,7 @@ export default function TicTacToeGame() {
         return doubleAttackGrantingMoves;
     }
 
-    
+
 
 
     // TODO
@@ -267,7 +256,7 @@ export default function TicTacToeGame() {
         // (0)
         const player = myTurn(history);
         let hints = Array(9).fill('unknown');  // Start with an array representing a board of NINE squares.
-        
+
         // (1)
         claimedSquares().forEach(squareId => {
             hints[squareId] = 'claimed';
@@ -284,22 +273,22 @@ export default function TicTacToeGame() {
                 hints[losingSquare] = 'lose';
             }
         });
-        
-        
+
+
         // (4) Mark double attacking wins.  yet unknown squares that create a double attack.  GREEN
         doubleAttackCreatingMoves(history).forEach(keyAttackingMove => {
-            if (hints[keyAttackingMove] === 'unknown'){
+            if (hints[keyAttackingMove] === 'unknown') {
                 hints[keyAttackingMove] = 'win';
             }
         });
-        
+
         // (5) Mark moves that grant the opponent a double attacking win. Only apply to yet unknown squares.  RED
         doubleAttackGrantingMoves(history).forEach(losingSquare => {
             if (hints[losingSquare] === 'unknown') {
                 hints[losingSquare] = 'lose';
             }
         });
-        
+
         // (6) Mark distant win forcing moves.  yet unknown squares that initiate a 3 move win sequence.  GREEN
         distantForcedWinCreatingMoves(history).forEach(keyAttackingMove => {
             if (hints[keyAttackingMove] === 'unknown') {
@@ -320,12 +309,12 @@ export default function TicTacToeGame() {
         unknownSquares(hints).forEach(square => {
             hints[square] = 'draw';
         });
-        
+
         // console.log(`getBoardHints() made this list: ${hints}`)
         return hints;
     }
 
-    
+
     // HIGH-LEVEL PANEL HELPERS no params
     function getStatus() {
         if (wins('x')) {
@@ -369,7 +358,7 @@ export default function TicTacToeGame() {
             return `O really only has two options, edge or corner. One is good and lets O
             force a draw. The other is bad and gives X a chance to win.`
         }
-        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
+        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0) {
             return `In the Corner opening O has five non-symmetrical options. All except one
             are mistakes that let X force a win.`
         }
@@ -393,7 +382,7 @@ export default function TicTacToeGame() {
         }
 
         // If three moves have been made
-        if (history.length >= 3 ) {
+        if (history.length >= 3) {
             let message = '';
             if (thereIsAnImmediateWin()) {
                 message = `You have a winning move! Defensive moves are irrelevant.`
@@ -408,10 +397,10 @@ export default function TicTacToeGame() {
             else if (thereIsAnUrgentDefensiveMove()) {
                 message = `You cannot win right now so you must defend the one key square.`
             }
-            
+
             else {
-                let answer = (gameLosingMoves().length > 0) ? 
-                    'Nonetheless, it is possible for you to make a mistake and lose right now. Play carefully!' : 
+                let answer = (gameLosingMoves().length > 0) ?
+                    'Nonetheless, it is possible for you to make a mistake and lose right now. Play carefully!' :
                     'You\'re on track for a draw no matter what move you play in this position.';
                 message = `You have neither a winning attack nor an urgent defensive move. ${answer}`
             }
@@ -440,14 +429,14 @@ export default function TicTacToeGame() {
             });
         });
         return highlightedSquares;
-    } 
-     
-    
+    }
+
+
 
     function threatCreatingMoves(moveList = history) {
         // This list may contain duplicates. A squareId that appears twice creates two separate two-in-a-line threats.
         const player = myTurn(moveList);
-        const threatCreatingMoves = []; 
+        const threatCreatingMoves = [];
         linesWithOnlyOne(moveList).forEach((line) => {
             squaresInLine(line).forEach((square) => {
                 if (squareIsEmpty(square, moveList)) {                 // Don't add an already claimed square to the list of therat creating moves!
@@ -463,16 +452,16 @@ export default function TicTacToeGame() {
         return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) === index);
     }
 
-    
 
-    
+
+
 
     function winningDoubleAttackCreatingMoves(moveList = history) {
         // A doubleAttack is winning IFF it can be made without ignoring an urgentDefensiveMove.
         // A doubleAttackCreatingMove is winning IF there were no urgentDefensiveMoves OR IF it is identical to the ONE urgentDefensiveMove.
     }
-    
-    
+
+
 
 
     // DEFINITION: thisMoveIsForced IFF player who moved last has one unblocked threat and player whose turn it is has none.
@@ -481,7 +470,7 @@ export default function TicTacToeGame() {
         // console.log(`In position: ${moveList} The next move is forced: ${isForced}`)
         return (isForced);
     }
-    
+
     // DEFINITION: ForcingMoves are the moves that give the opponent an urgentDefensiveMove and no immediateWin to take presidence over it.
     function forcingMoves(moveList = history) {
         let forcingMoves = [];
@@ -494,27 +483,27 @@ export default function TicTacToeGame() {
         // console.log(`forcingMoves found these: ${forcingMoves}`)
         return forcingMoves;
     }
-    
-    
+
+
     // DEFINITION: A move that creates a position where you have one threat and your opponent has none &&
     //             once your opponent responds with their one urgentDefensiveMove you are left with the ability to create a double attack. 
     function distantForcedWinCreatingMoves(moveList = history) {
         let distantForcedWinCreatingMovesList = [];
         // There cannot be a distantForcedWinCreatingMove unless there are at least 5 empty squares and playerTwo has has a chance to make an error on their first move.
-        if (moveList.length < 2 || moveList.length > 4){
+        if (moveList.length < 2 || moveList.length > 4) {
             return distantForcedWinCreatingMovesList;
         }
         // To force a win you must force the first reply ... 
         forcingMoves(moveList).forEach(forcingMove => {
             // ... and ensure the forced reply leaves you able to create a double attack.
             let hypotheticalHistory = moveList.concat(forcingMove);
-            if (urgentDefensiveMoves(hypotheticalHistory).length !== 1){
+            if (urgentDefensiveMoves(hypotheticalHistory).length !== 1) {
                 console.error(`There are ${urgentDefensiveMoves(hypotheticalHistory).length} urgentDefensiveMoves in the hypotheticalHistory being examined by distantForcedWinCreatingMoves.`)
             }
             let urgentDefensiveMove = urgentDefensiveMoves(hypotheticalHistory)[0];
             hypotheticalHistory = hypotheticalHistory.concat(urgentDefensiveMove);
             // console.log(`The one urgent defensive move is ${urgentDefensiveMove} leading to position: ${hypotheticalHistory}`);
-            if (thereIsADoubleAttackCreatingMove(hypotheticalHistory)){
+            if (thereIsADoubleAttackCreatingMove(hypotheticalHistory)) {
                 distantForcedWinCreatingMovesList = distantForcedWinCreatingMovesList.concat(forcingMove);
             }
         })
@@ -528,7 +517,7 @@ export default function TicTacToeGame() {
     }
 
 
-    
+
     // Check if each of the squares that is is still empty is a losing Move
     function gameLosingMoves(moveList = history) {  // This function should ONLY be called by getBoardHints when there are no forced Win Creating Moves
         let gameLosingMoves = [];
@@ -545,8 +534,8 @@ export default function TicTacToeGame() {
 
 
 
-    
-   
+
+
 
 
     // CLICK HANDLERS
@@ -561,7 +550,7 @@ export default function TicTacToeGame() {
         }
         // If we reach this point the clicked square is open and the game is not over yet ... 
         console.log(`History: ${history.concat(squareClicked)}`)
-        
+
         setHistory(history.concat(squareClicked));
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
@@ -575,24 +564,24 @@ export default function TicTacToeGame() {
         console.log(`History reset to: ${empty}`);
         setHistory(empty);
     }
-    function toggleShowHintsSwitch() {
-        setShowHints(!showHints)
+    function toggleShowMovesSwitch() {
+        setShowMoves(!showMoves)
     }
     function toggleShowCommentarySwitch() {
         setShowCommentary(!showCommentary)
     }
-    
-    
+
+
     // TURN HELPERS
     // High-Level Methods that need to know whose turn it is can deduce that info by using these helpers to look at the history directly, rather than having to be invoked with a player param. 
     function myTurn(moveList = history) {
-        return (moveList.length % 2 === 0) ? 'x' : 'o' ;
+        return (moveList.length % 2 === 0) ? 'x' : 'o';
     }
     function notMyTurn(moveList = history) {
         return (moveList.length % 2 === 0) ? 'o' : 'x';
     }
     function other(player) {
-        if (player !== 'o' && player !== 'x') { console.error(`other(player) called with invalid player: ${player}`)}
+        if (player !== 'o' && player !== 'x') { console.error(`other(player) called with invalid player: ${player}`) }
         return (player === 'o') ? 'x' : 'o';
     }
 
@@ -601,7 +590,7 @@ export default function TicTacToeGame() {
     // need to be told which player you care about b/c they may be used on EITHER the player whose turn it is or the other player.
     function squaresClaimedByPlayer(player, moveList = history) {
         // let history = (alteredHistory === undefined) ? history : alteredHistory
-        
+
         if (player === 'x') {
             return moveList.filter((squareId, index) => index % 2 === 0);
         }
@@ -614,9 +603,9 @@ export default function TicTacToeGame() {
         }
     }
 
-    
-    
-    
+
+
+
     function lineCountsFor(player, moveList = history) {
         // Based on the history state, return an array of 8 ints 0-3 indicating the number of X's or O's in each row, col, and diagonal
         // const player = myTurn(moveList); 
@@ -645,7 +634,7 @@ export default function TicTacToeGame() {
         return lines;
     }
 
-    
+
 
     function thereIsAForcedWin(moveList = history) {
         const thereIsAForcedWin = (thereIsAnImmediateWin(moveList)
@@ -675,7 +664,7 @@ export default function TicTacToeGame() {
     function linesWithOnlyTwo(player, moveList = history) {
         let linesList = [];
         lineCountsFor(player, moveList).forEach((count, line) => {
-            if (count === 2 && lineCountsFor(other(player), moveList)[line] === 0 ) {  
+            if (count === 2 && lineCountsFor(other(player), moveList)[line] === 0) {
                 linesList.push(line)
             }
         })
@@ -720,14 +709,14 @@ export default function TicTacToeGame() {
         // Upslash Diagonal, Downslash Diagonal
         return [0, 1, 2, 3, 4, 5, 6, 7]
     }
-    
-    
-    
-    
 
-    
-    
-    
+
+
+
+
+
+
+
 
     // list the squareIds that fall in a given lineId
     function squaresInLine(lineId) {
@@ -762,30 +751,30 @@ export default function TicTacToeGame() {
                 console.error(`getSquares() was called with an invalid lineId.`)
         }
         return squareIds;
-        
+
     }
 
 
-    
+
     // BOOLEAN helpers for getStatus() and handleSquareClick()
     function squareIsEmpty(square, moveList = history) {
         return (!moveList.includes(square))
     }
-    
 
-    
+
+
     // function gameDrawn() {
     //     return (history.length >= 9 && !wins('x') && !wins('o'));  // Board full and neither player has a win
     // }
     function gameDrawn() {
         return (blockedLines().length >= 8 && !wins('x') && !wins('o'));  // Board full and neither player has a win
     }
-    
-    
-    
+
+
+
     function gameOver(moveList = history) {
-        return (moveList.length >= 9 
-            || wins('x', moveList) 
+        return (moveList.length >= 9
+            || wins('x', moveList)
             || wins('o', moveList));  // Board full or there's a 3-in-a-row
     }
 

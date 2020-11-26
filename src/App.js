@@ -63,7 +63,7 @@ export default function App() {
             <CssBaseline />
             <ThemeProvider theme={theme}>
                 <Box className={classes.root} >
-                    <Container className={classes.container} maxWidth='md' >  
+                    <Container className={classes.container} maxWidth='md' disableGutters>  
                         <Router>
                             <Switch>
                                 <Route exact path="/">

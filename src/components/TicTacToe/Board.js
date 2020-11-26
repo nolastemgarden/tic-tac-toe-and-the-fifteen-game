@@ -1,26 +1,52 @@
 import React from 'react';
 
 // My Components
+// import Square from "./Square";
 
 // MUI  components
+import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import ClearIcon from '@material-ui/icons/Clear';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
+
 const useStyles = makeStyles({
+    board: {
+        border: 'solid blue 1px',
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',  // The lesser of full and the height of the board area. 
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+
+        // margin: '1rem 0.0rem',
+    },
+    row: {
+        // border: 'solid blue 1px',
+        width: '100%',
+        height: '30%',
+        margin: '0.3rem 0.0rem',
+
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     square: {
-        margin: '2%',
-        width: '27%',
-        height: '27%',
-        boxSizing: 'border-box',
+        width: 'min(30%, 15vh)',
+        height: '100%',
+        margin: '0.0rem 0.3rem',
+
+
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        
-        // backgroundColor: '#DDD',
-        // backgroundColor: '#FE3'
+
     },
     iconX: {
         width: '100%',
@@ -40,7 +66,7 @@ const useStyles = makeStyles({
         backgroundColor: '#ddd',
     },
     claimed: {
-       backgroundColor: '#eee',
+        backgroundColor: '#eee',
     },
     unclaimed: {
         backgroundColor: '#ddd',
@@ -83,10 +109,64 @@ const useStyles = makeStyles({
     drawingMove: {
         backgroundColor: '#EEDD11'
     }
-    
+
 });
 
-export default function Square(props) {
+export default function Board(props) {
+    const classes = useStyles();
+    const handleSquareClick = props.handleSquareClick
+    const boardIcons = props.boardIcons;
+    const boardColors = props.boardColors; // Array of 9 strings 'noColor', 'unclaimed', 'claimed', 'win', 'draw', 'lose'.
+            // Formerly and Array of 9 strings '', 'immediateWin', 'unavoidableDefeat', 'doubleAttackCreatingMove', 'urgentDefensiveMove', 'forcedWinCreatingMove', 'drawingMove'
+    
+    let rows = [];
+    for (let row = 0; row < 3; row++) {
+        let newRow =
+            <Row
+                key={row}
+                rowId={row}
+                rowIcons={boardIcons.slice(3*row, 3*(row+1))}
+                rowColors={boardIcons.slice(3*(row), 3*(row + 1))}
+                handleClick={handleSquareClick}  
+            />
+        ;
+        rows = rows.concat(newRow);
+    }
+    return (
+        <Box className={classes.board}>
+            {rows}
+        </Box>
+    )
+}
+
+function Row(props) {
+    const classes = useStyles();
+    const rowId = props.rowId;
+    const rowIcons = props.rowIcons;
+    const rowColors = props.rowColors;
+    const handleSquareClick = props.handleSquareClick
+
+    let squares = [];
+    for (let col = 0; col < 3; col++) {
+        let squareId = 3 * rowId + col;
+        let newSquare =
+            <Square
+                key={squareId}
+                id={squareId}
+                symbol={rowIcons[col]}
+                color={rowColors[col]}
+                handleClick={handleSquareClick}
+            />;
+        squares = squares.concat(newSquare);
+    }
+    return (
+        <Box className={classes.row}>
+            {squares}
+        </Box>
+    )
+}
+
+function Square(props) {
     const classes = useStyles();
     const id = props.id
     const symbol = props.symbol
@@ -110,10 +190,10 @@ export default function Square(props) {
             break;
     }
 
-    
-    
-    
-    
+
+
+
+
     let className;
     switch (color) {
         case 'unknown':
