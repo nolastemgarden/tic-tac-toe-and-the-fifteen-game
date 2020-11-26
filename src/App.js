@@ -10,16 +10,17 @@ import logo from './logo.svg';
 import './App.css';
 
 // My Components & Pages
-import Navbar from './components/Navbar';
-import WelcomePage from "./components/pages/WelcomePage";
-import TicTacToeGame from './components/games/TicTacToeGame';
-import FifteenGame from './components/games/FifteenGame';
-import MagicSquares from "./components/pages/MagicSquares";
-import StrategyPage from "./components/pages/StrategyPage";
+import Navbar from './components/Navbar/Navbar';
+import WelcomePage from "./pages/WelcomePage";
+import TicTacToeGame from './components/TicTacToe/TicTacToeGame';
+import FifteenGame from './components/FifteenGame/FifteenGame';
+import MagicSquares from "./pages/MagicSquares";
+import StrategyPage from "./pages/StrategyPage";
 
 // MUI  components
-// import Link from '@material-ui/core/Link';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
@@ -27,7 +28,7 @@ import Typography from '@material-ui/core/Typography';
 import theme from "./theme";
 import {
     makeStyles,
-    ThemeProvider
+    ThemeProvider,
 } from '@material-ui/core/styles';
 
 
@@ -36,55 +37,20 @@ const useStyles = makeStyles((theme) => ({
     root: {
         height: '100vh',
         width: '100vw',
-        // minHeight: '675px',
-        // minWidth: '500px',
+        backgroundColor: theme.palette.common.black,
 
-
-        // boxSizing: 'border-box',
-        backgroundColor: '#ccFFFF',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'start',
+        alignItems: 'stretch',
 
     },
     container: {
-        // border: 'solid red 1px',
-        backgroundColor: '#4AC9FD',
-        
-        
-        // height: 'min(133vw, 100vh)',
-        height: '100vh',
-        maxHeight: '1200px',
-        
-        // width: 'min(75vh, 100vw)',
-        width: '100vw',
-        maxWidth: '900px',
-        // height: containerHeight,
-        // width: containerWidth,
-        
-        // borderRadius: '2vmin',
-        overflow: 'hidden',
-        
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        // justifyContent: 'center',
+        // maxWidth='md' --> max-width: 960px;
+        border: 'solid red 1px',
+        backgroundColor: theme.palette.common.black,
+
     },
     
-    footer: {
-        // border: 'solid red 1px',
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        height: '3%',
-        width: '100%',
-        alignItems: 'bottom',
-    },
-    footerText: {
-        paddingTop: '0.7vmin',
-        paddingRight: '2.5vmin',
-        color: 'navy',
-        fontSize: '1.6vmin',
-    }
 }))
 
 
@@ -93,51 +59,43 @@ export default function App() {
     const [pageTitle, setPageTitle] = React.useState("Welcome");
   
     return (
-        <Box className={classes.root} >
-            <Box className={classes.container} >
-                <Router>
-                    <Switch>
-                        <Route exact path="/">
-                            <Navbar pageTitle={"Welcome"} />
-                            <WelcomePage />
-                        </Route>
+        <React.Fragment>
+            <CssBaseline />
+            <ThemeProvider theme={theme}>
+                <Box className={classes.root} >
+                    <Container className={classes.container} maxWidth='md' >  
+                        <Router>
+                            <Switch>
+                                <Route exact path="/">
+                                    <Navbar pageTitle={"Welcome"} />
+                                    <WelcomePage />
+                                </Route>
 
-                        <Route path="/tic-tac-toe">
-                            <Navbar pageTitle={"Play Tic Tac Toe"} />
-                            <TicTacToeGame />
-                        </Route>
+                                <Route path="/tic-tac-toe">
+                                    <Navbar pageTitle={"Play Tic Tac Toe"} />
+                                    <TicTacToeGame />
+                                </Route>
 
-                        <Route path="/fifteen-game">
-                            <Navbar pageTitle={"Play the Fifteen Game"} />
-                            <FifteenGame />
-                        </Route>
+                                <Route path="/fifteen-game">
+                                    <Navbar pageTitle={"Play the Fifteen Game"} />
+                                    <FifteenGame />
+                                </Route>
 
-                        <Route path="/magic-squares">
-                            <Navbar pageTitle={"Learn about Magic Squares"} />
-                            <MagicSquares />
-                        </Route>
+                                <Route path="/magic-squares">
+                                    <Navbar pageTitle={"Learn about Magic Squares"} />
+                                    <MagicSquares />
+                                </Route>
 
-                        <Route path="/strategy">
-                            <Navbar pageTitle={"Learn Tic Tac Toe Strategy"} />
-                            <StrategyPage />
-                        </Route>
-                    </Switch>
-                </Router>
-                <Footer />
-            </Box>
-        </Box>
-    );
-}
-
-function Footer() {
-    const classes = useStyles();
-
-    return (
-        <Box className={classes.footer} >
-            <Typography className={classes.footerText} noWrap >
-                Produced by the Nola Stem Garden
-            </Typography>
-        </Box>
+                                <Route path="/strategy">
+                                    <Navbar pageTitle={"Learn Tic Tac Toe Strategy"} />
+                                    <StrategyPage />
+                                </Route>
+                            </Switch>
+                        </Router>
+                    </Container>
+                </Box>
+            </ThemeProvider>
+        </React.Fragment>
     );
 }
 

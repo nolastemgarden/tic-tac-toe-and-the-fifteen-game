@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import '../games/TicTacToe.css';
+import './TicTacToe.css';
 
 // My Components
 // import Square from "./Square";

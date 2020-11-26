@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import './TicTacToe.css';
 
 // My Components
-import Board from "../boards/TicTacToeBoard";
+import Board from "./TicTacToeBoard";
 import Panel from "../Panel";
 
 

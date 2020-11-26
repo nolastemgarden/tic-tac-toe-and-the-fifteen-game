@@ -1,33 +1,43 @@
 import React from 'react';
 
+
 import {
     createMuiTheme,
+    makeStyles,
     responsiveFontSizes,
 } from '@material-ui/core/styles';
 
 
 
-import yellow from '@material-ui/core/colors/yellow';
-import red from '@material-ui/core/colors/red';
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
 // import { Button, createStyles } from '@material-ui/core';
 
 const theme = createMuiTheme({
     palette: {
         primary: {
-            light: '#b0ffff',
-            main: '#4AC9FD',
-            dark: '#1133f4',
-            // contrastText: '#fff'
-        }
+            light: '#669944',
+            main: '#2e6b12',
+            dark: '#004000',
+            contrastText: '#FFFFFF'
+        },
+        secondary: {
+            light: '#FFFFF',
+            main: '#FFFFFF',
+            dark: '#777777',
+            contrastText: '#FFFFFF'
+        },
     },
     status: {
         danger: 'orange',
     },
     shape: {
         borderRadius: 8,
-    }
+    },
+    spacing: 8,
 
 });
 
+
 export default responsiveFontSizes(theme);
-// export default theme;
+

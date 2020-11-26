@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 // Custom Components
-import TicTacToeHelpModal from "./modals/TicTacToeHelpModal";
-import TicTacToeSettingsModal from "./modals/TicTacToeSettingsModal";
-import FifteenGameHelpModal from "./modals/FifteenGameHelpModal";
-import FifteenGameSettingsModal from "./modals/FifteenGameSettingsModal";
+import TicTacToeHelpModal from "./TicTacToe/TicTacToeHelpModal";
+import TicTacToeSettingsModal from "./TicTacToe/TicTacToeSettingsModal";
+import FifteenGameHelpModal from "./FifteenGame/FifteenGameHelpModal";
+import FifteenGameSettingsModal from "./FifteenGame/FifteenGameSettingsModal";
 
 // MUI Components
 import Box from '@material-ui/core/Box';

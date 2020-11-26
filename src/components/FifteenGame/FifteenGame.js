@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 
 // My Components
-import Board from "../boards/FifteenBoard";
+import Board from "./FifteenBoard";
 import Panel from "../Panel";
 
 
