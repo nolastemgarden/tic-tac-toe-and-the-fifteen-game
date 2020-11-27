@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     board: {
-        border: 'solid blue 1px',
+        // border: 'solid blue 1px',
         position: 'absolute',
         top: '0',
         left: '0',
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-
+        marginTop: '0.3rem',
         // margin: '1rem 0.0rem',
     },
     row: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles({
         width: 'min(30%, 15vh)',
         height: '100%',
         margin: '0.0rem 0.3rem',
-
+        backgroundColor: '#fff',
 
         display: 'flex',
         alignItems: 'center',
@@ -126,8 +126,8 @@ export default function Board(props) {
                 key={row}
                 rowId={row}
                 rowIcons={boardIcons.slice(3*row, 3*(row+1))}
-                rowColors={boardIcons.slice(3*(row), 3*(row + 1))}
-                handleClick={handleSquareClick}  
+                rowColors={boardColors.slice(3*(row), 3*(row + 1))}
+                handleSquareClick={handleSquareClick}  
             />
         ;
         rows = rows.concat(newRow);
