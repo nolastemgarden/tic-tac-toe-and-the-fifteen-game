@@ -15,14 +15,14 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
 
     root: {
-        border: 'solid red 1px',
+        // border: 'solid red 1px',
         width: '100%',
         height: 'calc(100% - 5rem)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
-    boardContainer: {
+    container: {
         border: 'solid orange 1px',
         width: '100%',
         paddingTop: 'min(100%, 50vh)',
@@ -30,38 +30,23 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
 
         
-        // display: 'flex',
-        // flexDirection: 'column',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-
-        
     },
     boardArea: {
-        border: 'solid yellow 1px',
+        // border: 'solid yellow 1px',
         width: '100%',
-        height: '0',
+        height: '100%',
         position: 'absolute',
         top: '0',
         left: '0',
-        width: '100%',  // The lesser of full and the height of the board area. 
-        height: '100%',
-
-
-        // display: 'flex',
-        // flexDirection: 'column',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-
 
     },
     panelArea: {
-        backgroundColor: '#ffffff',
+        border: 'solid yellow 1px',
+        backgroundColor: '#000',
         width: '100%',
-        paddingTop: 'calc(100vh - 5rem - 105%)',
+        // paddingTop: 'calc(100vh - 5rem - 100%)',
         
-        marginBottom: '0rem',
-        height: '37%',
+        // height: '37%',
         flex: '1 1 37%',
                 
         display: 'flex',
@@ -83,7 +68,7 @@ export default function TicTacToeGame() {
 
     return (
         <Box className={classes.root} >
-            <Box className={classes.boardContainer}>
+            <Box className={classes.container}>
                 <Box className={classes.boardArea} >
                     <Board
                         boardIcons={getBoardIcons()}
@@ -93,7 +78,7 @@ export default function TicTacToeGame() {
                 </Box>
             </Box>
             <Box className={classes.panelArea}>
-                {/* <Panel 
+                <Panel 
                     gameType='TicTacToe'
                     // data={getPanelData(history)} 
                     status={getStatus()}
@@ -104,7 +89,7 @@ export default function TicTacToeGame() {
                     handleNewGameButtonClick={handleNewGameButtonClick}
                     toggleShowHintsSwitch={toggleShowHintsSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
-                /> */}
+                />
             </Box>
         </Box>
     );
