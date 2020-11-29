@@ -21,12 +21,12 @@ import UndoIcon from '@material-ui/icons/Undo';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
-    root: {
+    panel: {
         width: '100%',
         height: '100%',
 
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
 
     },
     infoArea: {
@@ -45,26 +45,29 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 'bold'
     },
     commentary: {
+        border: 'solid red 1px',
+
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         flex: '1 0 55%'
     },
     buttonArea: {
-        flex: '1 0 45%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-around',
-        alignItems: 'center',
+        border: 'solid red 1px',
+        padding: '0.5rem 0.5rem'
+        // flex: '1 0 45%',
+        // display: 'flex',
+        // flexDirection: 'column',
+        // justifyContent: 'space-around',
+        // alignItems: 'center',
     },
     button: {
         width: '100%',
-        height: '18%',
-        // display: 'flex',
-        // flexDirection: 'column',
-        // justifyContent: 'center',
-        // alignItems: 'center',
+        height: '2.5rem',
+        // display: 'flex',  // MUI Buttons have display flex by default.
+        justifyContent: 'center',
+        alignItems: 'center',
         // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
-        fontSize: 'min(18px, 0.8rem)',
+        fontSize: 'min(18px, 1.0rem)',
     },
     buttonIcon: {
         marginRight: '1vmin',
@@ -86,7 +89,6 @@ export default function Panel(props) {
     const moveNumber = props.moveNumber;
     const commentary = props.commentary;
 
-    const handleUndoButtonClick = props.handleUndoButtonClick
     const handleNewGameButtonClick = props.handleNewGameButtonClick
 
 
@@ -95,63 +97,9 @@ export default function Panel(props) {
     const toggleShowMovesSwitch = props.toggleShowMovesSwitch
     const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
 
-
-    const undoButton = (
-        <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={() => handleUndoButtonClick()}
-            disabled={gameOver || moveNumber < 1}
-        >
-            <UndoIcon className={classes.buttonIcon} />
-            Undo
-        </Button>
-    );
-
-    const newGameButton = (
-        <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={() => handleNewGameButtonClick()}
-            disabled={!gameOver}
-        >
-            <ReplayIcon className={classes.buttonIcon} />
-            New&nbsp;Game
-        </Button>
-    );
-
-    let helpButton = "";
-    let settingsButton = "";
-
-    if (gameType === 'TicTacToe') {
-        helpButton = (
-            <Box className={classes.button} >
-                <TicTacToeHelpModal />
-            </Box>
-        );
-        settingsButton = (
-            <Box className={classes.button} >
-                <TicTacToeSettingsModal
-                    showMoves={showMoves}
-                    showCommentary={showCommentary}
-                    toggleShowMovesSwitch={toggleShowMovesSwitch}
-                    toggleShowCommentarySwitch={toggleShowCommentarySwitch}
-                />
-            </Box>
-        )
-    }
-    
-
-
-
-
-
-
     return (
-        <Grid container className={classes.root}>
-            <Grid item className={classes.infoArea} xs={8}>
+        <Box className={classes.panel}>
+            <Box className={classes.infoArea} >
                 {/* <Typography className={classes.gameStatus} noWrap >
                     {status}
                 </Typography> */}
@@ -159,14 +107,89 @@ export default function Panel(props) {
                     {commentary}
                 </Typography> */}
                 {commentary}
+            </Box>
+            <Grid container spacing={1} className={classes.buttonArea} >
+                <Grid item xs={6} >
+                    <UndoButton />
+                </Grid>
+                <Grid item xs={6} >
+                    <NewGameButton />
+                </Grid>
+                <Grid item xs={6} >
+                    <HelpButton />
+                </Grid>
+                <Grid item xs={6} >
+                    <SettingsButton />
+                </Grid>
             </Grid>
-            <Grid item className={classes.buttonArea} xs={4}>
-                {undoButton}
-                {newGameButton}
-                {helpButton}
-                {settingsButton}
-            </Grid>
-        </Grid>
+        </Box>
     )
 
 }
+
+
+function UndoButton(props) {
+    const classes = useStyles();
+    const handleUndoButtonClick = props.handleUndoButtonClick
+
+
+    return (
+        <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            onClick={() => handleUndoButtonClick()}
+            disabled={props.gameOver || props.moveNumber < 1}
+        >
+            <UndoIcon className={classes.buttonIcon} />
+            Undo
+        </Button>
+    )
+} 
+
+function NewGameButton(props) {
+    const classes = useStyles();
+    const handleNewGameButtonClick = props.handleNewGameButtonClick;
+
+    return (
+        <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            onClick={() => handleNewGameButtonClick()}
+            // disabled={!props.gameOver}
+        >
+            <ReplayIcon className={classes.buttonIcon} />
+            New&nbsp;Game
+        </Button>
+    )
+}
+
+function HelpButton(props) {
+    const classes = useStyles();
+    const handleUndoButtonClick = props.handleUndoButtonClick
+
+
+    return (
+        <Box className={classes.button} >
+            <TicTacToeHelpModal />
+        </Box>
+    )
+} 
+
+function SettingsButton(props) {
+    const classes = useStyles();
+    const handleUndoButtonClick = props.handleUndoButtonClick
+
+
+    return (
+        <Box className={classes.button} >
+            <TicTacToeSettingsModal
+                showMoves={props.showMoves}
+                showCommentary={props.showCommentary}
+                toggleShowMovesSwitch={props.toggleShowMovesSwitch}
+                toggleShowCommentarySwitch={props.toggleShowCommentarySwitch}
+            />
+        </Box>
+    )
+} 
