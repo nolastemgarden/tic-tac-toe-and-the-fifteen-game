@@ -22,13 +22,12 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    container: {
+    boardContainer: {
         border: 'solid orange 1px',
         width: '100%',
         paddingTop: 'min(100%, 50vh)',
         height: '0',
         position: 'relative',
-
         
     },
     boardArea: {
@@ -43,7 +42,12 @@ const useStyles = makeStyles((theme) => ({
     panelArea: {
         border: 'solid yellow 1px',
         backgroundColor: '#000',
-        width: '100%',
+        color: theme.palette.common.white,
+
+        width: 'auto',
+        minWidth: '47vh',
+        height: 'auto',
+        minHeight: '30vh',
         // paddingTop: 'calc(100vh - 5rem - 100%)',
         
         // height: '37%',
@@ -68,7 +72,7 @@ export default function TicTacToeGame() {
 
     return (
         <Box className={classes.root} >
-            <Box className={classes.container}>
+            <Box className={classes.boardContainer}>
                 <Box className={classes.boardArea} >
                     <Board
                         boardIcons={getBoardIcons()}
@@ -78,14 +82,14 @@ export default function TicTacToeGame() {
                 </Box>
             </Box>
             <Box className={classes.panelArea}>
-                <Panel 
+                <Panel
                     gameType='TicTacToe'
                     // data={getPanelData(history)} 
                     status={getStatus()}
                     commentary={getCommentary()}
                     showHints={showHints}
                     showCommentary={showCommentary}
-                    handleUndoButtonClick={handleUndoButtonClick} 
+                    handleUndoButtonClick={handleUndoButtonClick}
                     handleNewGameButtonClick={handleNewGameButtonClick}
                     toggleShowHintsSwitch={toggleShowHintsSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
