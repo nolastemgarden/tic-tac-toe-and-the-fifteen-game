@@ -24,15 +24,17 @@ const useStyles = makeStyles((theme) => ({
     button: {
         // border: 'solid red 1px',
         width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
+        // height: '100%',
+        height: '2.5rem',
+        // display: 'flex',
+        // flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
         // fontSize: 'min(20px, 1rem)',
-        fontSize: 'min(18px, 0.8rem)',
-        lineHeight: '0.8vmin',
+        fontSize: 'min(18px, 1.0rem)',
+
+        // lineHeight: '0.8vmin',
     },
     buttonIcon: {
         marginRight: '1vmin',
