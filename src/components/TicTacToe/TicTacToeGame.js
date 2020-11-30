@@ -15,15 +15,16 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
 
     root: {
-        // border: 'solid red 1px',
+        // border: 'solid purple 1px',
         width: '100%',
-        height: 'calc(100% - 5rem)',
+        height: 'calc(100% - 4rem)',
+        // flex: '0 0 100%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'space-between',
     },
     boardContainer: {
-        border: 'solid orange 1px',
+        // border: 'solid orange 1px',
         width: '100%',
         paddingTop: 'min(100%, 50vh)',
         height: '0',
@@ -40,22 +41,22 @@ const useStyles = makeStyles((theme) => ({
 
     },
     panelArea: {
-        border: 'solid yellow 1px',
+        // border: 'solid yellow 1px',
         backgroundColor: '#000',
         color: theme.palette.common.white,
 
-        width: 'auto',
-        minWidth: '47vh',
-        height: 'auto',
-        minHeight: '30vh',
-        // paddingTop: 'calc(100vh - 5rem - 100%)',
-        
-        // height: '37%',
-        flex: '1 1 37%',
+        width: '50vh',
+        // minWidth: '47vh',
+        height: '35vh',
+        // minHeight: '30vh',
+        margin: '0rem auto',
+        // flex: '1 0 20%',
                 
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
+        // display: 'flex',
+        // flexDirection: 'column',
+        // 
+        // // justifyContent: 'center',
+
         
     },
 }));

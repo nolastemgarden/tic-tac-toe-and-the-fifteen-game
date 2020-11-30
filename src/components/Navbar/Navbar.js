@@ -58,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         color: theme.palette.common.white,
     },
+    oneSizeNavbar: {
+        height: '3.8rem',
+    },
     mobileNavbar: {
         height: '3.5rem',
     },
@@ -125,7 +128,11 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.common.white,
         alignContent: 'center',
         justifyContent: 'center',
-    }
+    },
+    spacerBox: {
+        // border: 'solid red 1px',
+        padding: '1.90rem'
+    },
 }));
 
 
@@ -135,12 +142,61 @@ export default function Navbar(props) {
     const classes = useStyles();
     return (
         <Box className={classes.root}  >
-            <MobileNavbar pageTitle={props.pageTitle} />
-            <DesktopNavbar pageTitle={props.pageTitle} />
-            <SpacerBox />
+            <OneSizeNavbar pageTitle={props.pageTitle} />
+            <Box className={classes.spacerBox}
+                display={{ xs: 'block' }}
+            />
         </Box>
+        // <Box className={classes.root}  >
+        //     <MobileNavbar pageTitle={props.pageTitle} />
+        //     <DesktopNavbar pageTitle={props.pageTitle} />
+        //     <SpacerBox />
+        // </Box>
     )
 }
+
+function OneSizeNavbar(props) {
+    const classes = useStyles();
+    const pageTitle = props.pageTitle;
+
+    return (
+        <Box  >
+            <AppBar
+                className={classes.navbar, classes.oneSizeNavbar}
+                position="fixed"
+                elevation={3}
+            >
+                <Container
+                    className={classes.navbarContainer}
+                    maxWidth='md'
+                    disableGutters
+                >
+                    <Grid container>
+                        <Grid item xs={2} >
+                            <Box className={classes.logo} />
+                        </Grid>
+                        <Grid item xs={8} >
+                            <Typography className={classes.pageTitle} align='center' variant='h4' >
+                                {pageTitle}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={2} >
+                            <MobileMenu />
+                        </Grid>
+                    </Grid>
+                </Container>
+            </AppBar>
+
+            {/* <AppBar
+                className={classes.navbar, classes.mobileNavbar}
+                
+            ></AppBar> */}
+
+
+        </Box>
+    );
+}
+
 
 function MobileNavbar(props) {
     const classes = useStyles();
@@ -176,6 +232,8 @@ function MobileNavbar(props) {
         </Box>
     );
 }
+
+
 
 
 function DesktopNavbar(props) {

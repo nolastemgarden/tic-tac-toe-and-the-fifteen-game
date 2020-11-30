@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.common.black,
 
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'stretch',
 
@@ -48,7 +49,9 @@ const useStyles = makeStyles((theme) => ({
         // maxWidth='md' --> max-width: 960px;
         // border: 'solid red 1px',
         backgroundColor: theme.palette.common.black,
-
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
     },
     
 }))
