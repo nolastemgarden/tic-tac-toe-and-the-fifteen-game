@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     panelArea: {
-        // border: 'solid yellow 1px',
+        border: 'solid yellow 1px',
         backgroundColor: '#000',
         color: theme.palette.common.white,
 
