@@ -7,9 +7,7 @@ import { Link as RouterLink } from "react-router-dom";
 // MY COMPONENTS
 import MobileMenu from "./MobileMenu";
 import DesktopMenu from "./DesktopMenu";
-import TeachingServicesList from "./MenuList";
-import AboutGardenList from "./AboutGardenList";
-import SpacerBox from "./SpacerBox";
+// import SpacerBox from "./SpacerBox";
 
 // Image Imports
 import logo from "../../images/nsgLogoSnipped.png";
@@ -22,20 +20,20 @@ import Box from '@material-ui/core/Box';
 import Grid from "@material-ui/core/Grid";
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuIcon from '@material-ui/icons/Menu';
-import Link from '@material-ui/core/Link';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Icon from '@material-ui/core/Icon';
+// import Button from '@material-ui/core/Button';
+// import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+// import Grow from '@material-ui/core/Grow';
+// import Paper from '@material-ui/core/Paper';
+// import Popper from '@material-ui/core/Popper';
+// import MenuList from '@material-ui/core/MenuList';
+// import Menu from '@material-ui/core/Menu';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import MenuIcon from '@material-ui/icons/Menu';
+// import Link from '@material-ui/core/Link';
+// import List from '@material-ui/core/List';
+// import ListItem from '@material-ui/core/ListItem';
+// import ListItemText from '@material-ui/core/ListItemText';
+// import Icon from '@material-ui/core/Icon';
 
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -59,14 +57,9 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.common.white,
     },
     oneSizeNavbar: {
-        height: '3.8rem',
+        height: '4.0rem',
     },
-    mobileNavbar: {
-        height: '3.5rem',
-    },
-    desktopNavbar: {
-        height: '5rem',
-    },
+    
 
     navbarContainer: {
         height: '100%',
