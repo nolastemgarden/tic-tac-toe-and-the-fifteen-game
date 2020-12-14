@@ -74,17 +74,17 @@ export default function App() {
                                     <WelcomePage />
                                 </Route>
 
-                                <Route path="/tic-tac-toe">
+                                <Route path="/tic_tac_toe">
                                     <Navbar pageTitle={"Play Tic Tac Toe"} />
                                     <TicTacToeGame />
                                 </Route>
 
-                                <Route path="/fifteen-game">
+                                <Route path="/fifteen_game">
                                     <Navbar pageTitle={"Play the Fifteen Game"} />
                                     <FifteenGame />
                                 </Route>
 
-                                <Route path="/magic-squares">
+                                <Route path="/magic_squares">
                                     <Navbar pageTitle={"Learn about Magic Squares"} />
                                     <MagicSquares />
                                 </Route>
