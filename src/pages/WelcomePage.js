@@ -65,6 +65,12 @@ export default function WelcomePage() {
     
     return (
         <Container className={classes.root} >
+            <Typography align='center' color='textPrimary' component='h1' variant='h2' gutterBottom >
+                Tic-Tac-Toe and the Fifteen Game
+            </Typography>
+            {/* <Typography align='center' color='textPrimary' component='h2' variant='h5' gutterBottom >
+                A math lesson taught through two classic games
+            </Typography> */}
             <Grid container>
                 <Grid item xs={12} md={8} >
                     <Typography align='left' color='textPrimary' component='h4' variant='h4' gutterBottom >
