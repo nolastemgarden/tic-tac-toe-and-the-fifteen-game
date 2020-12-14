@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid purple 1px',
         width: '100%',
         height: 'calc(100% - 4rem)',
-        // flex: '0 0 100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'space-between',
