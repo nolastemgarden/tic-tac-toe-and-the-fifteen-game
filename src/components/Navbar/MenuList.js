@@ -75,7 +75,7 @@ export default function TeachingServicesList() {
                 button
                 component={RouterLink}
                 to={{
-                    pathname: '/tic-tac-toe',
+                    pathname: '/tic_tac_toe',
                 }}
             >
                 <Icon className={"far fa-play-circle fa-2x"}
@@ -95,7 +95,7 @@ export default function TeachingServicesList() {
                 button
                 component={RouterLink}
                 to={{
-                    pathname: '/fifteen-game',
+                    pathname: '/fifteen_game',
                 }}
             >
                 <Icon className={"far fa-play-circle fa-2x"}
@@ -113,7 +113,7 @@ export default function TeachingServicesList() {
                 button
                 component={RouterLink}
                 to={{
-                    pathname: '/fifteen-game',
+                    pathname: '/fifteen_game',
                 }}
             >
                 <Icon className={"fas fa-question fa-2x"}
@@ -131,7 +131,7 @@ export default function TeachingServicesList() {
                 button
                 component={RouterLink}
                 to={{
-                    pathname: '/magic-squares',
+                    pathname: '/magic_squares',
                 }}
             >
                 <Icon className={"fas fa-question fa-2x"}
