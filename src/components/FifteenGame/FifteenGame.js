@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 
     panelContainer: {
-        border: 'solid yellow 1px',
+        // border: 'solid yellow 1px',
         width: '100%',
         flex: '2 0 40%',
         color: theme.palette.common.white,

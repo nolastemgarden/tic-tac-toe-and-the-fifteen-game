@@ -39,8 +39,11 @@ const useStyles = makeStyles((theme) => ({
     //     flex: '1 0 55%'
     // },
     buttonArea: {
-        border: 'solid red 1px',
-        padding: '0.0rem 20%'
+        // border: 'solid red 1px',
+        padding: '0.0rem 20%',
+        // display: 'flex',
+        // flexDirection: 'column',
+        // justifyContent: 'space-between',
         
     },
     button: {
@@ -159,7 +162,7 @@ export default function Panel(props) {
                 </Typography> 
                 
             </Grid>
-            <Grid container item className={classes.buttonArea} xs={12} spacing={3} >
+            <Grid container item className={classes.buttonArea} xs={12}  >
                 <Grid item className={classes.button} xs={12} md={6}>
                     {newGameButton}
                 </Grid>
