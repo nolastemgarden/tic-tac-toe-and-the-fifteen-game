@@ -95,17 +95,19 @@ export default function HowToPlayModal() {
                         <Box className={classes.paper} >
                             <Typography variant='h5' id="transition-modal-title" className={classes.heading} >
                                 How To Play
-                        </Typography>
+                            </Typography>
                             <Typography variant='body1' id="transition-modal-title" className={classes.heading} gutterBottom >
                                 Two players take turns claiming one of the 9 numbered cards. <br />
                             To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
-                        </Typography>
+                            </Typography>
                             <Typography variant='body1' id="transition-modal-title" className={classes.heading} >
                                 By default, you play against my bot but, if you wish, you can disable it in the settings.
                                 can change this to play against my bot.
-                            Two players take turns claiming one of the 9 numbered cards. <br />
-                            To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
-                        </Typography>
+                                Two players take turns claiming one of the 9 numbered cards. <br />
+                                To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
+                            </Typography>
+
+                            
                         </Box>
                     </Container>
                     
@@ -114,3 +116,13 @@ export default function HowToPlayModal() {
         </div>
     );
 }
+
+
+
+// Play the 15-Game against my bot until you have mastered it! 
+// You will take turns making the first move. 
+// In hard mode my bot never makes a mistake and the best you 
+// can do is get a draw every time.
+// In easy mode my bot makes exactly one mistake each game and
+// you should be able to win every single time!
+
