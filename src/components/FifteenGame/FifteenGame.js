@@ -3,66 +3,56 @@ import React, { useState } from 'react';
 
 
 // My Components
-import Board from "./FifteenBoard";
-import Panel from "../Panel";
+// import Board from "./FifteenBoard";
+import Board from "./Board";
+import Panel from "./Panel";
 
 
 // MUI  components
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+
 
 // Custom Styling
-// import './TicTacToe.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { CardContent, Typography } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
 
     root: {
-        // border: 'solid navy 1px',
-
+        // border: 'solid orange 1px',
         width: '100%',
-        height: '100%',
+        height: 'calc(100% - 4rem)',
 
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        // justifyContent: 'center',
-        backgroundColor: '#4AC9FD',
+        alignItems: 'space-between',
+        backgroundColor: theme.palette.common.black,
 
-        borderRadius: '1vmin',
-
-
+    },
+    boardContainer: {
+        // border: 'solid red 1px',
+        width: '100%',
+        paddingTop: 'min(100%, 45vh)',
+        height: '0',
+        position: 'relative',
     },
     boardArea: {
-        backgroundColor: '#ffffff',
-        borderRadius: 'inherit',
-        width: 'calc(100% - 4rem)',
-        padding: '1rem',
-        marginBottom: '1rem',
-
-
-        height: '55%',
-
-        flex: '0 1 55%',
-
-        display: 'flex',
-        flexDirection: 'column',
-        // justifyContent: 'center',
+        // border: 'solid yellow 1px',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: '0',
+        left: '0',
     },
-    panelArea: {
-        backgroundColor: '#ffffff',
-        borderRadius: 'inherit',
-        width: 'calc(100% - 4rem)',
-        padding: '1rem',
+
+
+    panelContainer: {
+        border: 'solid yellow 1px',
+        width: '100%',
+        flex: '2 0 40%',
+        color: theme.palette.common.white,
         
-        marginBottom: '0rem',
-        height: '37%',
-        flex: '1 1 37%',
-
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'left'
-
     },
     hintsGridContainer: {
         // border: 'solid navy 1px',
@@ -87,142 +77,120 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FifteenGame() {
     const classes = useStyles();
-
-    // CONVENTION: History refers to actual game state.  A moveList is similar but may be a hypotetical position. 
-    // a moveList implies that it is a sequential list of the number cards claimed turn by turn.  
-    // A moveSet on the other hand is a subset of a moveList, numbers that have all been claimed by the same player. 
-    // 
-    // let [gameOver, setGameOver] = useState(false);
-
-    let [gameNumber, setGameNumber] = useState(1);
-    let [record, setRecord] = useState([0,0,0]);
-    let [history, setHistory] = useState([]);
     
-    // HINTS shown on board. May not implement in this game.
-    let [showMoves, setShowMoves] = useState(false);
-    // let [showMoves, setShowMoves] = useState(true); 
+    let [record, setRecord] = useState([0, 0, 0]);     // 3 element counter for humanWins, botWins, and tieGames.
+    let [moveList, setMoveList] = useState([]);  // Array of the numbers claimed so far in order claimed.
     
-    // COACH'S COMMENTARY. May not implement in this game. 
-    // let [showCommentary, setShowCommentary] = useState(false);  
-    let [showCommentary, setShowCommentary] = useState(true);
+    // Add up the games in a Win Loss Draw record to get current game number.
+    function getGameNumber(r = record) {
+        let gameNumber = 1
+        r.forEach((count) => { gameNumber = gameNumber + count })
+        return gameNumber
+    }
 
-    // PLAY AGAINST BOT. Default is two human players. 
-    // let [playAgainstBot, setPlayAgainstBot] = useState(false);  
-    let [playAgainstBot, setPlayAgainstBot] = useState(true);
+    // The bot moves first in the first game, alternating after that.
+    function botGoesFirst(r = record) { return (getGameNumber(r) % 2 === 0)  }
 
-    // BOT MOVES FIRST. Disabled switch unless playAgainstBot mode is set to true. This will not be settable. It starts with player and alternates. 
-    // let [botMovesFirst, setBotMovesFirst] = useState(false);
-    // let [botMovesFirst, setBotMovesFirst] = useState(true);
-
-    // BOT PLAYS PERFECT. Disabled switch unless playAgainstBot mode is set to true. 
-    // Easy vs Hard Mode. In easy mode Bot makes 1 game losing mistake per game. in Hard mode the Bot always gets a draw. 
-    // let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(false);
-    let [botPlaysPerfectly, setBotPlaysPerfectly] = useState(true);
-
-
-    return (
-        <Box className={classes.root} >
-            <Box className={classes.boardArea} >
-                <Board
-                    boardStatus={getBoardStatus()}
-                    // boardColors={getBoardColors()}
-                    handleCardClick={handleCardClick}
-                />
-            </Box>
-            <Box className={classes.panelArea}>
-                <Panel
-                    gameType='FifteenGame'
-                    gameOver={gameOver()}
-                    moveNumber={history.length}
-                    commentary={getPanelCommentary()}
-                    handleUndoButtonClick={handleUndoButtonClick}
-                    handleNewGameButtonClick={handleNewGameButtonClick}
-
-                    // togglePlayAgainstBotSwitch={togglePlayAgainstBot}
-                    // toggleBotMovesFirstSwitch={toggleBotMovesFirst}
-                />
-            </Box>
-        </Box>
-    );
+    // Add up the moves in the current moveList to determin turn number. 1-indexed.
+    function moveNumber(ml = moveList) { return ( 1 + ml.length) }
+    
+    // The bot moves first in the first game, alternating after that.
+    function botGoesNext(r = record, ml = moveList) { 
+        if (gameOver(ml)) {
+            return false;
+        }
+        
+        let firstAndOdd = (botGoesFirst(r) && moveNumber(ml) % 2 === 1);
+        let secondAndEven = (!botGoesFirst(r) && moveNumber(ml) % 2 === 0)
+        return (firstAndOdd || secondAndEven);
+    }
 
 
-    function getBoardStatus(moveList = history) {
+    // Convert a moveList into a representation using the number cards.
+    function getBoardStatus(ml = moveList) {
         let boardStatus = Array(10).fill('unclaimed')
-        moveList.forEach((numberClaimed, turnNumber) => {
+        ml.forEach((numberClaimed, turnNumber) => {
             boardStatus[numberClaimed] = (turnNumber % 2 === 0) ? 'playerOne' : 'playerTwo';
         })
         return boardStatus;
     }
 
+    
+    return (
+        <Container className={classes.root} maxWidth='md' disableGutters>
+            <Box className={classes.boardContainer}>
+                <Box className={classes.boardArea} >
+                    <Board 
+                        handleCardClick={handleCardClick} 
+                        boardStatus={getBoardStatus(moveList)}        // TODO !!!!!!!!!! DEFINE THIS FUNC TO CONVERT HISTORY TO THE ARRAY THE BOARD EXPECTS
+                    />
+                </Box>
+            </Box>
+            <Box className={classes.panelContainer}  >
+                <Panel 
+                    record={record}
+                    gameNumber={getGameNumber()}
+                    gameStatus={getGameStatus()}
+                    moveNumber={moveNumber()}
+                    handleUndoClick={handleUndoClick}
+                    handleNewGameClick={handleNewGameClick}
+                />
+            </Box>
+        </Container>
+    );
+    
+
 
     // CLICK HANDLERS
     function handleCardClick(cardClicked) {
-        if (itIsTheBotsTurn(history)){
-            console.log("Be patient. It is currently the Bot's turn. return without effects from handleCardClick(). ")
-            return;
+        console.log(`handleCardClick called with cardId: ${cardClicked} `)
+        if (botGoesNext()){
+            console.log("NO EFFECT. Be patient, the bot takes half a second to move. ")
+            return 1;
         }
-        else if (history.includes(cardClicked)) {
-            console.log("return without effects from handleCardClick(). That number has already been claimed.")
-            return;
+        else if (moveList.includes(cardClicked)) {
+            console.log("NO EFFECT. That number has already been claimed.")
+            return 1;
         }
-        else if (gameOver(history)) {
-            console.log("return without effects from handleCardClick(). The Game is already over.")
+        else if (gameOver(moveList)) {
+            console.log("NO EFFECT. The Game is already over.")
             return 1;
         }
         else {
-            // console.log(`HandleCardClick(${cardClicked}) is NOT returning early for any reason.`)
+            let updatedMoveList = moveList.concat(cardClicked)
+            console.log(`setMoveList called with updated list: ${updatedMoveList} `)
+            setMoveList(updatedMoveList);
+            if (gameOver(updatedMoveList)) {
+                handleGameOver(updatedMoveList);
+            } else {
+                handleBotsTurn(updatedMoveList);
+            }
+            return 0;
         }
-        
-        let updatedHistory = history.concat(cardClicked);
-        setHistory(updatedHistory);
-
-        if (gameOver(updatedHistory)) {
-            console.log("Don't call handleBotsTurn. Call handleGameOver instead.")
-            handleGameOver(updatedHistory);
-            return 1;
-        }
-
-        console.log(`handleCardClick calling to handleBotsTurn with moveList: ${updatedHistory}.`)
-        handleBotsTurn(updatedHistory);
-            
-        // Now it is the Bot's turn
-        // The Bot's Turn handler is responsible for ensuring it does not move if the game is already over. 
-        
-        return 0;
+    }
+    function handleUndoClick(ml = moveList) {
+        const shortenedMoveList = ml.slice(0, ml.length - 2)
+        console.log(`handleUndoButtonClick() removed ${ml[ml.length - 1]} and ${ml[ml.length - 2]} . New Shortened history: ${shortenedMoveList}`);
+        setMoveList(shortenedMoveList);
+    }
+    function handleNewGameClick() {
+        const empty = [];
+        console.log(`MoveList reset to: ${empty}`);
+        setMoveList(empty);
     }
 
-    function botMovesFirst() {
-        return (gameNumber % 2 === 0)
-    }
-
-    function handleUndoButtonClick() {
-        const shortenedHistory = history.slice(0, history.length - 2)
-        console.log(`handleUndoButtonClick() removes both the most recent player move and bot move ${shortenedHistory}`);
-        setHistory(history.slice(0, history.length - 1));
-        setTimeout(() => {
-            setHistory(shortenedHistory);
-        }, 500);
-        return 0;
-    }
     
-    // The New Game button is disabled until after handleGameOver has updated the record. 
-    function handleNewGameButtonClick() {
-        console.log(`New Game Clicked. History reset.`);
-        setGameNumber(++gameNumber);
-        setHistory([]);
-
-        if (botMovesFirst()){
-            
-            console.log(`callinghandleBotsTurn() NOW`)
-            handleBotsTurn([]);
+    
+    
+    function handleGameOver(ml = moveList) {
+        if (gameOver(ml)) {
+            console.error(`NO EFFECT. handleGameOver called but the game isn't actually over!!!!!!!!!!!!!!`)
+            return;
         }
+        console.log(`handleGameOver called and confirmed the game is over!`)
+
         
-        
-    }
-  
-    function handleGameOver(moveList = history) {
-        console.log(`handleGameOver called!!!!!!!!!!!!!!!!!!!!`)
-        let result = gameStatus(moveList);
+        let result = getGameStatus(ml);
         
         if (result === "Game Over. Draw."){
             setRecord([record[0], record[1], ++record[2]])
@@ -239,9 +207,8 @@ export default function FifteenGame() {
     }
 
    
-
-
-    function getPanelCommentary(moveList = history) {
+    // TODO  TODO   TODO
+    function getPanelCommentary(ml = moveList) {
         // if (moveList.length < 3 && record === [0,0,0]){ 
         //     let explanation =
         //         <Grid container className={classes.explanation}>
@@ -275,12 +242,12 @@ export default function FifteenGame() {
                 <Grid item xs={12} container className={classes.record}>
                     <Typography variant="h4" noWrap >
                         {/* <strong>{gameStatus(moveList)}</strong> */}
-                        {gameStatus(moveList)}
+                        {getGameStatus(moveList)}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} container className={classes.gameNumber}>
                     <Typography variant="h6" noWrap >
-                        <strong>Game Number:</strong> {gameNumber}
+                        <strong>Game Number:</strong> {getGameNumber()}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} container className={classes.record}>
@@ -300,88 +267,37 @@ export default function FifteenGame() {
                         </Typography>
                     </Grid>
                 </Grid>
-                {/* <Grid item xs={12}>
-                    <Typography variant="h6">
-                        Sums of Two-Element Subsets
-                    </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography variant="subtitle1">
-                        <strong>Player</strong>
-                    </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography variant="subtitle1">
-                        <strong>Bot</strong>
-                    </Typography>
-                </Grid>
-                <Grid item xs={4} className={classes.sumsOfTwoList}>
-                    <Typography variant="subtitle1" >
-                        {playerOneSums.join(", ")}
-                    </Typography>
-                </Grid>
-                <Grid item xs={4} className={classes.sumsOfTwoList}>
-                    <Typography variant="subtitle1" >
-                        {playerTwoSums.join(", ")}
-                    </Typography>
-                </Grid> */}
+                
             </Grid>
         return panelCommentary;
     }
-    function gameStatus(moveList = history) {
-        if (botMovesFirst()){
-            if (moveList.length === 0) {
-                return (`Bot moves first`);
+
+
+    function getGameStatus(ml = moveList) {
+        if (gameOver(ml)) {
+            if (thereIsAWinIn(firstPlayersMoves(ml))) {
+                return (botGoesFirst()) ? `Bot Wins!` : `Player Wins!` 
             }
-            if (gameOver(moveList)) {
-                if (wins('playerOne', moveList)) {
-                    return (`Bot Wins!`)
-                }
-                if (wins('playerTwo', moveList)) {
-                    return (`Player Wins!`)
-                }
-                else {
-                    return (`Game Over. Draw.`)
-                }
+            if (thereIsAWinIn(secondPlayersMoves(ml))) {
+                return (botGoesFirst()) ? `Player Wins!` : `Bot Wins!`
             }
-            if (moveList.length % 2 === 0) {
+            else {
+                return (`Game Over. Draw.`)
+            } 
+        } else {
+            if (botGoesFirst() && ml.length % 2 === 0) {
                 return (`Bot's turn.`)
             }
-            if (moveList.length % 2 === 1) {
-                return (`Player's turn.`)
-            }
-        }
-        else if (!botMovesFirst()) {
-            if (moveList.length === 0) {
-                return (`Player moves first`);
-            }
-            if (gameOver(moveList)) {
-                if (wins('playerOne', moveList)) {
-                    return (`Player Wins!`)
-                }
-                if (wins('playerTwo', moveList)) {
-                    return (`Bot Wins!`)
-                }
-                else {
-                    return (`Game Over. Draw.`)
-                }
-            }
-            if (moveList.length % 2 === 0) {
-                return (`Player's turn.`)
-            }
-            if (moveList.length % 2 === 1) {
+            if (!botGoesFirst() && ml.length % 2 === 1) {
                 return (`Bot's turn.`)
             }
-        }
-        else {
-            console.error("A call to gameStatus() did not work!");
-            return
+            else {
+                return (`Player's turn.`)
+            }
         }
     }
 
-    function itIsTheBotsTurn(moveList = history) {
-        return ((botMovesFirst() && moveList.length % 2 === 0) || (!botMovesFirst() && moveList.length % 2 === 1))        
-    }
+    
 
     function other(player) {
         if (player !== 'playerOne' && player !== 'playerTwo') { console.error(`other(player) called with invalid player: ${player}`) }
@@ -389,36 +305,43 @@ export default function FifteenGame() {
     }
 
     
-    function gameOver(moveList = history) {
-        // This low level helper may be called many times in a given render cycle so it is optomized to return early in as many cases as possible. 
+    
+    // Optomized to return early in as many cases as possible. 
+    function gameOver(ml = moveList) {
         // Return early if not enough moves have been made OR if the game record has been updated but not the game number. handleGameOver updates the record and handleNewGameClick updates the gameNumber. 
-        if (moveList.length < 5){
-            // console.log(`GameOver(${moveList}) returning FALSE since moveList.length is only ${moveList.length} `)
+        if (ml.length < 5) {
             return false;
         } 
-        if (sumsOfThree(record) === gameNumber) {
-            console.log(`GameOver(${moveList}) returning TRUE since the W-L-D total equals the number of games started.`)
+        if (thereIsAWinIn(firstPlayersMoves(ml))) {
+            return true;
+        }
+        if (thereIsAWinIn(secondPlayersMoves(ml))) {
             return true;
         } 
-        let player = myTurn(moveList)
-        let gameOver = (moveList.length === 9 || wins(other(player), moveList) || wins(player, moveList));
-        return gameOver;
+        if (ml.length === 9) {
+            return true;
+        } 
+    }
+    function handleNewGameClick() {
+        // TODO
     }
 
-    // WON GAME: the player specified has a subset of three numbers that sum to 15.  player = either "playerOne" or "playerTwo"
-    function wins(player, moveList = history) {
-        let myMoves = filterMoves(player, moveList)
-        return (sumsOfThree(myMoves).includes(15)); // sumsOfThree() has a built in early return in case myMoves.length > 3
+    // There is a subset of three numbers that sum to 15.  
+    // A "moveList" is an alternating sequence of both players' moves.  
+    // "moveSet" distinguishes that this is pre-filtered to contain only moves of one player or the other. 
+    function thereIsAWinIn( moveSet ) {
+        return (sumsOfThree(moveSet).includes(15)); // sumsOfThree() has a built in early return in case myMoves.length > 3
     }
-
-
-    
-   
-
-    // FILTER MOVES: Reduce a movesList to only the moves by the specified "playerOne" or "playerTwo"
-    function filterMoves(player, moveList = history) {
-        if (player !== "playerOne" && player !== "playerTwo"){
-            console.error(`filterMoves() recieved an invalid player prop.`)
+    // MOVELIST FILTERS  
+    function firstPlayersMoves(ml = moveList) {
+        return ml.filter((move, turnNumber) => turnNumber % 2 === 1)
+    }
+    function secondPlayersMoves(ml = moveList) {
+        return ml.filter((move, turnNumber) => turnNumber % 2 === 0)
+    }
+    function filterMoves(player, ml = moveList) {
+        if (player !== "playerOne" && player !== "playerTwo") {
+            console.error(`filterMoves() recieved an invalid player parameter.`)
             return 1;
         }
         let num = (player === "playerOne") ? 0 : 1;
@@ -435,11 +358,11 @@ export default function FifteenGame() {
         return intersection;
     }
 
-    function myTurn(moveList = history) {
+    function myTurn(ml = moveList) {
         return (moveList.length % 2 === 0) ? 'playerOne' : 'playerTwo';
     }
 
-    function unclaimedNumbers(moveList = history) {
+    function unclaimedNumbers(ml = moveList) {
         let unclaimed = [];
         for (let i = 1; i <= 9; i++){
             if (!moveList.includes(i)){
@@ -470,8 +393,7 @@ export default function FifteenGame() {
             for (let j = i + 1; j < moveSet.length - 1; j++) {
                 for (let k = j + 1; k < moveSet.length; k++) {
                     let sum = moveSet[i] + moveSet[j] + moveSet[k];
-                    // console.log(`Sum of i + j + k: ${sum}`)
-                    sums.push(sum);
+                    sums = sums.concat(sum);
                 }
             }
         }
@@ -498,26 +420,22 @@ export default function FifteenGame() {
     }
 
 
-    // Find and make a move for the Bot with a 1/2 second delay. Responsibility for obly calling this method when the game is not over yet falls on the caller!
-    function handleBotsTurn(moveList) {
-        // console.log(`handleBotsTurn called with moveList: ${moveList}`);
-        // if (gameOver(moveList)){
-        //     console.log(`handleBotsTurn returning early because game is over.`);
-        //     return 1;
-        // }
-        // if (!itIsTheBotsTurn(moveList)) {
-        //     console.log(`handleBotsTurn returning early because it is NOT the bots turn.`);
-        //     return 1;
-        // }
+    // Find and make a move for the Bot with a 1/2 second delay. 
+    function handleBotsTurn(ml = moveList) {
+        if (gameOver(ml)){
+            console.error(`handleBotsTurn() called even though game is over. handleBotsTurn called with moveList: ${moveList}`);
+            return 1;
+        }
+        
         
         let botMove = getBotMove(moveList);
-        let updatedHistory = moveList.concat(botMove);
+        let updatedMoveList = moveList.concat(botMove);
 
         setTimeout(() => {
-            setHistory(updatedHistory);
-            if (gameOver(updatedHistory)) {
+            setMoveList(updatedMoveList);
+            if (gameOver(updatedMoveList)) {
                 console.log("Don't let player move again. Call handleGameOver instead.")
-                handleGameOver(updatedHistory);
+                handleGameOver(updatedMoveList);
                 return 1;
             }
         }, 500);
@@ -718,13 +636,13 @@ export default function FifteenGame() {
     // }
 
     // Winning moves are moves that create a 15-sum right now.
-    function winningMoves(moveList) {
-        let player = myTurn(moveList)
-        let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        let winningMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
-        return winningMoves;
-    }
+    // function winningMoves(moveList) {
+    //     let player = myTurn(moveList)
+    //     let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
+    //     let winningMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+    //     console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
+    //     return winningMoves;
+    // }
 
     // Losing Moves are moves that fail to block the opponent from creating a 15-sum
     function losingMoves(params) {
@@ -744,7 +662,7 @@ export default function FifteenGame() {
         return immediateWins;
     }
 
-    function urgentDefensiveMoves(moveList = history) {
+    function urgentDefensiveMoves(ml = moveList) {
         let player = myTurn(moveList)
         let opponentsMoves = filterMoves(other(player), moveList);
         // console.log(`URGENT DEFENSIVE MOVES (${moveList}) found opponentsMoves: ${opponentsMoves}, winningNumbers: ${winningNumbers(opponentsMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
@@ -796,11 +714,15 @@ export default function FifteenGame() {
     }
 
 
-    // function togglePlayAgainstBot() {
-    //     setPlayAgainstBot(!playAgainstBot)
-    // }
-    // function toggleBotMovesFirst() {
-    //     setBotMovesFirst(!botMovesFirst)
+    
+    // function handleUndoButtonClick() {
+    //     const shortenedHistory = history.slice(0, history.length - 2)
+    //     console.log(`handleUndoButtonClick() removes both the most recent player move and bot move ${shortenedHistory}`);
+    //     setHistory(history.slice(0, history.length - 1));
+    //     setTimeout(() => {
+    //         setHistory(shortenedHistory);
+    //     }, 500);
+    //     return 0;
     // }
 
 
