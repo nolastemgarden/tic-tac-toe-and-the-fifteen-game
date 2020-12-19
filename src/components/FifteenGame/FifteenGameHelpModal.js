@@ -108,26 +108,7 @@ export default function HowToPlayModal() {
                         </Typography>
                         </Box>
                     </Container>
-                    {/* <div className={classes.paper}>
-                        <h2 id="transition-modal-title">How To Play</h2>
-                        <ul id="transition-modal-description" >
-                            <li>
-                                Two players take turns claiming one of the 9 numbers.
-                            </li>
-                            <li>
-                                To win a player must collect a set of 3 numbers that add up to exactly 15.
-                            </li>
-                            <li>
-                                By default, you go first and play against my Bot, which will never fail to get a draw.
-                            </li>
-                            <li>
-                                In the Settings you can adjust whether you go first or second.
-                            </li>
-                            <li>
-                                You can also adjust whether to show/hide commentary and move hints.
-                            </li>
-                        </ul>
-                    </div> */}
+                    
                 </Fade>
             </Modal>
         </div>
