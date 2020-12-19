@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'stretch',
+        // justifyContent: 'center',
+        // alignItems: 'stretch',
 
     },
     container: {
@@ -66,7 +66,7 @@ export default function App() {
             <CssBaseline />
             <ThemeProvider theme={theme}>
                 <Box className={classes.root} >
-                    <Container className={classes.container} maxWidth='md' disableGutters>  
+                    {/* <Container className={classes.container} maxWidth='md' disableGutters>   */}
                         <Router>
                             <Switch>
                                 <Route exact path="/">
@@ -95,7 +95,7 @@ export default function App() {
                                 </Route>
                             </Switch>
                         </Router>
-                    </Container>
+                    {/* </Container> */}
                 </Box>
             </ThemeProvider>
         </React.Fragment>
