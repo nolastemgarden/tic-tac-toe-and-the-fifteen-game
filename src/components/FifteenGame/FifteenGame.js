@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
+import { Theaters } from '@material-ui/icons';
 const useStyles = makeStyles((theme) => ({
 
     root: {
@@ -80,35 +81,36 @@ export default function FifteenGame() {
     
     let [record, setRecord] = useState([0, 0, 0]);     // 3 element counter for humanWins, botWins, and tieGames.
     let [moveList, setMoveList] = useState([]);  // Array of the numbers claimed so far in order claimed.
+    let [difficultyMode, setDifficultyMode] = useState("hard"); // In "hard" mode my bot never makes a mistake. In "easy" mode bot makes exactly one mistake each game. 
+
     
-    // Add up the games in a Win Loss Draw record to get current game number.
+    // One plus the number of completed games in the record.
+    // OR SHOULD THIS be made into state so that the record can update as soon as the game ends while the gameNumber updates when newGame is clicked.
     function getGameNumber(r = record) {
         let gameNumber = 1
         r.forEach((count) => { gameNumber = gameNumber + count })
         return gameNumber
     }
 
-    // The bot moves first in the first game, alternating after that.
+    // The human moves first in the first game, alternating after that.
     function botGoesFirst(r = record) { return (getGameNumber(r) % 2 === 0)  }
 
     // Add up the moves in the current moveList to determin turn number. 1-indexed.
     function moveNumber(ml = moveList) { return ( 1 + ml.length) }
     
-    // The bot moves first in the first game, alternating after that.
+    // The human moves first in the first game, alternating after that.
     function botGoesNext(r = record, ml = moveList) { 
         if (gameOver(ml)) {
             return false;
         }
-        
         let firstAndOdd = (botGoesFirst(r) && moveNumber(ml) % 2 === 1);
         let secondAndEven = (!botGoesFirst(r) && moveNumber(ml) % 2 === 0)
         return (firstAndOdd || secondAndEven);
     }
 
-
-    // Convert a moveList into a representation using the number cards.
+    // Convert a moveList into the representation the <Board> uses.
     function getBoardStatus(ml = moveList) {
-        let boardStatus = Array(10).fill('unclaimed')
+        let boardStatus = Array(10).fill('unclaimed')  // CardIds range from 1-9. Index 0 in this array is never used.
         ml.forEach((numberClaimed, turnNumber) => {
             boardStatus[numberClaimed] = (turnNumber % 2 === 0) ? 'playerOne' : 'playerTwo';
         })
@@ -206,72 +208,6 @@ export default function FifteenGame() {
         }
     }
 
-   
-    // TODO  TODO   TODO
-    function getPanelCommentary(ml = moveList) {
-        // if (moveList.length < 3 && record === [0,0,0]){ 
-        //     let explanation =
-        //         <Grid container className={classes.explanation}>
-        //             <Grid item xs={12}>
-        //                 <Typography variant="body2">
-        //                     Play the 15-Game against my bot until you have mastered it! You will take turns making the first move. 
-        //                 </Typography>
-        //             </Grid>
-        //             <Grid item xs={12}>
-        //                 <Typography variant="body2">
-        //                     In hard mode my bot never makes a mistake and the best you can do is get a draw.
-        //                 </Typography>
-        //             </Grid>
-        //             <Grid item xs={12}>
-        //                 <Typography variant="body2">
-        //                     In easy mode my bot makes exactly one mistake each game and you should be able to win every single time!
-        //                 </Typography>
-        //             </Grid>
-        //         </Grid>
-        //     return explanation;
-        // }   
-        // let playerOneSums = sumsOfTwo(filterMoves("playerOne", moveList))
-        // playerOneSums.sort((a, b) => a - b)
-
-        // let playerTwoSums = sumsOfTwo(filterMoves("playerTwo", moveList))
-        // playerTwoSums.sort((a, b) => a - b)
-        
-
-        let panelCommentary = 
-            <Grid container className={classes.hintsGridContainer}>
-                <Grid item xs={12} container className={classes.record}>
-                    <Typography variant="h4" noWrap >
-                        {/* <strong>{gameStatus(moveList)}</strong> */}
-                        {getGameStatus(moveList)}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} container className={classes.gameNumber}>
-                    <Typography variant="h6" noWrap >
-                        <strong>Game Number:</strong> {getGameNumber()}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} container className={classes.record}>
-                    <Grid item xs={4}>
-                        <Typography variant="h6">
-                            <strong>Wins:</strong> {record[0]}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="h6">
-                            <strong>Losses:</strong> {record[1]}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="h6">
-                            <strong>Draws:</strong> {record[2]}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                
-            </Grid>
-        return panelCommentary;
-    }
-
 
     function getGameStatus(ml = moveList) {
         if (gameOver(ml)) {
@@ -358,8 +294,11 @@ export default function FifteenGame() {
         return intersection;
     }
 
-    function myTurn(ml = moveList) {
-        return (moveList.length % 2 === 0) ? 'playerOne' : 'playerTwo';
+    function whoseTurn(ml = moveList) { 
+        let whoseTurn = '';
+        whoseTurn = ( botGoesFirst() && moveList.length % 2 === 0) ? 'bot' : 'human';
+        whoseTurn = (!botGoesFirst() && moveList.length % 2 === 1) ? 'bot' : 'human';
+        return whoseTurn;
     }
 
     function unclaimedNumbers(ml = moveList) {
@@ -374,14 +313,17 @@ export default function FifteenGame() {
 
     
     
-    // winning numbers are numbers that would create a subset that sums to 15. They are "winning numbers" regardless of whether they are already claimed or not. 
+    // winning numbers are numbers that would create a subset that sums to 15. 
+    // They are "winning numbers" regardless of whether they are already claimed or not. 
     function winningNumbers(moveSet) {
-        let partialSums = sumsOfTwo(moveSet).filter(sum => sum < 15); // the only thing that matters are two-element sets that sum to less than 15.
-        let winningNumbers = partialSums.map(sum => 15 - sum);  // Get the complement to each set.  
+        let partialSums = sumsOfTwo(moveSet).filter((sum) => (sum > 6 && sum < 15)); // the only thing that matters are two-element sets that sum to less than 15.
+        let winningNumbers = partialSums.map(sum => 15 - sum);  // Get the complement to each partial sum.  
         // Add removeDuplicates() helper? 
         console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
         return winningNumbers;
     }
+
+
     // An array listing the element-sums of each three-element subset of the moveSet. 
     function sumsOfThree(moveSet) {
         // nested loops don't scale but here they don't need to! moveSet max length = 5 and 5 choose 3 is only 10!
@@ -422,31 +364,48 @@ export default function FifteenGame() {
 
     // Find and make a move for the Bot with a 1/2 second delay. 
     function handleBotsTurn(ml = moveList) {
-        if (gameOver(ml)){
-            console.error(`handleBotsTurn() called even though game is over. handleBotsTurn called with moveList: ${moveList}`);
-            return 1;
-        }
-        
-        
-        let botMove = getBotMove(moveList);
-        let updatedMoveList = moveList.concat(botMove);
+        // if (gameOver(ml)){
+        //     console.error(`handleBotsTurn() called even though game is over. handleBotsTurn called with moveList: ${moveList}`);
+        //     return 1;
+        // }
 
-        setTimeout(() => {
-            setMoveList(updatedMoveList);
-            if (gameOver(updatedMoveList)) {
-                console.log("Don't let player move again. Call handleGameOver instead.")
-                handleGameOver(updatedMoveList);
-                return 1;
+
+        if (difficultyMode === "hard") {
+            let botMove;
+            if (immediateWins(ml).length > 0) {
+                botMove = selectMoveRandomly(immediateWins(ml))
             }
-        }, 500);
+
+
+            let updatedMoveList = moveList.concat(botMove);
+            setTimeout(() => {
+                setMoveList(updatedMoveList);
+                if (gameOver(updatedMoveList)) {
+                    console.log("Don't let player move again. Call handleGameOver instead.")
+                    handleGameOver(updatedMoveList);
+                    return 1;
+                }
+            }, 500);
+        }
+        if (difficultyMode === "easy") {
+            console.error(`Logic for difficultyMode = "easy" has not been written yet.`)
+            // In easy mode bot will make a mistake on its first move if it goes second or its second move if it goes first.
+        }
+        else {
+            console.error(`difficultyMode has invalid setting: ${difficultyMode}`)
+        }
     }
 
     // this method is only called by handleBotsTurn. Depending on the settings it selects a random move from either the bestMoves list or the losingMoves list.
     // TODO This method is a skeleton that simply passes the call to getBestMoves()
-    function getBotMove(moveList) {
+    function getBotMove(ml = moveList) {
+        // If there is an immediate win the bot will do that.
+        
+        
+        
         // let losing moves = ...
         // if botPlaysPerfectly = false && turn number == 1 or 2 make a mistaken move.
-        let botMove = getRandomMove(soundMoves(moveList))
+        let botMove = selectMoveRandomly(soundMoves(ml))
         console.log(`Selecting Bot Move at random from "sound moves": ${soundMoves(moveList)}`)
         return botMove;
     }
@@ -472,10 +431,10 @@ export default function FifteenGame() {
     //            at this point we are guaranteed that none of the hypotheticalPositions contain an immediate win so we only need to list moves that are notImmediatelyLosing
     //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition where it is the opponents move. 
     // 
-    //              as we cycle thru the hypotheticalPositions we chech each to see if in it is myTurn or opponentsTurn by comparing it length % 2 with originalMoveList.length % 2 
+    //              as we cycle thru the hypotheticalPositions we chech each to see if in it is whoseTurn or opponentsTurn by comparing it length % 2 with originalMoveList.length % 2 
     //              if we are currently considering a position where it is the opponentsTurn we are guaranteed they can't win so we list moves they can make that are notImmediatelyLosing
     //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition currently being considered. 
-    //              if we are currently considering a position where it is myTurn we make a list of winning moves and losing moves. 
+    //              if we are currently considering a position where it is whoseTurn we make a list of winning moves and losing moves. 
 
     // There will be a methd for getting immediate wins and one for filtering the unclaimed squares and removing immediatelyLosing movesToConsider
     // movesToConsider need not be state, it can 
@@ -512,37 +471,24 @@ export default function FifteenGame() {
 
     
 
-    // The game is "as good as over" if 8 moves have been made b/c the 9th is a forced. 
-    function gameOverDraw(moveList) {
-        if (moveList.length < 8) {
-            return false;
-        }
-        if (moveList.length === 8) {
-            let lastMove = unclaimedNumbers(moveList);
-        }
-    }
     
-    // A move is sound if it completes a drawn game or if forEach legal reply there is a sound response
-    function moveIsSound(moveList, square) {
-        
-
-    }
     
-    // Returns a list of legal moves.  TODO make it only return 
+    // Returns a list of legal moves.  
+    // Sound moves either win if possible and draw otherwise.
     // Assumes player whose turn it is has not already made an unsound move
-    function soundMoves(moveList, undeterminedMoves = [], winningMoves = [], losingMoves = [] ) {
+    function soundMoves(ml = moveList, undeterminedMoves = [], winningMoves = [], losingMoves = [] ) {
         
         // let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
-        console.log(`soundMoves called with moveList: ${moveList}} `);
-        console.log(`soundMoves found these yet unclaimedNumbers: ${unclaimedNumbers(moveList)}} `);
+        console.log(`soundMoves called with moveList: ${ml}} `);
+        console.log(`soundMoves found these yet unclaimedNumbers: ${unclaimedNumbers(ml)}} `);
         console.log(`soundMoves will filter these undeterminedMoves: ${undeterminedMoves}} `);
         console.log(`   these numbers were previously found to lose: ${losingMoves} `)
         console.log(`   these numbers were previously found to win:  ${winningMoves} \n\n`)
 
-        // If you can win immediately that is the sound thing to do... but it shouldn't happen.
-        if (winningMoves(moveList).length > 0) {
+        // If you can win immediately that is the sound thing to do... 
+        if (winningMoves(ml).length > 0) {
             console.error(`soundMoves found a winning move!`)
-            return winningMoves(moveList);
+            return winningMoves(ml);
         }
 
         // otherwise do not return while there are still undeterminedMoves  
@@ -571,78 +517,65 @@ export default function FifteenGame() {
     
     
     
-    // function winningMovesList(moveList, losingMoves, winningMoves) {
-    //     // This routine will recursively call itself, building up its lists of  winningMoves and losingMoves
-    //     // It will stop when either the board fills up or all empty squares have been identified
-    //     // on either the winning or losing moves list. 
-    //     // V 1.0 it will use the least sophisticated way of looking for winning moves and losing moves. 
-    //     //      no notion here of a doubleAttack or a forcingMove. 
+    function winningMovesList(moveList, losingMoves, winningMoves) {
         
-    //     // 1) identify uncertain moves
-    //     //      on the first recursive call this is all unclaimed numbers and both lists are empty.
-    //     // 1.5) if there are none return the winningMoves list, which may be empty
+        // Consider any move that is available and has not been previously marked as losing. 
+        let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
+        console.log(`A call to bestMovesList found these unclaimednumbers: ${unclaimedNumbers(moveList)} `);
+        console.log(`It ruled out these numbers already found to lose: ${losingMoves} `)
+        console.log(`          and these numbers already found to win: ${winningMoves}  `)
+        console.log(`                 Leaving these undeterminedMoves: ${undeterminedMoves} \n\n`)
 
-    //     // 2) Create an array of hypothetical moveLists to test by concating each uncertain move to the param moveList
+        console.log(`Testing each undeterminedMove : ${undeterminedMoves} `)
         
-    //     // 3) Scan the hypothetical moveLists to see if I have won in any of them. 
-
-
-
+        // While movesToConsider is not empty and winningMoves is empty  
         
-    //     // Test each uncertain move by appending it to the move list and seeing if it caused a win
-    //         // if it did, add it to the winningMovesList
-
-    //     // 3) 
+        //  An array of arrays, each one move longer than the parameter movelist
+        let hypotheticalPositions = []
         
-        
-    //     if (gameOver(moveList)) {
-    //         return winningMoves;
-    //     }
-    //     // Consider any move that is available and has not been previously marked as losing. 
-    //     let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
-    //     console.log(`A call to bestMovesList found these unclaimednumbers: ${unclaimedNumbers(moveList)} `);
-    //     console.log(`It ruled out these numbers already found to lose: ${losingMoves} `)
-    //     console.log(`          and these numbers already found to win: ${winningMoves}  `)
-    //     console.log(`                 Leaving these undeterminedMoves: ${undeterminedMoves} \n\n`)
-
-    //     console.log(`Testing each undeterminedMove : ${undeterminedMoves} `)
-        
-    //     // While movesToConsider is not empty and winningMoves is empty  
-        
-    //     //  An array of arrays, each one move longer than the parameter movelist
-    //     let hypotheticalPositions = []
-        
-    //     movesToConsider.forEach(number => {
-    //         let hypotheticalPosition = moveList.concat(number)
-    //         hypotheticalPositions.push(hypotheticalPosition)
-    //     })
+        movesToConsider.forEach(number => {
+            let hypotheticalPosition = moveList.concat(number)
+            hypotheticalPositions.push(hypotheticalPosition)
+        })
        
         
-        // let wins = immediateWins(moveList);
+        let wins = immediateWins(moveList);
 
 
 
-    //     let hypotheticalMoveCount = 0;
-    //     let drawingMoves = unclaimedNumbers(moveList);
+        let hypotheticalMoveCount = 0;
+        let drawingMoves = unclaimedNumbers(moveList);
         
-    //     if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
-    //         return immediateWins(moveList)
-    //     }
-    //     else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
+        if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
+            return immediateWins(moveList)
+        }
+        else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
 
-    //     }
+        }
        
         
-    // }
+    }
 
     // Winning moves are moves that create a 15-sum right now.
-    // function winningMoves(moveList) {
-    //     let player = myTurn(moveList)
-    //     let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-    //     let winningMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-    //     console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
-    //     return winningMoves;
-    // }
+    function winningMoves(moveList) {
+        let moveSet = [];
+        let player = whoseTurn(moveList)
+        if (player === 'bot') {
+            moveSet = 
+        } 
+        else if (palyer === 'human') {
+
+        } 
+        else {
+
+        }
+        
+        
+        let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
+        let winningMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
+        return winningMoves;
+    }
 
     // Losing Moves are moves that fail to block the opponent from creating a 15-sum
     function losingMoves(params) {
@@ -653,17 +586,17 @@ export default function FifteenGame() {
 
 
     // The intersection of unclaimedNumbers and MY winningNumbers.
-    function immediateWins(moveList) {
-        let player = myTurn(moveList)
-        let myMoves = filterMoves(player, moveList);
+    function immediateWins(ml = moveList) {
+        let player = whoseTurn(ml)
+        let myMoves = filterMoves(player, ml);
         // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-        console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins}`)
+        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(ml));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
+        console.log(`IMMEDIATE WINS (${ml}) found: ${immediateWins}`)
         return immediateWins;
     }
 
     function urgentDefensiveMoves(ml = moveList) {
-        let player = myTurn(moveList)
+        let player = whoseTurn(moveList)
         let opponentsMoves = filterMoves(other(player), moveList);
         // console.log(`URGENT DEFENSIVE MOVES (${moveList}) found opponentsMoves: ${opponentsMoves}, winningNumbers: ${winningNumbers(opponentsMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
         let urgentDefensiveMoves = intersect(winningNumbers(opponentsMoves), unclaimedNumbers(moveList)); 
@@ -673,7 +606,7 @@ export default function FifteenGame() {
 
     // This method should not be called if there is an immediate win or an urgentDefensiveMove. 
     function doubleAttackingMoves(moveList) {
-        let player = myTurn(moveList)
+        let player = whoseTurn(moveList)
         let myMoves = filterMoves(player, moveList);
         // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
         
@@ -706,10 +639,10 @@ export default function FifteenGame() {
 
 
     // Randomly selects a move from a list of possible next moves.  Depending on calling context this method can get a totally random unclaimed number or a random number from the listo of bestMoves or the list of mistakes. I considered giving this unclaimedNumbers() as default prop but decided that would lead to more potential debugging confusion than simply requiring a moveSet to be passed
-    function getRandomMove(moveSet) {
-        // console.log(`getRandomMove found these unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
+    function selectMoveRandomly(moveSet) {
+        // console.log(`selectMoveRandomly found these unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
         let randomMove = moveSet[Math.floor(Math.random() * moveSet.length)]
-        // console.log(`getRandomMove chose ${randomMove} from the given moveSet: ${moveSet}`)
+        // console.log(`selectMoveRandomly chose ${randomMove} from the given moveSet: ${moveSet}`)
         return randomMove;
     }
 
