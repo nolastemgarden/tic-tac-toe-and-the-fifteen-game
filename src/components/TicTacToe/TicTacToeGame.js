@@ -40,13 +40,14 @@ const useStyles = makeStyles((theme) => ({
 
     },
     panelArea: {
-        border: 'solid yellow 1px',
+        // border: 'solid yellow 1px',
         backgroundColor: '#000',
         color: theme.palette.common.white,
 
         width: '50vh',
         // minWidth: '47vh',
-        height: '35vh',
+        // height: '35vh',
+        flex: '2 1 35vh',
         // minHeight: '30vh',
         margin: '0rem auto',
         // flex: '1 0 20%',
@@ -90,7 +91,7 @@ export default function TicTacToeGame() {
                     showHints={showHints}
                     showCommentary={showCommentary}
                     handleUndoButtonClick={handleUndoButtonClick}
-                    handleNewGameButtonClick={handleNewGameButtonClick}
+                    handleNewGameClick={handleNewGameClick}
                     toggleShowHintsSwitch={toggleShowHintsSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
                 />
@@ -448,18 +449,15 @@ export default function TicTacToeGame() {
         return threatCreatingMoves;
     }
 
-    function singleAttackCreatingMoves(moveList = history) {
-        return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) === index);
-    }
+    // function singleAttackCreatingMoves(moveList = history) {
+    //     return threatCreatingMoves(moveList).filter((square, index) => threatCreatingMoves(moveList).indexOf(square) === index);
+    // }
 
-    
 
-    
-
-    function winningDoubleAttackCreatingMoves(moveList = history) {
-        // A doubleAttack is winning IFF it can be made without ignoring an urgentDefensiveMove.
-        // A doubleAttackCreatingMove is winning IF there were no urgentDefensiveMoves OR IF it is identical to the ONE urgentDefensiveMove.
-    }
+    // function winningDoubleAttackCreatingMoves(moveList = history) {
+    //     // A doubleAttack is winning IFF it can be made without ignoring an urgentDefensiveMove.
+    //     // A doubleAttackCreatingMove is winning IF there were no urgentDefensiveMoves OR IF it is identical to the ONE urgentDefensiveMove.
+    // }
     
     
 
@@ -559,10 +557,8 @@ export default function TicTacToeGame() {
         console.log(`handleUndoButtonClick() removed ${history[history.length - 1]} . New Shortened history: ${shortenedHistory}`);
         setHistory(shortenedHistory);
     }
-    function handleNewGameButtonClick() {
-        const empty = [];
-        console.log(`History reset to: ${empty}`);
-        setHistory(empty);
+    function handleNewGameClick() {
+        setHistory([]);
     }
     function toggleShowHintsSwitch() {
         setShowHints(!showHints)

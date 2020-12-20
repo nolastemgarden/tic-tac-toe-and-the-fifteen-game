@@ -93,7 +93,7 @@ export default function Panel(props) {
     const status = props.status;
     const commentary = props.commentary;
 
-    const handleNewGameButtonClick = props.handleNewGameButtonClick
+    const handleNewGameClick = props.handleNewGameClick
 
 
     const showMoves = props.showMoves
@@ -116,7 +116,9 @@ export default function Panel(props) {
                     <UndoButton />
                 </Grid>
                 <Grid item xs={6} >
-                    <NewGameButton />
+                    <NewGameButton 
+                        handleNewGameClick={handleNewGameClick}
+                    />
                 </Grid>
                 <Grid item xs={6} >
                     <HelpButton />
@@ -152,14 +154,14 @@ function UndoButton(props) {
 
 function NewGameButton(props) {
     const classes = useStyles();
-    const handleNewGameButtonClick = props.handleNewGameButtonClick;
+    const handleNewGameClick = props.handleNewGameClick;
 
     return (
         <Button
             className={classes.button}
             variant="contained"
             color="primary"
-            onClick={() => handleNewGameButtonClick()}
+            onClick={() => handleNewGameClick()}
             // disabled={!props.gameOver}
         >
             <ReplayIcon className={classes.buttonIcon} />
