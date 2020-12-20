@@ -12,7 +12,7 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     board: {
         // border: 'solid blue 1px',
         position: 'absolute',
@@ -51,10 +51,12 @@ const useStyles = makeStyles({
     iconX: {
         width: '100%',
         height: '100%',
+        color: theme.palette.common.black
     },
     iconO: {
         width: '80%',
         height: '80%',
+        color: theme.palette.common.black
     },
 
 
@@ -110,7 +112,7 @@ const useStyles = makeStyles({
         backgroundColor: '#EEDD11'
     }
 
-});
+}));
 
 export default function Board(props) {
     const classes = useStyles();
