@@ -100,7 +100,7 @@ export default function SettingsModal(props) {
     const showMovesSwitch = (
         <React.Fragment>
             <Box className={classes.switchBox}>
-                <Typography className={classes.switchLabel}>
+                <Typography className={classes.switchLabel} color='textSecondary' >
                     Show Moves
                 </Typography>
                 <Switch
@@ -120,7 +120,7 @@ export default function SettingsModal(props) {
     const showCommentarySwitch = (
         <React.Fragment>
             <Box className={classes.switchBox}>
-                <Typography className={classes.switchLabel}>
+                <Typography className={classes.switchLabel} color='textSecondary' >
                     Show Commentary
                 </Typography>
                 <Switch
