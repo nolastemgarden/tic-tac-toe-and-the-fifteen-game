@@ -25,14 +25,9 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid red 1px',
         width: '100%',
         height: '100%',
-        // flex: '1 0 30%',
-
-
         display: 'flex',
         flexDirection: 'column',
         
-
-
     },
     infoArea: {
         // border: 'solid red 1px',
@@ -55,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonArea: {
         // border: 'solid red 1px',
-        padding: '0.5rem 0.5rem',
+        // padding: '0.5rem 0.5rem',
         // marginBottom: '0',
         // flex: '1 0 45%',
         // display: 'flex',
@@ -94,6 +89,7 @@ export default function Panel(props) {
     const commentary = props.commentary;
 
     const handleNewGameClick = props.handleNewGameClick
+    const handleUndoClick = props.handleUndoClick
 
 
     const showMoves = props.showMoves
@@ -111,14 +107,12 @@ export default function Panel(props) {
                     {commentary}
                 </Typography>
             </Box>
-            <Grid container spacing={1} className={classes.buttonArea} >
+            <Grid container spacing={1} >
                 <Grid item xs={6} >
-                    <UndoButton />
+                    <NewGameButton handleNewGameClick={handleNewGameClick} />
                 </Grid>
                 <Grid item xs={6} >
-                    <NewGameButton 
-                        handleNewGameClick={handleNewGameClick}
-                    />
+                    <UndoButton handleUndoClick={handleUndoClick} />
                 </Grid>
                 <Grid item xs={6} >
                     <HelpButton />
@@ -135,16 +129,16 @@ export default function Panel(props) {
 
 function UndoButton(props) {
     const classes = useStyles();
-    const handleUndoButtonClick = props.handleUndoButtonClick
-
-
+    const gameOver = props.gameOver
+    const moveNumber = props.moveNumber
+    const handleUndoClick = props.handleUndoClick
     return (
         <Button
             className={classes.button}
             variant="contained"
             color="primary"
-            onClick={() => handleUndoButtonClick()}
-            disabled={props.gameOver || props.moveNumber < 1}
+            onClick={() => handleUndoClick()}
+            // disabled={gameOver || moveNumber < 1}
         >
             <UndoIcon className={classes.buttonIcon} />
             Undo
