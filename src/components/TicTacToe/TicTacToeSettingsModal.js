@@ -55,15 +55,8 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column'
     },
     switchBox: {
-        // border: 'solid red 1px',
         display: 'flex',
-        alignItems: 'center',
-
-    },
-    switchLabel: {
-        // fontSize: '2.2vmin',
-        fontSize: 'min(max(2rem, 4vmin), 30px)',
-        width: '60%'
+        justifyContent: 'space-between',
 
     },
     heading: {
@@ -72,13 +65,7 @@ const useStyles = makeStyles((theme) => ({
         marginBlockEnd: '0',
         marginBlockStart: '1rem',
     },
-    body: {
-        // fontSize: 'theme.typography.pxToRem(20)',
-        fontSize: '1.2rem',
-        fontWeight: 'regular',
-        marginBlockEnd: '0',
-        marginBlockStart: '0',
-    }
+    
 }));
 
 export default function SettingsModal(props) {
@@ -100,7 +87,7 @@ export default function SettingsModal(props) {
     const showMovesSwitch = (
         <React.Fragment>
             <Box className={classes.switchBox}>
-                <Typography className={classes.switchLabel} color='textSecondary' >
+                <Typography color='textSecondary' variant='h4' >
                     Show Moves
                 </Typography>
                 <Switch
@@ -111,7 +98,7 @@ export default function SettingsModal(props) {
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
             </Box>
-            <DialogContentText className={classes.body} >
+            <DialogContentText color='textSecondary' variant='body1'  >
                 Show whether each possible move leads to a win, loss, or draw with color coded hints on the board.
             </DialogContentText>
         </React.Fragment>
@@ -120,8 +107,8 @@ export default function SettingsModal(props) {
     const showCommentarySwitch = (
         <React.Fragment>
             <Box className={classes.switchBox}>
-                <Typography className={classes.switchLabel} color='textSecondary' >
-                    Show Commentary
+                <Typography color='textSecondary' variant='h4' >
+                    Coach's Hints
                 </Typography>
                 <Switch
                     checked={showCommentary}
@@ -131,7 +118,7 @@ export default function SettingsModal(props) {
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
             </Box>
-            <DialogContentText className={classes.body} >
+            <DialogContentText color='textSecondary' variant='body1'  >
                 Show a verbal description of the position and the coach's advice about what to look out for.
             </DialogContentText>
         </React.Fragment>
@@ -175,7 +162,6 @@ export default function SettingsModal(props) {
                         onClick={handleClose} 
                         color="primary"
                         variant="outlined"
-                        className={classes.body}
                     >
                         Apply
                     </Button>
