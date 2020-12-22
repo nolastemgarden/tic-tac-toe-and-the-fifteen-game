@@ -215,7 +215,7 @@ export default function FifteenGame() {
                 return (botGoesFirst()) ? `Bot Wins!` : `Player Wins!` 
             }
             if (thereIsAWinIn(secondPlayersMoves(ml))) {
-                return (botGoesFirst()) ? `Player Wins!` : `Bot Wins!`
+                return (!botGoesFirst()) ? `Player Wins!` : `Bot Wins!`
             }
             else {
                 return (`Game Over. Draw.`)
@@ -258,9 +258,7 @@ export default function FifteenGame() {
             return true;
         } 
     }
-    function handleNewGameClick() {
-        // TODO
-    }
+    
 
     // There is a subset of three numbers that sum to 15.  
     // A "moveList" is an alternating sequence of both players' moves.  
