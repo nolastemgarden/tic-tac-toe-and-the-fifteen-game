@@ -75,7 +75,7 @@ export default function TeachingServicesList() {
                 button
                 component={RouterLink}
                 to={{
-                    pathname: '/tic_tac_toe',
+                    pathname: '/play_tic_tac_toe',
                 }}
             >
                 <Icon className={"far fa-play-circle fa-2x"}
@@ -108,12 +108,12 @@ export default function TeachingServicesList() {
             </ListItem>
 
             <ListItem
-                key={'lesson tic-tac-toe'}
+                key={'learn tic-tac-toe'}
                 className={classes.listItem}
                 button
                 component={RouterLink}
                 to={{
-                    pathname: '/fifteen_game',
+                    pathname: '/learn_tic_tac_toe',
                 }}
             >
                 <Icon className={"fas fa-question fa-2x"}
