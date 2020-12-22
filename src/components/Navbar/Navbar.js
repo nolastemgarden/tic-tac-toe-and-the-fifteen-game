@@ -6,12 +6,11 @@ import { Link as RouterLink } from "react-router-dom";
 
 // MY COMPONENTS
 import MobileMenu from "./MobileMenu";
-import DesktopMenu from "./DesktopMenu";
+// import DesktopMenu from "./DesktopMenu";
 // import SpacerBox from "./SpacerBox";
 
 // Image Imports
 import logo from "../../images/nsgLogoSnipped.png";
-import logo2 from "../../images/nsgLogo100px.png";
 
 
 // MATERIAL-UI COMPONENTS
@@ -22,9 +21,8 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 
 
-
 import { makeStyles } from '@material-ui/core/styles';
-import { CallReceived } from '@material-ui/icons';
+
 
 const heightInRem = 3.6;
 const height = `${heightInRem}rem`;
