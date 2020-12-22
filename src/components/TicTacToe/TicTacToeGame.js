@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         // border: 'solid purple 1px',
         width: '100%',
-        height: 'calc(100% - 4rem)',
+        height: 'calc(100% - 3.8rem)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'space-between',
@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 'min(100%, 50vh)',
         height: '0',
         position: 'relative',
-        
     },
     boardArea: {
         // border: 'solid yellow 1px',
@@ -41,22 +40,13 @@ const useStyles = makeStyles((theme) => ({
     },
     panelArea: {
         // border: 'solid yellow 1px',
-        backgroundColor: '#000',
         color: theme.palette.common.white,
-
-        width: '50vh',
-        // minWidth: '47vh',
-        // height: '35vh',
+        backgroundColor: theme.palette.common.black,
+        width: '100%',
+        // width: '50vh',
+        padding: '1.0rem',
         flex: '2 1 35vh',
-        // minHeight: '30vh',
         margin: '0rem auto',
-        // flex: '1 0 20%',
-                
-        // display: 'flex',
-        // flexDirection: 'column',
-        // 
-        // // justifyContent: 'center',
-
         
     },
 }));
@@ -68,8 +58,8 @@ export default function TicTacToeGame() {
     let [history, setHistory] = useState([]); 
     let [showHints, setShowHints] = useState(false); 
     // let [showHints, setShowHints] = useState(true); 
-    let [showCommentary, setShowCommentary] = useState(false);  
-    // let [showCommentary, setShowCommentary] = useState(true);  
+    // let [showCommentary, setShowCommentary] = useState(false);  
+    let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
         <Box className={classes.root} >
@@ -90,7 +80,7 @@ export default function TicTacToeGame() {
                     commentary={getCommentary()}
                     showHints={showHints}
                     showCommentary={showCommentary}
-                    handleUndoButtonClick={handleUndoButtonClick}
+                    handleUndoClick={handleUndoClick}
                     handleNewGameClick={handleNewGameClick}
                     toggleShowHintsSwitch={toggleShowHintsSwitch}
                     toggleShowCommentarySwitch={toggleShowCommentarySwitch}
@@ -552,15 +542,16 @@ export default function TicTacToeGame() {
         setHistory(history.concat(squareClicked));
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
-    function handleUndoButtonClick() {
+    function handleUndoClick() {
         const shortenedHistory = history.slice(0, history.length - 1)
-        console.log(`handleUndoButtonClick() removed ${history[history.length - 1]} . New Shortened history: ${shortenedHistory}`);
+        console.log(`handleUndoClick() removed ${history[history.length - 1]} . New Shortened history: ${shortenedHistory}`);
         setHistory(shortenedHistory);
     }
     function handleNewGameClick() {
         setHistory([]);
     }
     function toggleShowHintsSwitch() {
+        console.log(`toggleShowHintsSwitch called, setting  to ${!showHints}`);
         setShowHints(!showHints)
     }
     function toggleShowCommentarySwitch() {
