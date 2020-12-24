@@ -1,13 +1,7 @@
 import React from 'react';
 
-// React ROUTER
-import { Link as RouterLink } from "react-router-dom";
-
-
 // MY COMPONENTS
 import MobileMenu from "./MobileMenu";
-// import DesktopMenu from "./DesktopMenu";
-// import SpacerBox from "./SpacerBox";
 
 // Image Imports
 import logo from "../../images/nsgLogoSnipped.png";
@@ -50,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
     },
     spacerBox: {
         // border: 'solid blue 1px',
-        padding: halfHeight,
+        // padding: halfHeight,
+        padding: height,
     },
     logo: {
         height: height,
