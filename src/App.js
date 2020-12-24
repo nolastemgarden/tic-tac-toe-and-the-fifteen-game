@@ -43,6 +43,8 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         // justifyContent: 'center',
         // alignItems: 'stretch',
+        overflowY: 'scroll',
+        overflowX: 'hidden',
 
     },
     container: {

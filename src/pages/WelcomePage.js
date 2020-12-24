@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
     Link as RouterLink,
 } from "react-router-dom";
@@ -20,9 +21,8 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     
     root: {
+        // borderRight: 'solid black 1rem',
         width: '100%',
-        height: 'auto',
-        overflow: 'scroll',
         minHeight: 'calc(100vh - 4rem)',
 
         display: 'flex',
@@ -48,7 +48,7 @@ export default function WelcomePage() {
     
     
     return (
-        <Container className={classes.root} >
+        <Container className={classes.root} maxWidth='md' >
             <Typography align='center' color='textPrimary' component='h1' variant='h2' gutterBottom >
                 Tic-Tac-Toe and the Fifteen Game
             </Typography>
@@ -69,7 +69,7 @@ export default function WelcomePage() {
                     In this lesson you will prove some interseting things about Tic-Tac-Toe,
                     without relying on any mathematical jargon or algebra.
                 </Typography>
-                <Box mb={2} > 
+                <Box width="100%" mb={3} > 
                     <Button
                         className={classes.button}
                         variant="contained"
