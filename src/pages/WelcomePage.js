@@ -103,16 +103,17 @@ export default function WelcomePage() {
                 </Typography> */}
                 
                 <Typography align='left' color='textPrimary' component='h4' variant='h4' gutterBottom >
+
                     Similarity Beneath the Surface
                 </Typography>
                    
                 <Typography paragraph align='justify' color='secondary' component='body1' variant='body1' >
                     Many problems can be solved with less work if, instead of starting from scratch, you start
-                    with the solution to a different problem in mind and adapt that solution to the problem at hand. 
-                    The first step in this process is realizing that the two problems have something in common. 
-                    Often, two real-world problems will seem unrelated on their surfaces even though at a deeper 
-                    level they are behaving according to the same patterns. Being familiar with mathematics 
-                    makes you better at noticing when this is the case.
+                    with the solution to a different problem in mind and adapt it to the problem at hand. 
+                    The first step in this process is realizing that the two problems have something in common, 
+                    and this can be quite difficult. Often, two real-world problems will seem unrelated on their surfaces' 
+                    even though at a deeper level they are behaving according to the same patterns. Being familiar 
+                    with mathematics makes you better at noticing when this is the case.
                 </Typography>
                 <Typography paragraph align='justify' color='secondary' component='body1' variant='body1' >
                     The second goal of this lesson is to give students an oportunity to experience this adaptive process for themselves.
@@ -153,7 +154,7 @@ export default function WelcomePage() {
                     <a href="https://github.com/nolastemgarden/tic-tac-toe-and-the-fifteen-game">clone the repository</a>!
                 </Typography>
             </Grid>
-            
+            <Box p={5} />
         </Container>
     );
 }
