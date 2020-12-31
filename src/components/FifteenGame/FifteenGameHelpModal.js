@@ -15,21 +15,8 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%',
-        height: '100%',
-    },
-    button: {
-        // border: 'solid red 1px',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // fontSize: 'min(max(0.7rem, 3vmin), 24px)',
-        // fontSize: 'min(20px, 1rem)',
-        fontSize: 'min(18px, 0.8rem)',
-        lineHeight: '0.8vmin',
+        width: '100vw',
+        height: '100vh',
     },
     buttonIcon: {
         marginRight: '1vmin',
@@ -42,11 +29,11 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         backgroundColor: theme.palette.background.paper,
-        // width: 'md',
-        height: '600px',
+        width: '70%',
+        height: '70%',
         // border: '2px solid #000',
         boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
+        // padding: theme.spacing(2, 4, 3),
     },
     
 }));
@@ -68,7 +55,6 @@ export default function HowToPlayModal() {
             <Button
                 variant="contained"
                 color="primary"
-                className={classes.button}
                 onClick={handleOpen}
                 aria-controls="simple-menu"
                 aria-haspopup="true"
@@ -93,18 +79,18 @@ export default function HowToPlayModal() {
                 <Fade in={open}>
                     <Container maxWidth='md'> 
                         <Box className={classes.paper} >
-                            <Typography variant='h5' id="transition-modal-title" className={classes.heading} >
+                            <Typography variant='h5' id="transition-modal-title" >
                                 How To Play
                             </Typography>
-                            <Typography variant='body1' id="transition-modal-title" className={classes.heading} gutterBottom >
-                                Two players take turns claiming one of the 9 numbered cards. <br />
-                            To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
-                            </Typography>
-                            <Typography variant='body1' id="transition-modal-title" className={classes.heading} >
-                                By default, you play against my bot but, if you wish, you can disable it in the settings.
-                                can change this to play against my bot.
+                            <Typography variant='body1' id="transition-modal-title" gutterBottom >
                                 Two players take turns claiming one of the 9 numbered cards. <br />
                                 To win, a player must collect a set of exactly 3 cards that add up to exactly 15.
+                                Getting a set of 2 or 4 cards that sum to 15 does not win the game.
+                            </Typography>
+                            <Typography variant='body1' id="transition-modal-title" >
+                                You will play against my bot, taking turns going first.
+                                My bot will never make a mistake, so don't get discouraged if you never beat it.
+                                If you play well you will never lose to it either.
                             </Typography>
 
                             
