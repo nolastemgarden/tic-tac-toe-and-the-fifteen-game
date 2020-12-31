@@ -79,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FifteenGame() {
     const classes = useStyles();
     
+    let [gameNumber, setGameNumber] = useState(1);
     let [record, setRecord] = useState([0, 0, 0]);     // 3 element counter for humanWins, botWins, and tieGames.
     let [moveList, setMoveList] = useState([]);  // Array of the numbers claimed so far in order claimed.
     let [difficultyMode, setDifficultyMode] = useState("hard"); // In "hard" mode my bot never makes a mistake. In "easy" mode bot makes exactly one mistake each game. 
@@ -86,25 +87,25 @@ export default function FifteenGame() {
     
     // One plus the number of completed games in the record.
     // OR SHOULD THIS be made into state so that the record can update as soon as the game ends while the gameNumber updates when newGame is clicked.
-    function getGameNumber(r = record) {
-        let gameNumber = 1
-        r.forEach((count) => { gameNumber = gameNumber + count })
-        return gameNumber
-    }
+    // function getGameNumber(r = record) {
+    //     let gameNumber = 1
+    //     r.forEach((count) => { gameNumber = gameNumber + count })
+    //     return gameNumber
+    // }
 
     // The human moves first in the first game, alternating after that.
-    function botGoesFirst(r = record) { return (getGameNumber(r) % 2 === 0)  }
+    function botGoesFirst(gn = gameNumber) { return (gn % 2 === 0)  }
 
     // Add up the moves in the current moveList to determin turn number. 1-indexed.
     function moveNumber(ml = moveList) { return ( 1 + ml.length) }
     
     // The human moves first in the first game, alternating after that.
-    function botGoesNext(r = record, ml = moveList) { 
+    function botGoesNext(gn = gameNumber, ml = moveList) { 
         if (gameOver(ml)) {
             return false;
         }
-        let firstAndOdd = (botGoesFirst(r) && moveNumber(ml) % 2 === 1);
-        let secondAndEven = (!botGoesFirst(r) && moveNumber(ml) % 2 === 0)
+        let firstAndOdd = (botGoesFirst(gn) && moveNumber(ml) % 2 === 1);
+        let secondAndEven = (!botGoesFirst(gn) && moveNumber(ml) % 2 === 0)
         return (firstAndOdd || secondAndEven);
     }
 
@@ -131,10 +132,10 @@ export default function FifteenGame() {
             <Box className={classes.panelContainer}  >
                 <Panel 
                     record={record}
-                    gameNumber={getGameNumber()}
+                    gameNumber={gameNumber}
                     gameStatus={getGameStatus()}
                     moveNumber={moveNumber()}
-                    handleUndoClick={handleUndoClick}
+                    // handleUndoClick={handleUndoClick}
                     handleNewGameClick={handleNewGameClick}
                 />
             </Box>
@@ -170,27 +171,31 @@ export default function FifteenGame() {
             return 0;
         }
     }
-    function handleUndoClick(ml = moveList) {
-        const shortenedMoveList = ml.slice(0, ml.length - 2)
-        console.log(`handleUndoButtonClick() removed ${ml[ml.length - 1]} and ${ml[ml.length - 2]} . New Shortened history: ${shortenedMoveList}`);
-        setMoveList(shortenedMoveList);
-    }
+    // function handleUndoClick(ml = moveList) {
+    //     const shortenedMoveList = ml.slice(0, ml.length - 2)
+    //     console.log(`handleUndoButtonClick() removed ${ml[ml.length - 1]} and ${ml[ml.length - 2]} . New Shortened history: ${shortenedMoveList}`);
+    //     setMoveList(shortenedMoveList);
+    // }
     function handleNewGameClick() {
         const empty = [];
-        console.log(`MoveList reset to: ${empty}`);
+        const nextGameNumber = ++gameNumber;
+        
         setMoveList(empty);
+        setGameNumber(nextGameNumber);
+        if (botGoesFirst(nextGameNumber)) {
+            handleBotsTurn(empty);
+        }
     }
 
     
     
     
     function handleGameOver(ml = moveList) {
-        if (gameOver(ml)) {
+        if (!gameOver(ml)) {
             console.error(`NO EFFECT. handleGameOver called but the game isn't actually over!!!!!!!!!!!!!!`)
             return;
         }
-        console.log(`handleGameOver called and confirmed the game is over!`)
-
+        
         
         let result = getGameStatus(ml);
         
@@ -212,10 +217,12 @@ export default function FifteenGame() {
     function getGameStatus(ml = moveList) {
         if (gameOver(ml)) {
             if (thereIsAWinIn(firstPlayersMoves(ml))) {
+                console.log(`There is a win in the first players moves and botGoesFirst = ${botGoesFirst()}`)
                 return (botGoesFirst()) ? `Bot Wins!` : `Player Wins!` 
             }
             if (thereIsAWinIn(secondPlayersMoves(ml))) {
-                return (!botGoesFirst()) ? `Player Wins!` : `Bot Wins!`
+                console.log(`There is a win in the second players moves and botGoesFirst = ${botGoesFirst()}`)
+                return (botGoesFirst()) ? `Player Wins!` : `Bot Wins!`
             }
             else {
                 return (`Game Over. Draw.`)
@@ -282,10 +289,10 @@ export default function FifteenGame() {
 
     // MOVELIST FILTERS  
     function firstPlayersMoves(ml = moveList) {
-        return ml.filter((move, turnNumber) => turnNumber % 2 === 1)
+        return ml.filter((move, turnNumber) => turnNumber % 2 === 0)
     }
     function secondPlayersMoves(ml = moveList) {
-        return ml.filter((move, turnNumber) => turnNumber % 2 === 0)
+        return ml.filter((move, turnNumber) => turnNumber % 2 === 1)
     }
     function filterMoves(player, ml = moveList) {
         if (player !== "playerOne" && player !== "playerTwo") {
@@ -381,15 +388,36 @@ export default function FifteenGame() {
         //     console.error(`handleBotsTurn() called even though game is over. handleBotsTurn called with moveList: ${moveList}`);
         //     return 1;
         // }
-        let unclaimed = unclaimedNumbers(ml);
-        console.log(`Move List: ${ml}  Unclaimed Numbers: ${unclaimed}`)
+        const turnNumber = moveList.length;
+        let botsNumbers = []
+        let playersNumbers = []
+        if (botGoesFirst()) {
+            botsNumbers = firstPlayersMoves(ml)
+            playersNumbers = secondPlayersMoves(ml)
+        }
+        else {
+            botsNumbers = secondPlayersMoves(ml)
+            playersNumbers = firstPlayersMoves(ml)
+        }
+        let unsorted = unclaimedNumbers(ml);
+        console.log(`Move List: ${ml}  Unclaimed Numbers: ${unsorted}`)
         
         let initialMoves = {
+            botsNumbers: botsNumbers,
+            playersNumbers: playersNumbers,
             winning: [],
             drawing: [],
             losing: [],
-            unsorted: unclaimed 
+            unsorted: unsorted 
         }
+
+        console.log(`Initial Moves: `)
+        console.log(`Bots Numbers: ${initialMoves.botsNumbers}`)
+        console.log(`Players Numbers: ${initialMoves.playersNumbers}`)
+        console.log(`Winning: ${initialMoves.winning}`)
+        console.log(`Drawing: ${initialMoves.drawing}`)
+        console.log(`Losing : ${initialMoves.losing}`)
+        console.log(`Unsorted: ${initialMoves.unsorted}`)
         
         let sortedMoves = sortMovesForBot(ml, initialMoves);
         let botMove;
@@ -446,6 +474,8 @@ export default function FifteenGame() {
         })
         
         console.log(`Sorted Moves: `)
+        console.log(`Bots Numbers: ${moves.botsNumbers}`)
+        console.log(`Players Numbers: ${moves.playersNumbers}`)
         console.log(`Winning: ${moves.winning}`)
         console.log(`Drawing: ${moves.drawing}`)
         console.log(`Losing : ${moves.losing}`)
