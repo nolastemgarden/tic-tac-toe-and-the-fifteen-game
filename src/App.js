@@ -84,7 +84,7 @@ export default function App() {
                                 </Route>
 
                                 <Route path="/learn_tic_tac_toe">
-                                    <Navbar pageTitle={"Learn Tic Tac Toe"} />
+                                    <Navbar pageTitle={"Learn Tic Tac Toe Strategy"} />
                                     <TicTacToeGame
                                         mode='learn'
                                     />
@@ -100,10 +100,7 @@ export default function App() {
                                     <MagicSquares />
                                 </Route>
 
-                                <Route path="/strategy">
-                                    <Navbar pageTitle={"Learn Tic Tac Toe Strategy"} />
-                                    <StrategyPage />
-                                </Route>
+
                             </Switch>
                         </Router>
                     </Container>
