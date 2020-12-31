@@ -37,7 +37,7 @@ export default function TeachingServicesList() {
     
     return (
         <React.Fragment>
-            <ListItem
+            {/* <ListItem
                 key={'home'}
                 className={classes.listItem}
                 button
@@ -51,7 +51,7 @@ export default function TeachingServicesList() {
                     primary={'STEM Garden Home'}
                     primaryTypographyProps={{ variant: 'h5' }}
                 />
-            </ListItem>
+            </ListItem> */}
 
             <ListItem
                 key={'welcome'}
@@ -87,7 +87,23 @@ export default function TeachingServicesList() {
                 />
             </ListItem>
 
-            
+            <ListItem
+                key={'learn tic-tac-toe'}
+                className={classes.listItem}
+                button
+                component={RouterLink}
+                to={{
+                    pathname: '/learn_tic_tac_toe',
+                }}
+            >
+                <Icon className={"fas fa-question fa-2x"}
+                    classes={{ root: classes.icon }}
+                />
+                <ListItemText
+                    primary={'Learn Tic-Tac-Toe Strategy'}
+                    primaryTypographyProps={{ variant: 'h5' }}
+                />
+            </ListItem>
 
             <ListItem
                 key={'play the fifteen-game'}
@@ -107,23 +123,7 @@ export default function TeachingServicesList() {
                 />
             </ListItem>
 
-            <ListItem
-                key={'learn tic-tac-toe'}
-                className={classes.listItem}
-                button
-                component={RouterLink}
-                to={{
-                    pathname: '/learn_tic_tac_toe',
-                }}
-            >
-                <Icon className={"fas fa-question fa-2x"}
-                    classes={{ root: classes.icon }}
-                />
-                <ListItemText
-                    primary={'Learn Tic-Tac-Toe Strategy'}
-                    primaryTypographyProps={{ variant: 'h5' }}
-                />
-            </ListItem>
+            
 
             <ListItem
                 key={'learn about magic squares'}
