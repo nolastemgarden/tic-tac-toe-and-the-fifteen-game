@@ -23,7 +23,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles(theme => ({
     list: {
-        width: 320,
+        width: 'auto',
         fontSize: '0.8rem',
         backgroundColor: theme.palette.primary.main,
         height: '100%'
