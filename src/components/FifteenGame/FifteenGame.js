@@ -62,14 +62,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'left',
         justifyContent: 'space-around',
     }, 
-    sumsOfTwoList: {
-        // border: 'solid navy 1px',
-        height: '5rem',
-        display: 'flex',
-        justifyContent: 'center',
-        marginX: '1rem',
-        // paddingBottom: '3rem'
-    },
+    
     record: {
         alignSelf: 'bottom'
     }
@@ -297,12 +290,12 @@ export default function FifteenGame() {
     function secondPlayersMoves(ml = moveList) {
         return ml.filter((move, turnNumber) => turnNumber % 2 === 1)
     }
-    function botsNumbers(ml = moveList) {
+    function getBotsNumbers(ml = moveList) {
         let botsNumbers = (botGoesFirst()) ? firstPlayersMoves(ml) : secondPlayersMoves(ml);
         // console.log(`Bots Numbers: ${botsNumbers}`)
         return botsNumbers;
     }
-    function playersNumbers(ml = moveList) {
+    function getPlayersNumbers(ml = moveList) {
         let playersNumbers = (!botGoesFirst()) ? firstPlayersMoves(ml) : secondPlayersMoves(ml);
         // console.log(`Players Numbers: ${playersNumbers}`)
         return playersNumbers;
@@ -350,27 +343,50 @@ export default function FifteenGame() {
     // winning numbers are numbers that would create a subset that sums to 15. 
     // They are "winning numbers" regardless of whether they are already claimed or not. 
     function winningNumbers(moveSet) {
-        let partialSums = sumsOfTwo(moveSet).filter((sum) => (sum > 6 && sum < 15)); // the only thing that matters are two-element sets that sum to less than 15.
+        let partialSums = sumsOfTwo(moveSet).filter((sum) => (sum >= 6 && sum < 15)); // the only thing that matters are two-element sets that sum to less than 15.
         let winningNumbers = partialSums.map(sum => 15 - sum);  // Get the complement to each partial sum.  
         // Add removeDuplicates() helper? 
-        console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
+        // console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
         return winningNumbers;
     }
 
     // winning moves are the intersection of winning numbers for the player whose turn it is and unclaimed numbers. 
     // They are "winning numbers" regardless of whether they are already claimed or not. 
-    function winningMoves(ml) {
-        let moveSet = ml.filter((move, turn) => turn % 2 !== ml.length % 2)
-        
-        return intersect(winningNumbers(moveSet), unclaimedNumbers(ml))
-    }
+    // function winningMoves(ml) {
+    //     let moveSet = ml.filter((move, turn) => turn % 2 !== ml.length % 2)
+    //     return intersect(winningNumbers(moveSet), unclaimedNumbers(ml))
+    // }
 
     // winning combos are 2-number sets that would complete a win.
     // A two number combo is only winning if both of its numbers are yet unclaimed. 
-    function winningCombos(ml) {
+    // A number is part of a winning combo if 
+    //    1) it is unclaimed &&
+    //    2) adding it to the 
+    function winningCombos(moveSet) {
+        
+        let unclaimed = unclaimedNumbers(moveList)
+        moveSet.forEach((myNumber) => {
+            unclaimed.forEach((secondNumber) => {
+                let thirdNumber = complementOf(myNumber + secondNumber)
+                if (unclaimed.includes(thirdNumber)) {
 
+
+                    // TODO  ADD second and third numbers to winning combos list
+                    //  This may more accurately be called Tereat Creating Moves
+                }
+            })
+        })
+
+        
+        
+        
+        
     }
 
+
+    function complementOf(sumOfTwo) {
+        return (15 - sumOfTwo)
+    }
 
     // An array listing the element-sums of each three-element subset of the moveSet. 
     function sumsOfThree(moveSet) {
@@ -427,58 +443,27 @@ export default function FifteenGame() {
         }, 500);
     }
 
-    function sortMovesForBot(moveList, moves) {
-        let previouslyUnsorted = moves.unsorted;
-        let unclaimed = unclaimedNumbers(moveList)
-        let unsortedAndUnclaimed = intersect(previouslyUnsorted, unclaimed)
-        
-        let hypotheticalPosition;
-        moves.unsorted = [];
-        unsortedAndUnclaimed.forEach((move) => {
-            hypotheticalPosition = moveList.concat(move)
-            console.log(`hypotheticalPosition: ${hypotheticalPosition}`)
-            
-            if (gameWasJustWon(hypotheticalPosition)) {
-                moves.winning = moves.winning.concat(move);
-            }
-            else if (hypotheticalPosition.length >= 9) {
-                moves.drawing = moves.drawing.concat(move);
-            }
-            else if (thereIsANextMoveWinIn(hypotheticalPosition)) {
-                moves.losing = moves.losing.concat(move);
-            }
-            else if (hypotheticalPosition.length >= 8) {
-                moves.drawing = moves.drawing.concat(move);
-            }
-            else {
-                moves.unsorted = moves.unsorted.concat(move);
-            }
-            
-        })
-        
-        console.log(`Sorted Moves: `)
-        console.log(`Bots Numbers: ${moves.botsNumbers}`)
-        console.log(`Players Numbers: ${moves.playersNumbers}`)
-        console.log(`Winning: ${moves.winning}`)
-        console.log(`Drawing: ${moves.drawing}`)
-        console.log(`Losing : ${moves.losing}`)
-        console.log(`Unsorted: ${moves.unsorted}`)
-
-        
-        if (moves.unsorted.length > 0) {
-            moves.unsorted.forEach((move) => {
-                sortMovesForBot(hypotheticalPosition, moves)
-            })
-        }
-
-        
-        return moves;
-    }
+    
 
     function getBotMove(ml = moveList) {
+        let botsNumbers = getBotsNumbers(ml)
+        console.log(`Bots Numbers: ${botsNumbers}`)
+        let playersNumbers = getPlayersNumbers(ml)
+        console.log(`Players Numbers: ${playersNumbers}`)
+
+        let botsWinningNumbers = winningNumbers(botsNumbers)
+        console.warn(`Winning Numbers for Bot: ${botsWinningNumbers}`)
+        let playersWinningNumbers = winningNumbers(playersNumbers)
+        console.warn(`Winning Numbers for Player: ${playersWinningNumbers}`)
+
+        let botsCombos = winningCombos(botsNumbers)
+        console.warn(`Winning Combos for Bot: ${botsCombos}`)
+        let playersCombos = winningCombos(playersNumbers)
+        console.warn(`Winning Combos for Player: ${playersCombos}`)
+        
         // In both EASY and HARD modes: Win immediately if possible and defend if there is an urgent defensive move.
-        let immediatelyWinningMoves = winningMoves(ml)
-        let urgentDefensiveMoves = winningMoves(ml.concat(0))
+        let immediatelyWinningMoves = intersect(botsWinningNumbers, unclaimedNumbers(ml))
+        let urgentDefensiveMoves = intersect(playersWinningNumbers, unclaimedNumbers(ml))
         
         if (immediatelyWinningMoves.length > 0) {
             console.log(`BOT FOUND A WINNING MOVE`)
@@ -493,7 +478,16 @@ export default function FifteenGame() {
         }
         else if (difficultyMode === "hard") {
             // botMove = (sortedMoves.winning.length > 0) ? selectMoveRandomly(sortedMoves.winning) : selectMoveRandomly(sortedMoves.drawing);
-            console.warn(`difficultyMode hard has incomplete definition`)
+            // console.warn(`difficultyMode hard has incomplete definition`)
+            
+            // let bn = botsNumbers(ml)
+            // console.warn(`Bots Numbers: ${bn}`)
+
+            // let combos = winningCombos(botsNumbers) ;
+            // console.warn(`Winning Combos: ${combos}`)
+            // winningCombos(moveSet);  // ???
+            // a doubleAttack creating move is a move that appears in two separate winningCombos.
+            // 
             
             return selectMoveRandomly(unclaimedNumbers(ml))
 
@@ -593,47 +587,6 @@ export default function FifteenGame() {
     
     
     
-    function winningMovesList(moveList, losingMoves, winningMoves) {
-        
-        // Consider any move that is available and has not been previously marked as losing. 
-        let undeterminedMoves = unclaimedNumbers(moveList).filter(num => !losingMoves.includes(num)).filter(num => !winningMoves.includes(num));
-        console.log(`A call to bestMovesList found these unclaimednumbers: ${unclaimedNumbers(moveList)} `);
-        console.log(`It ruled out these numbers already found to lose: ${losingMoves} `)
-        console.log(`          and these numbers already found to win: ${winningMoves}  `)
-        console.log(`                 Leaving these undeterminedMoves: ${undeterminedMoves} \n\n`)
-
-        console.log(`Testing each undeterminedMove : ${undeterminedMoves} `)
-        
-        // While movesToConsider is not empty and winningMoves is empty  
-        
-        //  An array of arrays, each one move longer than the parameter movelist
-        let hypotheticalPositions = []
-        
-        // movesToConsider.forEach(number => {
-        //     let hypotheticalPosition = moveList.concat(number)
-        //     hypotheticalPositions.push(hypotheticalPosition)
-        // })
-       
-        
-        let wins = immediateWins(moveList);
-
-
-
-        let hypotheticalMoveCount = 0;
-        let drawingMoves = unclaimedNumbers(moveList);
-        
-        if (immediateWins(moveList).length > 0){  // if there are immediately winning moves return the list of them. 
-            return immediateWins(moveList)
-        }
-        else {                                    // else remove any immediately losing moves from the list of possiblyWinningMoves
-
-        }
-       
-        
-    }
-
-    
-
     // The intersection of unclaimedNumbers and MY winningNumbers.
     function immediateWins(ml = moveList) {
         let player = whoseTurn(ml)
@@ -646,7 +599,7 @@ export default function FifteenGame() {
 
     function urgentDefensiveMoves(ml = moveList) {
         let player = whoseTurn(moveList)
-        let opponentsMoves = filterMoves(other(player), moveList);
+        let opponentsMoves = filterMoves(other(player), ml);
         // console.log(`URGENT DEFENSIVE MOVES (${moveList}) found opponentsMoves: ${opponentsMoves}, winningNumbers: ${winningNumbers(opponentsMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
         let urgentDefensiveMoves = intersect(winningNumbers(opponentsMoves), unclaimedNumbers(moveList)); 
         console.log(`URGENT DEFENSIVE MOVES (${moveList}) found: ${urgentDefensiveMoves}`)  
