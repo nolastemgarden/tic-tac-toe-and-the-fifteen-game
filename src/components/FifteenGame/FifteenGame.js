@@ -228,10 +228,13 @@ export default function FifteenGame() {
                 return (`Game Over. Draw.`)
             } 
         } else {
-            if (botGoesFirst() && ml.length % 2 === 0) {
-                return (`Bot's turn.`)
-            }
-            if (!botGoesFirst() && ml.length % 2 === 1) {
+            // if (botGoesFirst() && ml.length % 2 === 0) {
+            //     return (`Bot's turn.`)
+            // }
+            // if (!botGoesFirst() && ml.length % 2 === 1) {
+            //     return (`Bot's turn.`)
+            // }
+            if (botGoesNext(gameNumber, ml)) {
                 return (`Bot's turn.`)
             }
             else {
@@ -354,6 +357,20 @@ export default function FifteenGame() {
         return winningNumbers;
     }
 
+    // winning moves are the intersection of winning numbers for the player whose turn it is and unclaimed numbers. 
+    // They are "winning numbers" regardless of whether they are already claimed or not. 
+    function winningMoves(ml) {
+        let moveSet = ml.filter((move, turn) => turn % 2 !== ml.length % 2)
+        
+        return intersect(winningNumbers(moveSet), unclaimedNumbers(ml))
+    }
+
+    // winning combos are 2-number sets that would complete a win.
+    // A two number combo is only winning if both of its numbers are yet unclaimed. 
+    function winningCombos(ml) {
+
+    }
+
 
     // An array listing the element-sums of each three-element subset of the moveSet. 
     function sumsOfThree(moveSet) {
@@ -395,42 +412,9 @@ export default function FifteenGame() {
 
     // Find and make a move for the Bot with a 1/2 second delay. 
     function handleBotsTurn(ml = moveList) {
-        const turnNumber = moveList.length;
-
+        let botMove = getBotMove(ml)
         
-        let unsorted = unclaimedNumbers(ml);
-        console.log(`Move List: ${ml}  Unclaimed Numbers: ${unsorted}`)
         
-        let initialMoves = {
-            botsNumbers: botsNumbers(ml),
-            playersNumbers: playersNumbers(ml),
-            winning: [],
-            drawing: [],
-            losing: [],
-            unsorted: unsorted 
-        }
-
-        console.log(`Initial Moves: `)
-        console.log(`Bots Numbers: ${initialMoves.botsNumbers}`)
-        console.log(`Players Numbers: ${initialMoves.playersNumbers}`)
-        console.log(`Winning: ${initialMoves.winning}`)
-        console.log(`Drawing: ${initialMoves.drawing}`)
-        console.log(`Losing : ${initialMoves.losing}`)
-        console.log(`Unsorted: ${initialMoves.unsorted}`)
-        
-        let sortedMoves = sortMovesForBot(ml, initialMoves);
-        let botMove;
-
-        if (difficultyMode === "hard") {
-            botMove = (sortedMoves.winning.length > 0) ? selectMoveRandomly(sortedMoves.winning) : selectMoveRandomly(sortedMoves.drawing);
-        }
-        else if (difficultyMode === "easy") {
-            console.error(`Logic for difficultyMode = "easy" has not been written yet.`)
-            // In easy mode bot will make a mistake on its first move if it goes second or its second move if it goes first.
-        }
-        else {
-            console.error(`difficultyMode has invalid setting: ${difficultyMode}`)
-        }
         console.log(`Bot selected move: ${botMove}`)
         let updatedMoveList = ml.concat(botMove);
         setTimeout(() => {
@@ -491,24 +475,44 @@ export default function FifteenGame() {
         return moves;
     }
 
-    // this method is only called by handleBotsTurn. Depending on the settings it selects a random move from either the bestMoves list or the losingMoves list.
-    // TODO This method is a skeleton that simply passes the call to getBestMoves()
     function getBotMove(ml = moveList) {
-        // If there is an immediate win the bot will do that.
+        // In both EASY and HARD modes: Win immediately if possible and defend if there is an urgent defensive move.
+        let immediatelyWinningMoves = winningMoves(ml)
+        let urgentDefensiveMoves = winningMoves(ml.concat(0))
         
-        
-        
-        // let losing moves = ...
-        // if botPlaysPerfectly = false && turn number == 1 or 2 make a mistaken move.
-        let botMove = selectMoveRandomly(soundMoves(ml))
-        console.log(`Selecting Bot Move at random from "sound moves": ${soundMoves(moveList)}`)
-        return botMove;
+        if (immediatelyWinningMoves.length > 0) {
+            console.log(`BOT FOUND A WINNING MOVE`)
+            return selectMoveRandomly(immediatelyWinningMoves)
+        }
+        else if (urgentDefensiveMoves.length > 0) {
+            console.log(`BOT FOUND AN URGENT DEFENSIVE MOVE`)
+            return selectMoveRandomly(urgentDefensiveMoves)
+        }
+        else if (difficultyMode === "easy") {
+            return selectMoveRandomly(unclaimedNumbers(ml))
+        }
+        else if (difficultyMode === "hard") {
+            // botMove = (sortedMoves.winning.length > 0) ? selectMoveRandomly(sortedMoves.winning) : selectMoveRandomly(sortedMoves.drawing);
+            console.warn(`difficultyMode hard has incomplete definition`)
+            
+            return selectMoveRandomly(unclaimedNumbers(ml))
+
+        }
+        else {
+            console.error(`difficultyMode has invalid setting: ${difficultyMode}`)
+        }
+
     }
 
 
     // 
     //     
-    // HOW TO GET A BEST MOVE:  
+    // HOW TO GET A BEST MOVE: 
+    // 
+    // look for immediate winningMoves for bots moveset, whose turn it is. if there is one make it.
+    // look for immediate winningMoves for players moveset, whose turn it is not. if there is one make it.
+    //    look for moves that force the opponent to make a losing move
+    //       a losing move is one that 
     
     
     // 1) Start with the current position and look for immediateWinningMoves. 
