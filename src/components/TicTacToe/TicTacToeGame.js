@@ -52,14 +52,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function TicTacToeGame() {
+export default function TicTacToeGame(props) {
     const classes = useStyles();
+    const mode = props.mode;
 
+    // let learnMode = (props.mode === 'learn') ? true : false;
+    // let [mode, setMode] = useState((props.mode === 'learn') ? true : false); 
+    
     let [history, setHistory] = useState([]); 
-    let [showHints, setShowHints] = useState(false); 
-    // let [showHints, setShowHints] = useState(true); 
-    // let [showCommentary, setShowCommentary] = useState(false);  
-    let [showCommentary, setShowCommentary] = useState(true);  
+    // let [showHints, setShowHints] = useState((props.mode === 'learn') ? true : false); 
+    // let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
         <Box className={classes.root} >
@@ -74,16 +76,17 @@ export default function TicTacToeGame() {
             </Box>
             <Box className={classes.panelArea}>
                 <Panel
+                    mode={props.mode}
                     gameType='TicTacToe'
                     // data={getPanelData(history)} 
                     status={getStatus()}
                     commentary={getCommentary()}
-                    showHints={showHints}
-                    showCommentary={showCommentary}
+                    // showHints={showHints}
+                    // showCommentary={showCommentary}
                     handleUndoClick={handleUndoClick}
                     handleNewGameClick={handleNewGameClick}
-                    toggleShowHintsSwitch={toggleShowHintsSwitch}
-                    toggleShowCommentarySwitch={toggleShowCommentarySwitch}
+                    // toggleShowHintsSwitch={toggleShowHintsSwitch}
+                    // toggleShowCommentarySwitch={toggleShowCommentarySwitch}
                 />
             </Box>
         </Box>
@@ -104,17 +107,32 @@ export default function TicTacToeGame() {
         return data;  // this method only deals with current board position, not hypotheticals.  Thus, it wants to use a version of helper squaresClaimedByPlayer() that does not require a moveList be explicitly passed in. 
     }
 
+    // function getBoardColors() {
+    //     // If the game is won highlight the winning line(s), whether hints are turned on or off.
+    //     if (wins('x') || wins('o')) {
+    //         return highlightWins();
+    //     }
+    //     // If hints are turned off return colors [] filled with 'noColor' strings.
+    //     if (showHints === false) {
+    //         return Array(9).fill('noColor');
+    //     }
+    //     // If hints are turned on return colors [] filled by getBoardHints().
+    //     if (showHints === true) {
+    //         // console.log(`Board Hints: ${getBoardHints()}`)
+    //         return getBoardHints();
+    //     }
+    // }
     function getBoardColors() {
         // If the game is won highlight the winning line(s), whether hints are turned on or off.
-        if (wins('x') || wins('o')) {
+        if (gameOver() && !gameDrawn()) {
             return highlightWins();
         }
         // If hints are turned off return colors [] filled with 'noColor' strings.
-        if (showHints === false) {
+        if (mode === 'play') {
             return Array(9).fill('noColor');
         }
         // If hints are turned on return colors [] filled by getBoardHints().
-        if (showHints === true) {
+        if (mode === 'learn') {
             // console.log(`Board Hints: ${getBoardHints()}`)
             return getBoardHints();
         }
@@ -328,35 +346,43 @@ export default function TicTacToeGame() {
             return
         }
     }
+
+
     function getCommentary() {
         // console.log(`getCommentary() called while showCommentary = ${showCommentary}`)
         if (gameOver()) {
             return `Game Over`
         }
-        if (!showCommentary) {
-            return `Coach's commentary would appear here if turned on in the settings.`
+        if (mode === 'play') {
+            return `Coach's commentary would appear here in learn mode. TODO w-l-d record`
         }
 
         // If no moves have been made
         if (history.length === 0) {
             return `It may look like X has  9 different options but 
             when you consider symmetry there are really only 3: Center, Edge, or Corner.
-            In starting position, all of X's choices are safe and each leads to different follow up strategies.`
+            None of X's current options would be mistakes, but nor do any of them lead to a forced win.`
         }
 
         // If one move has been made
         if (history.length === 1 && history[0] === 4) {
-            return `O really only has two options, edge or corner. One is good and lets O
-            force a draw. The other is bad and gives X a chance to win.`
+            return `The center opening is the most popular because there are more three-in-a-rows that 
+            include the center square than any other square.  Though it is sound for X, the center opening 
+            is also the easiest for O to defend against.
+            Considering symmetry, O really only has two options, edge or corner. 
+            One is good and keeps O on track for a draw. The other is bad and opens the door for X to force a win.`
         }
         if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 0 ) {
-            return `In the Corner opening O has five non-symmetrical options. All except one
-            are mistakes that let X force a win.`
+            return `The corner opening can lead X to a winning double attack if O makes a mistake on their first move.
+            Unfortunately for X, the only sound move that O has in this position is also the most intuitive one.
+            Go through each of O's losing options and come up with a plan for X that guarantees a win. Do you notice a pattern?
+            To win X must create a threat that forces O to play a specific defensive move, then follow that up with a double attack.`
         }
-        if (history.length === 1 && history[0] !== 4 && history[0] % 2 === 1) {
-            return `The Edge opening has the most tricks and traps! 
-            O has five non-symmetrical options. Three are good and let O force a draw. 
-            The other two are mistakes that let X force a win.`
+        if (history.length === 1 && history[0] % 2 === 1) {
+            return `The Edge opening is the least commonly played and is the most complex to analyze.
+            There are tricks and traps in this position that both players can take advantage of! 
+            O has five non-symmetrical options. Don't settle for just finding one move that lets O force a draw, 
+            dig into each of the five options and find the ones that maximize the chances X will make a mistake.`
         }
 
         // If two moves has been made
@@ -550,13 +576,13 @@ export default function TicTacToeGame() {
     function handleNewGameClick() {
         setHistory([]);
     }
-    function toggleShowHintsSwitch() {
-        console.log(`toggleShowHintsSwitch called, setting  to ${!showHints}`);
-        setShowHints(!showHints)
-    }
-    function toggleShowCommentarySwitch() {
-        setShowCommentary(!showCommentary)
-    }
+    // function toggleShowHintsSwitch() {
+    //     console.log(`toggleShowHintsSwitch called, setting  to ${!showHints}`);
+    //     setShowHints(!showHints)
+    // }
+    // function toggleShowCommentarySwitch() {
+    //     setShowCommentary(!showCommentary)
+    // }
     
     
     // TURN HELPERS
