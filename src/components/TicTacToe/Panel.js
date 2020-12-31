@@ -114,12 +114,12 @@ export default function Panel(props) {
                 <Grid item xs={6} >
                     <UndoButton handleUndoClick={handleUndoClick} />
                 </Grid>
-                <Grid item xs={6} >
+                {/* <Grid item xs={6} >
                     <HelpButton />
                 </Grid>
                 <Grid item xs={6} >
                     <SettingsButton />
-                </Grid>
+                </Grid> */}
             </Grid>
         </Box>
     )
