@@ -294,6 +294,17 @@ export default function FifteenGame() {
     function secondPlayersMoves(ml = moveList) {
         return ml.filter((move, turnNumber) => turnNumber % 2 === 1)
     }
+    function botsNumbers(ml = moveList) {
+        let botsNumbers = (botGoesFirst()) ? firstPlayersMoves(ml) : secondPlayersMoves(ml);
+        // console.log(`Bots Numbers: ${botsNumbers}`)
+        return botsNumbers;
+    }
+    function playersNumbers(ml = moveList) {
+        let playersNumbers = (!botGoesFirst()) ? firstPlayersMoves(ml) : secondPlayersMoves(ml);
+        // console.log(`Players Numbers: ${playersNumbers}`)
+        return playersNumbers;
+    }
+
     function filterMoves(player, ml = moveList) {
         if (player !== "playerOne" && player !== "playerTwo") {
             console.error(`filterMoves() recieved an invalid player parameter.`)
@@ -384,27 +395,15 @@ export default function FifteenGame() {
 
     // Find and make a move for the Bot with a 1/2 second delay. 
     function handleBotsTurn(ml = moveList) {
-        // if (gameOver(ml)){
-        //     console.error(`handleBotsTurn() called even though game is over. handleBotsTurn called with moveList: ${moveList}`);
-        //     return 1;
-        // }
         const turnNumber = moveList.length;
-        let botsNumbers = []
-        let playersNumbers = []
-        if (botGoesFirst()) {
-            botsNumbers = firstPlayersMoves(ml)
-            playersNumbers = secondPlayersMoves(ml)
-        }
-        else {
-            botsNumbers = secondPlayersMoves(ml)
-            playersNumbers = firstPlayersMoves(ml)
-        }
+
+        
         let unsorted = unclaimedNumbers(ml);
         console.log(`Move List: ${ml}  Unclaimed Numbers: ${unsorted}`)
         
         let initialMoves = {
-            botsNumbers: botsNumbers,
-            playersNumbers: playersNumbers,
+            botsNumbers: botsNumbers(ml),
+            playersNumbers: playersNumbers(ml),
             winning: [],
             drawing: [],
             losing: [],
@@ -507,37 +506,14 @@ export default function FifteenGame() {
     }
 
 
-    // GETTING BEST MOVES WITH GRAPH SEARCH
-    // 
-    // 
-    // 
-    // and losing moves
-    // if there are no winning moves then generate a list of notImmediatelyLosingMoves and a list of the threatCreating moves  and take the intersection of these. 
-    //   because the best move never 
-    // Create a QUEUE of hypotheticalPositions where each position is the current movelist with a different notImmediatelyLosingMove concatenated onto it. 
-    // the queue is not full of positions where we 
-    // while Queue is not empty pop off the     
     // 
     //     
     // HOW TO GET A BEST MOVE:  
-    // IN GENERAL start with a list of movesToConsider. in a given position make a list of winning moves and losing moves. 
-    //            if there are any winning moves return that list, if not remove all losing moves from the list of movesToConsider.
-    //            if there are no movesToConsider left return a random move
-    //            if there are movesToConsider make a list of hypotheticalPositions by adding each moveToConsider to the originalMoveList...
-    //            at this point we are guaranteed that none of the hypotheticalPositions contain an immediate win so we only need to list moves that are notImmediatelyLosing
-    //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition where it is the opponents move. 
+    
+    
+    // 1) Start with the current position and look for immediateWinningMoves. 
+    //    This list is the intersection of unclaimedNumbers and winningNumbers. if there are none...
     // 
-    //              as we cycle thru the hypotheticalPositions we chech each to see if in it is whoseTurn or opponentsTurn by comparing it length % 2 with originalMoveList.length % 2 
-    //              if we are currently considering a position where it is the opponentsTurn we are guaranteed they can't win so we list moves they can make that are notImmediatelyLosing
-    //              For Each notImmediatelyLosingMove in each hypotheticalPosition create a new  hypotheticalPosition that concats the notImmediatelyLosingMove onto the hypotheticalPosition currently being considered. 
-    //              if we are currently considering a position where it is whoseTurn we make a list of winning moves and losing moves. 
-
-    // There will be a methd for getting immediate wins and one for filtering the unclaimed squares and removing immediatelyLosing movesToConsider
-    // movesToConsider need not be state, it can 
-    //              
-    //  
-    // 1) Start with the current position and look for winning moves. if there are none...
-    //    This list is the intersection of unclaimedNumbers and winningNumbers. 
     // 2) 
     // 3) For Each unclaimedNumber, test if adding it to myMoves creates a Set where there are   Make a list of all unclaimedNumbers that are also winningNumbers.
     // A "best move" is any move that does not grant the opponent a forced win. Start with a list of legal moves. if any win return only those. if any lose return all but those.
@@ -652,34 +628,7 @@ export default function FifteenGame() {
         
     }
 
-    // Winning moves are moves that create a 15-sum right now.
-    // function winningMoves(moveList) {
-    //     let moveSet = [];
-    //     let player = whoseTurn(moveList)
-    //     if (player === 'bot') {
-    //         // moveSet = ;
-    //     } 
-    //     else if (player === 'human') {
-
-    //     } 
-    //     else {
-
-    //     }
-        
-        
-    //     let myMoves = filterMoves(player, moveList); // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-    //     let winningMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-    //     console.log(`IMMEDIATE WINS (${moveList}) found: ${immediateWins.length}.  They are: ${immediateWins}`)
-    //     return winningMoves;
-    // }
-
-    // Losing Moves are moves that fail to block the opponent from creating a 15-sum
-    function losingMoves(params) {
-        
-    }
-
     
-
 
     // The intersection of unclaimedNumbers and MY winningNumbers.
     function immediateWins(ml = moveList) {
