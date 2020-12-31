@@ -87,7 +87,7 @@ export default function Panel(props) {
     const gameNumber = props.gameNumber;
     const gameStatus = props.gameStatus;
     const moveNumber = props.moveNumber;
-    const handleUndoButtonClick = props.handleUndoButtonClick
+    // const handleUndoButtonClick = props.handleUndoButtonClick
     const handleNewGameClick = props.handleNewGameClick
     // const commentary = props.commentary;
 
@@ -98,18 +98,18 @@ export default function Panel(props) {
     const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
 
 
-    const undoButton = (
-        <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={() => handleUndoButtonClick()}
-            disabled={gameOver() || moveNumber < 1}
-        >
-            <UndoIcon className={classes.buttonIcon} />
-            Undo
-        </Button>
-    );
+    // const undoButton = (
+    //     <Button
+    //         variant="contained"
+    //         color="primary"
+    //         className={classes.button}
+    //         onClick={() => handleUndoButtonClick()}
+    //         disabled={gameOver() || moveNumber < 1}
+    //     >
+    //         <UndoIcon className={classes.buttonIcon} />
+    //         Undo
+    //     </Button>
+    // );
 
     const newGameButton = (
         <Button
