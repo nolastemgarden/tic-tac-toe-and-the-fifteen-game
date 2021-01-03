@@ -154,7 +154,7 @@ export default function FifteenGame() {
         }
         else {
             let updatedMoveList = moveList.concat(cardClicked)
-            // console.log(`setMoveList called with updated list: ${updatedMoveList} `)
+            console.log(`updatedMoveList: ${updatedMoveList} `)
             setMoveList(updatedMoveList);
             if (gameOver(updatedMoveList)) {
                 handleGameOver(updatedMoveList);
@@ -489,7 +489,8 @@ export default function FifteenGame() {
         // let immediatelyWinningMoves = intersect(winningNumbers(getBotsNumbers(ml)), unclaimedNumbers(ml))
         // let urgentDefensiveMoves = intersect(winningNumbers(getPlayersNumbers(ml)), unclaimedNumbers(ml))
         let immediatelyWinningMoves = trios.filter(trio => (trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed)
-        let urgentDefensiveMoves = trios.filter(trio => (trio.botMoves === 0 && trio.playerMoves === 2)).map(trio => trio.unclaimed)
+        // let urgentDefensiveMoves = trios.filter(trio => (trio.botMoves === 0 && trio.playerMoves === 2)).map(trio => trio.unclaimed)
+        let urgentDefensiveMoves = getUrgentDefensiveMoves(trios)
         
         if (immediatelyWinningMoves.length > 0) {
             console.log(`BOT FOUND A WINNING MOVE: ${immediatelyWinningMoves}`)
@@ -509,46 +510,42 @@ export default function FifteenGame() {
         else if (difficultyMode === "hard") {
             // How the bot plays in HARD mode
             // Given that there are no winning moves or urgent defensive moves
+            
+            
             // First, seek to make a double attack...
+            let doubleAttackingMoves = getDoubleAttackingMoves(trios)
+            if (doubleAttackingMoves.length > 0) {
+                console.log(`BOT FOUND DOUBLE ATTACK CREATING MOVES: ${doubleAttackingMoves}`)
+                return selectMoveRandomly(doubleAttackingMoves)
+            }
+
+            
             // Second, seek to make a forcing move, 
             //      verify that it does not force the opponent to create a double attack
-            //      verify that it does not force the opponent to create a double attack
+            let forcingMoves = trios.filter(trio => (trio.botMoves === 1 && trio.playerMoves === 0)).map(trio => trio.unclaimed).flat()
+            console.log(`BOT FOUND FORCING MOVES: ${forcingMoves}`)
+            
+            let soundForcingMoves = forcingMoves.filter(forcingMove => {
+                let forcedDefensiveMove = getTrios(ml.concat(forcingMove)).filter(trio => (trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed)
+                return (getUrgentDefensiveMoves(ml.concat(forcingMove, forcedDefensiveMove)).length > 1)
+            })
+            console.log(`BOT FILTERED OUT UNSOUND FORCING MOVES: ${soundForcingMoves}`)
+            if (soundForcingMoves.length > 0) {
+                return selectMoveRandomly(soundForcingMoves)
+            }
+
+
 
             // Third, 
 
 
             
-            // let botsCombos = attackingMoves(ml, botsNumbers)
-            // console.warn(`Attacking Moves for Bot: ${botsCombos}`)
-            // let playersCombos = attackingMoves(ml, playersNumbers)
-            // console.warn(`Attacking Moves for Player: ${playersCombos}`)
-
-            
-            // const map = botsCombos.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
-
-            // console.info([...map.keys()])
-            // console.info([...map.values()])
-            // console.info([...map.entries()])
-
-            // let counts = {};
-
-            // for (var i = 0; i < botsCombos.length; i++) {
-            //     var num = botsCombos[i];
-            //     counts[num] = (counts[num] || 0) + 1
-            //     // counts[num] = counts[num] ? counts[num] + 1 : 1;  // Does same thing as above line.
-            // }
-            // If there is a number that appears here 4 times make that move!
-            // if (counts.values().includes(4)) {
-            //     return counts.keys[counts.values().indexOf(4)]
-            // }
-
-
-            // If there is NOT a number that appears 4 times add the opponents counts and choose the move that appears the most times!
-            // else if (counts.values().includes(2)) {
-            //     return counts.keys[counts.values().indexOf(2)]
-            // }
-            // else {
-            return selectMoveRandomly(unclaimedNumbers(ml))
+            if (unclaimedNumbers(ml).includes(5)) {
+                return 5
+            }
+            else {
+                return selectMoveRandomly(unclaimedNumbers(ml))
+            }
             // }
             // console.log(counts[5], counts[2], counts[9], counts[4]);
         }
@@ -559,99 +556,38 @@ export default function FifteenGame() {
 
     }
 
-    function getBotMove2(ml = moveList) {
-        let trios = getTrios()
+    function getUrgentDefensiveMoves(trios) {
+        return trios.filter(trio => (trio.botMoves === 0 && trio.playerMoves === 2)).map(trio => trio.unclaimed)
+    }
 
-        let botsNumbers = getBotsNumbers(ml)
-        console.log(`Bots Numbers: ${botsNumbers}`)
-        let playersNumbers = getPlayersNumbers(ml)
-        console.log(`Players Numbers: ${playersNumbers}`)
+    function getDoubleAttackingMoves(trios) {
+        // 1) Filter out trios that opponent has already blocked.
+        // 2) Filter out trios that Bot has no moves in.
+        // 3) In the list of unclaimed numbers in the trios where the bot has made the only move,
+        //    find duplicates by Filtering out the first occurance of each unclaimed number.
+        let attackingTrios = trios.filter(trio => (trio.botMoves === 1 && trio.playerMoves === 0))
+        let attackingMoves = attackingTrios.map(trio => trio.unclaimed).flat()
+        // console.log(`BOT FOUND ATTACK CREATING MOVES: ${attackingMoves}`)
+        // BUG WARNING: Though attacking moves looks like a normal array when printed to the console...
+        // It is in fact an Array of two-element arrays.  To remedy this we must use Array.prototype.flat()
 
-        // In both EASY and HARD modes: Win immediately if possible and defend if there is an urgent defensive move.
-        let immediatelyWinningMoves = intersect(winningNumbers(botsNumbers), unclaimedNumbers(ml))
-        let urgentDefensiveMoves = intersect(winningNumbers(playersNumbers), unclaimedNumbers(ml))
+        let doubleAttackingMoves = attackingMoves.filter((move, index, self) => (self.indexOf(move) !== index))
+        // let doubleAttackingMoves = attackingMoves.forEach(element => {
+        //     console.log(`Element: ${element}`)
+        // });
+        // ((move, index, self) => (self.indexOf(move) === index))
 
-        console.warn(`Winning Numbers for Bot: ${immediatelyWinningMoves}`)
-        console.warn(`Winning Numbers for Player: ${urgentDefensiveMoves}`)
+        // console.log(`BOT FOUND DOUBLE ATTACK CREATING MOVES: ${doubleAttackingMoves}`)
 
-
-
-        if (immediatelyWinningMoves.length > 0) {
-            console.log(`BOT FOUND A WINNING MOVE`)
-            return selectMoveRandomly(immediatelyWinningMoves)
-        }
-        else if (urgentDefensiveMoves.length > 1) {
-            console.error(`BOT Must have played inaccurately, there are now TWO URGENT DEFENSIVE MOVES`)
-            return selectMoveRandomly(urgentDefensiveMoves)
-        }
-        else if (urgentDefensiveMoves.length > 0) {
-            console.log(`BOT FOUND AN URGENT DEFENSIVE MOVE`)
-            return selectMoveRandomly(urgentDefensiveMoves)
-        }
-        else if (difficultyMode === "easy") {
-            return selectMoveRandomly(unclaimedNumbers(ml))
-        }
-        else if (difficultyMode === "hard") {
-            // How the bot plays in HARD mode
-            // Given that there are no winning moves or urgent defensive moves
-            // First, seek to make a double attack...
-            // Second, seek to make a forcing move, 
-            //      verify that it does not force the opponent to create a double attack
-            //      verify that it does not force the opponent to create a double attack
-
-            // Third, 
-
-            let trios = getTrios()
-
-
-            // let botsCombos = attackingMoves(ml, botsNumbers)
-            // console.warn(`Attacking Moves for Bot: ${botsCombos}`)
-            // let playersCombos = attackingMoves(ml, playersNumbers)
-            // console.warn(`Attacking Moves for Player: ${playersCombos}`)
-
-
-            // const map = botsCombos.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
-
-            // console.info([...map.keys()])
-            // console.info([...map.values()])
-            // console.info([...map.entries()])
-
-            // let counts = {};
-
-            // for (var i = 0; i < botsCombos.length; i++) {
-            //     var num = botsCombos[i];
-            //     counts[num] = (counts[num] || 0) + 1
-            //     // counts[num] = counts[num] ? counts[num] + 1 : 1;  // Does same thing as above line.
-            // }
-            // If there is a number that appears here 4 times make that move!
-            // if (counts.values().includes(4)) {
-            //     return counts.keys[counts.values().indexOf(4)]
-            // }
-
-
-            // If there is NOT a number that appears 4 times add the opponents counts and choose the move that appears the most times!
-            // else if (counts.values().includes(2)) {
-            //     return counts.keys[counts.values().indexOf(2)]
-            // }
-            // else {
-            return selectMoveRandomly(unclaimedNumbers(ml))
-            // }
-            // console.log(counts[5], counts[2], counts[9], counts[4]);
-        }
-        else {
-            console.error(`difficultyMode has invalid setting: ${difficultyMode}`)
-        }
-
-
+        return doubleAttackingMoves
     }
 
     // This is the cousin of the TicTacToe Game's method lineCountsFor(player, moveList)
     // Rather than having to specify player 1 or 2 and returning an array, this method counts for both
-    // the bot and player and returns a Map of trioIds to {}
+    // the bot and player and returns an Array of trio Objects
     function getTrios(ml = moveList) {
         let botsNumbers = getBotsNumbers(ml)
         let playersNumbers = getPlayersNumbers(ml)
-
 
         let trios = []
         let index = 0
@@ -660,13 +596,6 @@ export default function FifteenGame() {
                 let k = complementOf(i + j)
                 if (k > j && k <= 9) {
                     let newTrio = [i, j, k]
-                    // console.log(`Found Trio: ${newTrio}`)   
-                    // trios.concat({ 
-                    //     'trio': newTrio, 
-                    //     'playerMoves': intersect(newTrio, playersNumbers).length, 
-                    //     'botMoves': intersect(newTrio, botsNumbers).length,
-                    //     'unclaimed': intersect(newTrio, unclaimedNumbers(ml)) 
-                    // })
                     trios[index++] = {
                         'trio': newTrio,
                         'playerMoves': intersect(newTrio, playersNumbers).length, 
