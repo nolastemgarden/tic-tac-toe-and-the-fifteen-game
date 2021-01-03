@@ -157,8 +157,8 @@ export default function Panel(props) {
                 {/* <Typography align='center' component='h2' variant='h4' noWrap >
                     Record:
                 </Typography>  */}
-                <Typography align='center' component='h3' variant='h5' noWrap >
-                    Human: {props.record[0]} &emsp;&emsp; Bot: {props.record[1]} &emsp;&emsp; Draw: {props.record[2]} 
+                <Typography align='center' component='h3' variant='h4' noWrap >
+                    Human: {props.record[0]} &emsp;  Bot: {props.record[1]} &emsp;  Draw: {props.record[2]} 
                 </Typography> 
                 
             </Grid>
