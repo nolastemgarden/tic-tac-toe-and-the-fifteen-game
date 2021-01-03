@@ -210,11 +210,11 @@ export default function FifteenGame() {
     function getGameStatus(ml = moveList) {
         if (gameOver(ml)) {
             if (thereIsAWinIn(firstPlayersMoves(ml))) {
-                console.log(`There is a win in the first players moves and botGoesFirst = ${botGoesFirst()}`)
+                // console.log(`There is a win in the first players moves and botGoesFirst = ${botGoesFirst()}`)
                 return (botGoesFirst()) ? `Bot Wins!` : `Player Wins!` 
             }
             if (thereIsAWinIn(secondPlayersMoves(ml))) {
-                console.log(`There is a win in the second players moves and botGoesFirst = ${botGoesFirst()}`)
+                // console.log(`There is a win in the second players moves and botGoesFirst = ${botGoesFirst()}`)
                 return (botGoesFirst()) ? `Player Wins!` : `Bot Wins!`
             }
             else {
@@ -473,34 +473,34 @@ export default function FifteenGame() {
     }
 
     
+    // In order to not lose to the Edge opening, O must start by blocking ONE of the TWO trios X's first move is in.
+    // In order to not lose to the Corner opening, O must start by blocking ONE of the THREE trios X's first move is in, 
+    //      by choosing the move that gives O the most footholds in unblocked lines possible.
+    // In order to not lose to the Center opening, O must start by blocking ONE of the FOUR trios X's first move is in, 
+    //      by choosing the move that gives O the most footholds in unblocked lines possible, TWO.
+    // In every opening O must block 
+
+    // X wins any game that starts with 3 even numbers.
 
     function getBotMove(ml = moveList) {
-        let trios = getTrios()
-
-        let botsNumbers = getBotsNumbers(ml)
-        console.log(`Bots Numbers: ${botsNumbers}`)
-        let playersNumbers = getPlayersNumbers(ml)
-        console.log(`Players Numbers: ${playersNumbers}`)
+        let trios = getTrios(ml)
 
         // In both EASY and HARD modes: Win immediately if possible and defend if there is an urgent defensive move.
-        let immediatelyWinningMoves = intersect(winningNumbers(botsNumbers), unclaimedNumbers(ml))
-        let urgentDefensiveMoves = intersect(winningNumbers(playersNumbers), unclaimedNumbers(ml))
-        
-        console.warn(`Winning Numbers for Bot: ${immediatelyWinningMoves}`)
-        console.warn(`Winning Numbers for Player: ${urgentDefensiveMoves}`)
-
-        
+        // let immediatelyWinningMoves = intersect(winningNumbers(getBotsNumbers(ml)), unclaimedNumbers(ml))
+        // let urgentDefensiveMoves = intersect(winningNumbers(getPlayersNumbers(ml)), unclaimedNumbers(ml))
+        let immediatelyWinningMoves = trios.filter(trio => (trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed)
+        let urgentDefensiveMoves = trios.filter(trio => (trio.botMoves === 0 && trio.playerMoves === 2)).map(trio => trio.unclaimed)
         
         if (immediatelyWinningMoves.length > 0) {
-            console.log(`BOT FOUND A WINNING MOVE`)
+            console.log(`BOT FOUND A WINNING MOVE: ${immediatelyWinningMoves}`)
             return selectMoveRandomly(immediatelyWinningMoves)
         }
         else if (urgentDefensiveMoves.length > 1) {
-            console.error(`BOT Must have played inaccurately, there are now TWO URGENT DEFENSIVE MOVES`)
+            console.error(`BOT Must have played inaccurately, there are now TWO URGENT DEFENSIVE MOVES: ${urgentDefensiveMoves}`)
             return selectMoveRandomly(urgentDefensiveMoves)
         }
         else if (urgentDefensiveMoves.length > 0) {
-            console.log(`BOT FOUND AN URGENT DEFENSIVE MOVE`)
+            console.log(`BOT FOUND AN URGENT DEFENSIVE MOVE: ${urgentDefensiveMoves}`)
             return selectMoveRandomly(urgentDefensiveMoves)
         }
         else if (difficultyMode === "easy") {
@@ -516,7 +516,6 @@ export default function FifteenGame() {
 
             // Third, 
 
-            let trios = getTrios()
 
             
             // let botsCombos = attackingMoves(ml, botsNumbers)
@@ -646,27 +645,34 @@ export default function FifteenGame() {
 
     }
 
-    // This is the cousin of the TicTacToe Game's lineCountsFor(player, moveList) method
+    // This is the cousin of the TicTacToe Game's method lineCountsFor(player, moveList)
     // Rather than having to specify player 1 or 2 and returning an array, this method counts for both
     // the bot and player and returns a Map of trioIds to {}
-    function getTrios() {
-        let botsNumbers = getBotsNumbers(moveList)
-        let playersNumbers = getPlayersNumbers(moveList)
+    function getTrios(ml = moveList) {
+        let botsNumbers = getBotsNumbers(ml)
+        let playersNumbers = getPlayersNumbers(ml)
 
 
-        let trios = new Map()
-        let trioId = 0
+        let trios = []
+        let index = 0
         for (let i = 1; i <= 7; i++) {
             for (let j = i + 1; j <= 8; j++) {
                 let k = complementOf(i + j)
                 if (k > j && k <= 9) {
                     let newTrio = [i, j, k]
                     // console.log(`Found Trio: ${newTrio}`)   
-                    trios.set(trioId++, { 
-                        'trio': newTrio, 
+                    // trios.concat({ 
+                    //     'trio': newTrio, 
+                    //     'playerMoves': intersect(newTrio, playersNumbers).length, 
+                    //     'botMoves': intersect(newTrio, botsNumbers).length,
+                    //     'unclaimed': intersect(newTrio, unclaimedNumbers(ml)) 
+                    // })
+                    trios[index++] = {
+                        'trio': newTrio,
                         'playerMoves': intersect(newTrio, playersNumbers).length, 
-                        'botMoves': intersect(newTrio, botsNumbers).length 
-                    })
+                        'botMoves': intersect(newTrio, botsNumbers).length,
+                        'unclaimed': intersect(newTrio, unclaimedNumbers(ml)) 
+                    }
                 }
             }
         }
