@@ -59,15 +59,26 @@ export default function WelcomePage() {
                 <Typography align='left' color='textPrimary' component='h4' variant='h4' gutterBottom >
                     Intro to Proof
                 </Typography>
-                <Typography paragraph align='justify' color='secondary' component='body1' variant='body1' gutterBottom >
+                {/* <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' gutterBottom >
                     Math is all about things that can be proven using logic.
                     In the same way a song is an expression of a musician's creativity, a written proof is an expression of a mathematician's creativity.
                     To the trained eye, mathematical proofs can be profoundly beautiful and elegant,
                     however, they often involve a lot of abstraction and formality, making them inaccessible to beginners.
-                    The fist goal of this lesson is to break that barrier and introduce the concept of proof in a way 
+                    The first goal of this lesson is to break that barrier and introduce the concept of proof in a way 
                     that is accessible to young students and to beginners with little formal math training.
                     In this lesson you will prove some interseting things about Tic-Tac-Toe,
                     without relying on any mathematical jargon or algebra.
+                </Typography> */}
+                <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' gutterBottom >
+                    Math is all about things that can be proven using logic.
+                    Mathematical proofs can be profoundly beautiful, but they often deal with very abstract concepts and 
+                    involve a lot of technical jargon, making them inaccessible to beginners. 
+                    Let's break that barrier by writing a proof about something familiar and concrete. 
+                    Can you proove that the player who goes first can always win at Tic-Tac-Toe?
+                    If not, can you proove that the ends in a draw every time if neither player makes a mistake? 
+                    Extra Challenge: What exactly does the word "mistake" mean as used above? Don't settle for an intuitive 
+                    grasp of the meaning of that word, write as precise a definition as you can!  
+                    Is it possible to make a mistake on the first move of the game? How about the second move?
                 </Typography>
                 <Box width="100%" mb={3} > 
                     <Button
@@ -107,23 +118,24 @@ export default function WelcomePage() {
                     Similarity Beneath the Surface
                 </Typography>
                    
-                <Typography paragraph align='justify' color='secondary' component='body1' variant='body1' >
+                <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' >
                     Many problems can be solved with less work if, instead of starting from scratch, you start
-                    with the solution to a different problem in mind and adapt it to the problem at hand. 
-                    The first step in this process is realizing that the two problems have something in common, 
-                    and this can be quite difficult. Often, two real-world problems will seem unrelated on their surfaces' 
+                    with the solution to a different problem in mind and adapt that solution to the problem at hand. 
+                    The first, and most difficult, step in this process is realizing that the two problems have 
+                    something in common. Often, two real-world problems will seem unrelated on their surfaces' 
                     even though at a deeper level they are behaving according to the same patterns. Being familiar 
                     with mathematics makes you better at noticing when this is the case.
                 </Typography>
-                <Typography paragraph align='justify' color='secondary' component='body1' variant='body1' >
-                    The second goal of this lesson is to give students an oportunity to experience this adaptive process for themselves.
-                    Once you have mastered Tic-Tac-Toe and written up a strategic plan that lets you guarantee you cannot be beat, 
-                    try playing the Fifteen Game. 
+                <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' >
+                    Experience this adaptive process for yourself!  Once you have mastered Tic-Tac-Toe and written up 
+                    a strategic plan that lets you guarantee you cannot be beaten, 
+                    try playing the Fifteen Game against my bot. 
                     At first, you will probably think that these two games feel nothing alike.
-                    You would never guess that by mastering Tic-Tac-Toe you had gotten any closer to mastering the Fifteen Game, but you have!
-                    Once you are familiar with the mechanics of the Fifteen Game, take a look at the lesson on Magic Squares, a mathematical 
-                    curiosity first discovered in China about 4200 years ago. Equipped with this mathematical knowledge, you will soon realize 
-                    that Tic-Tac-Toe and the Fifteen Game have a lot more in common that you thought!
+                    You would not guess that by mastering Tic-Tac-Toe you had taken a big step toward mastering the 
+                    Fifteen Game too, but you have! Once you are familiar with the mechanics of the Fifteen Game, 
+                    take a look at the lesson on Magic Squares, a mathematical curiosity first discovered in China 
+                    about 4200 years ago. Equipped with this mathematical knowledge, you will soon realize 
+                    that Tic-Tac-Toe and the Fifteen Game have a lot more in common that you thought at first!
                 </Typography>
                 <Box mb={2} >
                     <Button
@@ -148,7 +160,7 @@ export default function WelcomePage() {
                 </Box>
                 
                 
-                <Typography variant='body2' className={classes.paragraph}>
+                <Typography variant='body2' color='textPrimary' className={classes.paragraph}>
                     This lesson is built with code that is open-source and available on my <a href="https://github.com/nolastemgarden">Github account</a>,
                     so if you have something to add, a bug to report, or simply want to see how it works you are welcome to open an issue or &nbsp;
                     <a href="https://github.com/nolastemgarden/tic-tac-toe-and-the-fifteen-game">clone the repository</a>!
