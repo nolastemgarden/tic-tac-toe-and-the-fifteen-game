@@ -1,24 +1,24 @@
 {
   "files": {
     "main.css": "/tic-tac-toe-and-the-fifteen-game/static/css/main.c9cb539e.chunk.css",
-    "main.js": "/tic-tac-toe-and-the-fifteen-game/static/js/main.6dccdfb4.chunk.js",
-    "main.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/main.6dccdfb4.chunk.js.map",
+    "main.js": "/tic-tac-toe-and-the-fifteen-game/static/js/main.ee2af700.chunk.js",
+    "main.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/main.ee2af700.chunk.js.map",
     "runtime-main.js": "/tic-tac-toe-and-the-fifteen-game/static/js/runtime-main.c584e9d6.js",
     "runtime-main.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/runtime-main.c584e9d6.js.map",
-    "static/js/2.42e063b2.chunk.js": "/tic-tac-toe-and-the-fifteen-game/static/js/2.42e063b2.chunk.js",
-    "static/js/2.42e063b2.chunk.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/2.42e063b2.chunk.js.map",
+    "static/js/2.ace3abbd.chunk.js": "/tic-tac-toe-and-the-fifteen-game/static/js/2.ace3abbd.chunk.js",
+    "static/js/2.ace3abbd.chunk.js.map": "/tic-tac-toe-and-the-fifteen-game/static/js/2.ace3abbd.chunk.js.map",
     "index.html": "/tic-tac-toe-and-the-fifteen-game/index.html",
-    "precache-manifest.f3479314b7fe565b24523cd49e042886.js": "/tic-tac-toe-and-the-fifteen-game/precache-manifest.f3479314b7fe565b24523cd49e042886.js",
+    "precache-manifest.35bd40083bde5f86fb5bfbc448a05d78.js": "/tic-tac-toe-and-the-fifteen-game/precache-manifest.35bd40083bde5f86fb5bfbc448a05d78.js",
     "service-worker.js": "/tic-tac-toe-and-the-fifteen-game/service-worker.js",
     "static/css/main.c9cb539e.chunk.css.map": "/tic-tac-toe-and-the-fifteen-game/static/css/main.c9cb539e.chunk.css.map",
-    "static/js/2.42e063b2.chunk.js.LICENSE.txt": "/tic-tac-toe-and-the-fifteen-game/static/js/2.42e063b2.chunk.js.LICENSE.txt",
+    "static/js/2.ace3abbd.chunk.js.LICENSE.txt": "/tic-tac-toe-and-the-fifteen-game/static/js/2.ace3abbd.chunk.js.LICENSE.txt",
     "static/media/logo.svg": "/tic-tac-toe-and-the-fifteen-game/static/media/logo.ee7cd8ed.svg",
     "static/media/nsgLogoSnipped.png": "/tic-tac-toe-and-the-fifteen-game/static/media/nsgLogoSnipped.a2170e48.png"
   },
   "entrypoints": [
     "static/js/runtime-main.c584e9d6.js",
-    "static/js/2.42e063b2.chunk.js",
+    "static/js/2.ace3abbd.chunk.js",
     "static/css/main.c9cb539e.chunk.css",
-    "static/js/main.6dccdfb4.chunk.js"
+    "static/js/main.ee2af700.chunk.js"
   ]
 }
