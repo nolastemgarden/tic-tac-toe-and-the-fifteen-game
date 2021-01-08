@@ -1,12 +1,10 @@
 import React from 'react';
 
 // My Components
-import NumberCard from "../NumberCard";
 
 // MUI  components
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
-
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
