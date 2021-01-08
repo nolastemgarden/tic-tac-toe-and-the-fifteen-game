@@ -9,3 +9,13 @@ element {
 
 
 
+.MuiButtonBase-root.MuiButton-contained.Mui-disabled {
+    color: #999999;
+    box-shadow: none;
+    background-color: rgba(46, 107, 18, 0.5)
+}
+
+
+.MuiButtonBase-root.MuiButton-root:hover {
+    background-color: rgba(46, 107, 18, 1.0);
+}
