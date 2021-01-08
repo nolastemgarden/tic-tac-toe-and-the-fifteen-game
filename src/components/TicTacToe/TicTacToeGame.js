@@ -59,8 +59,11 @@ export default function TicTacToeGame(props) {
     // let learnMode = (props.mode === 'learn') ? true : false;
     // let [mode, setMode] = useState((props.mode === 'learn') ? true : false); 
     
+    let [gameNumber, setGameNumber] = useState(1);
+    let [record, setRecord] = useState([0, 0, 0]);     // 3 element counter for humanWins, botWins, and tieGames.
+
     let [history, setHistory] = useState([]); 
-    // let [showHints, setShowHints] = useState((props.mode === 'learn') ? true : false); 
+    let [showHints, setShowHints] = useState(false); 
     // let [showCommentary, setShowCommentary] = useState(true);  
 
     return (
@@ -76,17 +79,17 @@ export default function TicTacToeGame(props) {
             </Box>
             <Box className={classes.panelArea}>
                 <Panel
-                    mode={props.mode}
-                    gameType='TicTacToe'
-                    // data={getPanelData(history)} 
-                    status={getStatus()}
+                    mode={mode}
+                    gameNumber={gameNumber}
+                    record={record}
+                    gameStatus={getStatus()}
                     commentary={getCommentary()}
-                    // showHints={showHints}
-                    // showCommentary={showCommentary}
+
                     handleUndoClick={handleUndoClick}
                     handleNewGameClick={handleNewGameClick}
-                    // toggleShowHintsSwitch={toggleShowHintsSwitch}
-                    // toggleShowCommentarySwitch={toggleShowCommentarySwitch}
+
+                    // showHints={showHints}
+                    toggleShowHints={toggleShowHints}
                 />
             </Box>
         </Box>
@@ -134,7 +137,7 @@ export default function TicTacToeGame(props) {
         // If hints are turned on return colors [] filled by getBoardHints().
         if (mode === 'learn') {
             // console.log(`Board Hints: ${getBoardHints()}`)
-            return getBoardHints();
+            return (showHints === true) ? getBoardHints() : Array(9).fill('noColor');
         }
     }
 
@@ -563,9 +566,10 @@ export default function TicTacToeGame(props) {
             return;
         }
         // If we reach this point the clicked square is open and the game is not over yet ... 
-        console.log(`History: ${history.concat(squareClicked)}`)
+        let updatedHistory = history.concat(squareClicked)
+        console.log(`History: ${updatedHistory}`)
         
-        setHistory(history.concat(squareClicked));
+        setHistory(updatedHistory);
         // This function does not pass along any of its results, it acts thru side-effects. It calls setHistory and use of that hook tells React it needs to re-render all components that depend on the state "history".
     }
     function handleUndoClick() {
@@ -576,10 +580,10 @@ export default function TicTacToeGame(props) {
     function handleNewGameClick() {
         setHistory([]);
     }
-    // function toggleShowHintsSwitch() {
-    //     console.log(`toggleShowHintsSwitch called, setting  to ${!showHints}`);
-    //     setShowHints(!showHints)
-    // }
+    function toggleShowHints() {
+        // console.log(`toggleShowHintsSwitch called, setting  to ${!showHints}`);
+        setShowHints(!showHints)
+    }
     // function toggleShowCommentarySwitch() {
     //     setShowCommentary(!showCommentary)
     // }
