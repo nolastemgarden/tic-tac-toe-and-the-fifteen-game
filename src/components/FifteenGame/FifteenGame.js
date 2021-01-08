@@ -13,6 +13,7 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 
 // Custom Styling
@@ -52,20 +53,27 @@ const useStyles = makeStyles((theme) => ({
         // border: 'solid yellow 1px',
         width: '100%',
         flex: '2 0 40%',
+
         color: theme.palette.common.white,
         
     },
-    hintsGridContainer: {
-        // border: 'solid navy 1px',
-        width: '100%',
-        height: '100%',
-        textAlign: 'left',
-        justifyContent: 'space-around',
-    }, 
+    // settingsBox: {
+    //     border: 'solid red 1px',
+    //     display: 'flex',
+    //     width: '100%',
+    //     flex: '2 0 10%',
+
+    //     justifyContent: 'space-around'
+    // },
+
     
     record: {
         alignSelf: 'bottom'
-    }
+    },
+
+    
+
+    
 }));
 
 
@@ -77,14 +85,6 @@ export default function FifteenGame() {
     let [moveList, setMoveList] = useState([]);  // Array of the numbers claimed so far in order claimed.
     let [difficultyMode, setDifficultyMode] = useState("hard"); // In "hard" mode my bot never makes a mistake. In "easy" mode bot makes exactly one mistake each game. 
 
-    
-    // One plus the number of completed games in the record.
-    // OR SHOULD THIS be made into state so that the record can update as soon as the game ends while the gameNumber updates when newGame is clicked.
-    // function getGameNumber(r = record) {
-    //     let gameNumber = 1
-    //     r.forEach((count) => { gameNumber = gameNumber + count })
-    //     return gameNumber
-    // }
 
     // The human moves first in the first game, alternating after that.
     function botGoesFirst(gn = gameNumber) { return (gn % 2 === 0)  }
@@ -130,6 +130,9 @@ export default function FifteenGame() {
                     moveNumber={moveNumber()}
                     // handleUndoClick={handleUndoClick}
                     handleNewGameClick={handleNewGameClick}
+                    handleDifficultyModeChange={handleDifficultyModeChange}
+                    difficultyMode={difficultyMode}
+                    // setDifficultyMode={setDifficultyMode}
                 />
             </Box>
         </Container>
@@ -180,7 +183,14 @@ export default function FifteenGame() {
         }
     }
 
-    
+    function handleDifficultyModeChange(value) {
+        console.assert((value === 'easy' || value === 'medium' || value === 'hard'))
+        setDifficultyMode(value)
+        setMoveList([]);
+        setGameNumber(1)
+        setRecord([0, 0, 0])
+    }
+
     
     
     function handleGameOver(ml = moveList) {
@@ -269,19 +279,7 @@ export default function FifteenGame() {
     function thereIsAWinIn(moveSet) {
         return (sumsOfThree(moveSet).includes(15)); // sumsOfThree() has a built in early return in case myMoves.length > 3
     }
-    function gameWasJustWon(ml = moveList) {
-        let moveSet = (whoseTurn(ml) === "playerOne") ? secondPlayersMoves(ml) : firstPlayersMoves(ml)
-        return thereIsAWinIn(moveSet)
-    }
-    function thereIsANextMoveWinIn(ml = moveList) {
-        let moveSet = (whoseTurn(ml) === "playerOne") ? firstPlayersMoves(ml) : secondPlayersMoves(ml)
-        unclaimedNumbers(ml).forEach((move) => {
-            if (thereIsAWinIn(moveSet.concat(move))) {
-                return true;
-            }
-        })
-        return false;
-    }
+        
 
     // MOVELIST FILTERS  
     function firstPlayersMoves(ml = moveList) {
@@ -300,33 +298,12 @@ export default function FifteenGame() {
         // console.log(`Players Numbers: ${playersNumbers}`)
         return playersNumbers;
     }
-
-    function filterMoves(player, ml = moveList) {
-        if (player !== "playerOne" && player !== "playerTwo") {
-            console.error(`filterMoves() recieved an invalid player parameter.`)
-            return 1;
-        }
-        let num = (player === "playerOne") ? 0 : 1;
-        let myMoves = moveList.filter((move, turnNumber) => turnNumber % 2 === num)
-        // console.log(`filterMoves() called for ${player} found these moves: ${myMoves}`)
-        return (myMoves);
-    }
-
-   
-
     function intersect(listOne, listTwo) {
         let intersection = Array(0).concat(listOne.filter(number => listTwo.includes(number)))
         // console.log(`intersection of listOne: ${listOne}  and listTwo: ${listTwo}  is: ${intersection} `)
         return intersection;
     }
 
-    function whoseTurn(ml = moveList) {   //  RETURNS 'playerOne' or 'playerTwo'  NOT 'bot' or 'human'
-        let whoseTurn = '';
-        whoseTurn = (ml.length % 2 === 0) ? 'playerOne' : 'playerTwo'
-        // whoseTurn = ( botGoesFirst() && moveList.length % 2 === 0) ? 'bot' : 'human';
-        // whoseTurn = (!botGoesFirst() && moveList.length % 2 === 1) ? 'bot' : 'human';
-        return whoseTurn;
-    }
 
     function unclaimedNumbers(ml = moveList) {
         let unclaimed = [];
@@ -339,79 +316,6 @@ export default function FifteenGame() {
     }
 
     
-    
-    // winning numbers are numbers that would create a subset that sums to 15. 
-    // They are "winning numbers" regardless of whether they are already claimed or not. 
-    function winningNumbers(moveSet) {
-        let partialSums = sumsOfTwo(moveSet).filter((sum) => (sum >= 6 && sum < 15)); // the only thing that matters are two-element sets that sum to less than 15.
-        let winningNumbers = partialSums.map(sum => 15 - sum);  // Get the complement to each partial sum.  
-        // Add removeDuplicates() helper? 
-        // console.log(`winningNumbers called with moveSet: ${moveSet} found the following: ${winningNumbers}`);
-        return winningNumbers;
-    }
-
-    // winning moves are the intersection of winning numbers for the player whose turn it is and unclaimed numbers. 
-    // They are "winning numbers" regardless of whether they are already claimed or not. 
-    // function winningMoves(ml) {
-    //     let moveSet = ml.filter((move, turn) => turn % 2 !== ml.length % 2)
-    //     return intersect(winningNumbers(moveSet), unclaimedNumbers(ml))
-    // }
-
-    // winning combos are 2-number sets that would complete a win.
-    // A two number combo is only winning if both of its numbers are yet unclaimed. 
-    // A number is part of a winning combo if 
-    //    1) it is unclaimed &&
-    //    2) adding it to the 
-    function winningCombos(ml, moveSet) {
-        let winningCombos = []
-        let unclaimed = unclaimedNumbers(ml)
-        moveSet.forEach((myNumber) => {
-            unclaimed.forEach((secondNumber) => {
-                let thirdNumber = complementOf(myNumber + secondNumber)
-                if (unclaimed.includes(thirdNumber)) {
-                    winningCombos = winningCombos.concat(secondNumber, thirdNumber)
-                }
-            })
-        })
-
-        // Every number that appears on this list is expected to appear at least twice.
-        // If a number appears four times that indicates it is the focus of a double attack.
-        // console.log(`Winning Combos: ${winningCombos}`)
-        return winningCombos
-
-        // This list can be used to fin winning double attacks but may also help with more difficult situations.
-        // Can the bot find its best (forcing) move if there are no immediate wins and no double attacks by selecting 
-        // the move that appears the most times on their list of threat creating moves combined with the oppponents
-        // list of threat creating moves?
-
-    }
-    function attackingMoves(ml, moveSet) {
-        let attackingMoves = []
-        let unclaimed = unclaimedNumbers(ml)
-        moveSet.forEach((myNumber) => {
-            unclaimed.forEach((secondNumber) => {
-                let thirdNumber = complementOf(myNumber + secondNumber)
-                if (unclaimed.includes(thirdNumber)) {
-                    attackingMoves = attackingMoves.concat(secondNumber, thirdNumber)
-                }
-            })
-        })
-
-        // Every number that appears on this list is expected to appear at least twice.
-        // If a number appears four times that indicates it is the focus of a double attack.
-        // console.log(`Winning Combos: ${winningCombos}`)
-        return attackingMoves
-
-        // This list can be used to fin winning double attacks but may also help with more difficult situations.
-        // Can the bot find its best (forcing) move if there are no immediate wins and no double attacks by selecting 
-        // the move that appears the most times on their list of threat creating moves combined with the oppponents
-        // list of threat creating moves?
-
-
-
-
-    }
-
 
     function complementOf(sumOfTwo) {
         return (15 - sumOfTwo)
@@ -455,7 +359,7 @@ export default function FifteenGame() {
     }
 
 
-    // Find and make a move for the Bot with a 1/2 second delay. 
+    // Find and make a move for the Bot with a slight delay. 
     function handleBotsTurn(ml = moveList) {
         let botMove = getBotMove(ml)
         
@@ -469,7 +373,7 @@ export default function FifteenGame() {
                 handleGameOver(updatedMoveList);
                 return 1;
             }
-        }, 500);
+        }, 800);
     }
 
     
@@ -485,13 +389,72 @@ export default function FifteenGame() {
     function getBotMove(ml = moveList) {
         let trios = getTrios(ml)
 
-        // In both EASY and HARD modes: Win immediately if possible and defend if there is an urgent defensive move.
-        // let immediatelyWinningMoves = intersect(winningNumbers(getBotsNumbers(ml)), unclaimedNumbers(ml))
-        // let urgentDefensiveMoves = intersect(winningNumbers(getPlayersNumbers(ml)), unclaimedNumbers(ml))
-        let immediatelyWinningMoves = trios.filter(trio => (trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed)
-        // let urgentDefensiveMoves = trios.filter(trio => (trio.botMoves === 0 && trio.playerMoves === 2)).map(trio => trio.unclaimed)
+        // In all modes EASY, MEDIUM, and HARD:
+        // Opening principles for each players first move then
+        // Win immediately if possible and defend if there is an urgent defensive move.
+        // In MEDIUM, and HARD modes:
+        // Create a double attack if an oportunity arises to do so.
+        // In HARD mode:
+        // Look for forcing moves that guarantee a chance to make a double attack next move.
+
+        if (ml.length === 0) {                              // FIRST MOVE
+            return selectMoveRandomly(unclaimedNumbers(ml))
+        }
+        else if (ml.length === 1 && difficultyMode === "easy") {  // SECOND MOVE Random in Easy mode
+            return selectMoveRandomly(unclaimedNumbers(ml))
+
+        }
+        else if (ml.length === 1) {                         // SECOND MOVE Sound in Medium and hard modes.
+            if (ml[0] === 5) {                              // CENTER OPENING
+                return selectMoveRandomly([2, 4, 6, 8]) 
+            }
+            else if (ml[0] % 2 === 0) {                     // CORNER OPENING
+                return 5                                    
+            }
+            else if (ml[0] % 2 === 1) {                     // EDGE OPENING
+                return getNonurgentBlockingMove(trios)      
+            }
+        }
+        else if (ml.length >= 2) {                         // THIRD MOVE
+            // Starting from the third move it is possible O has made a mistake, so look for a forcingMove that leads to a double attack,
+            // If there is none, make any non-urgent blocking move.
+            let result = [easyProtocol(trios), mediumProtocol(trios), hardProtocol(trios), getNonurgentBlockingMove(trios)]
+            console.log(`PROTOCOL RESULTS:  easy: ${result[0]}, medium: ${result[1]}, hard: ${result[2]}, non-urgent blocking: ${result[3]}`)
+
+            if (difficultyMode === "easy") {
+                if (result[0] !== -1) {
+                    return result[0]
+                }
+                else {
+                    return selectMoveRandomly(unclaimedNumbers(ml))
+                }
+            }
+            else if (difficultyMode === "medium") {
+                for (let i = 0; i < 2; i++) {
+                    if (result[i] !== -1) {
+                        return result[i]
+                    }
+                }
+                return (result[3] === -1) ? selectMoveRandomly(unclaimedNumbers(ml)) : result[3]
+            }
+            else if (difficultyMode === "hard") {
+                for (let i = 0; i < 3; i++) {
+                    if (result[i] !== -1) {
+                        return result[i]
+                    }
+                }
+                return (result[3] === -1) ? selectMoveRandomly(unclaimedNumbers(ml)) : result[3]
+            }
+            else {
+                console.error(`difficultyMode has invalid setting: ${difficultyMode}`)
+                return -1
+            }
+        }
+    }
+
+    function easyProtocol(trios) {
+        let immediatelyWinningMoves = getImmediatelyWinningMoves(trios)
         let urgentDefensiveMoves = getUrgentDefensiveMoves(trios)
-        
         if (immediatelyWinningMoves.length > 0) {
             console.log(`BOT FOUND A WINNING MOVE: ${immediatelyWinningMoves}`)
             return selectMoveRandomly(immediatelyWinningMoves)
@@ -504,56 +467,119 @@ export default function FifteenGame() {
             console.log(`BOT FOUND AN URGENT DEFENSIVE MOVE: ${urgentDefensiveMoves}`)
             return selectMoveRandomly(urgentDefensiveMoves)
         }
-        else if (difficultyMode === "easy") {
-            return selectMoveRandomly(unclaimedNumbers(ml))
-        } 
-        else if (difficultyMode === "hard") {
-            // How the bot plays in HARD mode
-            // Given that there are no winning moves or urgent defensive moves
-            
-            
-            // First, seek to make a double attack...
-            let doubleAttackingMoves = getDoubleAttackingMoves(trios)
-            if (doubleAttackingMoves.length > 0) {
-                console.log(`BOT FOUND DOUBLE ATTACK CREATING MOVES: ${doubleAttackingMoves}`)
-                return selectMoveRandomly(doubleAttackingMoves)
-            }
-
-            
-            // Second, seek to make a forcing move, 
-            //      verify that it does not force the opponent to create a double attack
-            let forcingMoves = trios.filter(trio => (trio.botMoves === 1 && trio.playerMoves === 0)).map(trio => trio.unclaimed).flat()
-            console.log(`BOT FOUND FORCING MOVES: ${forcingMoves}`)
-            
-            let soundForcingMoves = forcingMoves.filter(forcingMove => {
-                let forcedDefensiveMove = getTrios(ml.concat(forcingMove)).filter(trio => (trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed)
-                return (getUrgentDefensiveMoves(ml.concat(forcingMove, forcedDefensiveMove)).length > 1)
-            })
-            console.log(`BOT FILTERED OUT UNSOUND FORCING MOVES: ${soundForcingMoves}`)
-            if (soundForcingMoves.length > 0) {
-                return selectMoveRandomly(soundForcingMoves)
-            }
-
-
-
-            // Third, 
-
-
-            
-            if (unclaimedNumbers(ml).includes(5)) {
-                return 5
-            }
-            else {
-                return selectMoveRandomly(unclaimedNumbers(ml))
-            }
-            // }
-            // console.log(counts[5], counts[2], counts[9], counts[4]);
+        else {
+            return -1
+        }
+    }
+    function mediumProtocol(trios) {
+        let doubleAttackingMoves = getDoubleAttackingMoves(trios)
+        if (doubleAttackingMoves.length > 0) {
+            console.log(`BOT FOUND DOUBLE ATTACK CREATING MOVES: ${doubleAttackingMoves}`)
+            return selectMoveRandomly(doubleAttackingMoves)
         }
         else {
-            console.error(`difficultyMode has invalid setting: ${difficultyMode}`)
+            return -1
+        }
+    }
+    // How the bot plays in HARD mode
+    // Given that there are no winning moves, urgent defensive moves, or double attack creating moves...
+    // LOOK FOR DISTANT FORCED WINS 
+    function hardProtocol(trios) {
+        let distantForcedWins = getDistantForcedWins(trios)
+        if (distantForcedWins.length > 0) {
+            console.log(`BOT FOUND DISTANT WIN FORCING MOVES: ${distantForcedWins}`)
+            return selectMoveRandomly(distantForcedWins)
+        }
+        else {
+            return -1
+        }
+    }
+
+    function getNonurgentBlockingMove(trios) {
+        let blockingTrios = trios.filter(trio => (trio.botMoves === 0 && trio.playerMoves === 1))
+        let blockingMoves = blockingTrios.map(trio => trio.unclaimed).flat()
+        if (blockingMoves.length > 0) {
+            console.log(`BOT selecting a non-urgent BLOCKING MOVE from: ${blockingMoves}`)
+            return selectMoveRandomly(blockingMoves)
+        }
+        else {
+            return -1
+        }
+    }
+    
+    function noDuplicatesIn(array) {
+        let sorted = array.sort()
+        sorted.forEach((element, index, array) => {
+            if (element === array[index + 1]) {
+                return false
+            }
+        })
+        return true
+    }
+
+    // LOOKING AT TRIOS from the BOTS perspective
+    // A move is a mistake if making it results in any trio having botMoves = 0 && playerMoves = 2
+    // A move is a mistake if making it results in multiple trios having botMoves = 0 && playerMoves = 1 such 
+    //    that the intersection of those trios unclaimedNubers is non-empty
+
+    
+    // distantForcedWins are a possibility on the third, fourth, and fifth moves of the game.
+    // however, on the fifth move if there is a distantForcedWin it is either the case that it is
+    // a forced good move or that there is also a doubleAttack that wins even quicker. 
+    
+    
+    // First, identify the complete list of forcing moves,
+    // forEach, identify the forced defensive move that follows,
+    // forEach pair, create a hypothetical moveList by adding both of those moves
+    // use each hypothetical moveList in a call to getTrios()
+    // check the resulting trios[] for double attacking moves
+    //   1) if there is an urgent defensiveMove, take the intersection of this and the double attacking moves list.
+    //   2) otherwise see if there are any double attacking moves at all.
+    function getDistantForcedWins(trios) {
+        let distantWinForcingMoves = []
+        // Distant forced wins take FIVE moves to play out fully.  ensure there is room on the board.
+        if (moveList.length > 4) {
+            return distantWinForcingMoves
         }
 
+        // they ALL happen to be forcing moves but being a forcing move is no guarantee of soundness inandofitself.
+        // You can force O to set up a distant forced win, a double attack, or to an easy draw.  
+        // Fortunately, since they are all forcing moves it is easy to analyse the set of responses to see
+        // which force O to good outcomes and which to bad.
+        // Whenever you force O to make a bad move you will have a double attack immediately available afterward.
+        // Remember that having a double attack immediately available means either your move next is not forced at all 
+        // OR you are forced to create the double attack.
+        let triosWithOneBotMove = trios.filter(trio => (trio.botMoves === 1 && trio.playerMoves === 0))
+        
+        let forcingMoves = triosWithOneBotMove.map(trio => trio.unclaimed).flat()
+        console.assert(noDuplicatesIn(forcingMoves), 'There are duplicates in the forcingMoves list that were not identified as a double attack.')
 
+        forcingMoves.forEach(forcingMove => {
+            let testOne = moveList.concat(forcingMove)
+            let forcedMove = (getTrios(testOne).filter(trio => trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed).flat()
+            let testTwo = moveList.concat(forcedMove)
+            let urgentDefensiveMoves = getUrgentDefensiveMoves(getTrios(testTwo))
+            let doubleAttackingMoves = getDoubleAttackingMoves(getTrios(testTwo))
+            console.log(`urgentDefensiveMoves: ${urgentDefensiveMoves}`)
+            console.log(`doubleAttackingMoves: ${doubleAttackingMoves}`)
+
+            if (urgentDefensiveMoves.length === 0 && doubleAttackingMoves.length > 0) {
+                console.log(`Bot has no urgent defensive moves and can make a double attack in the hypothetical position, meaning this forcing move is sound.`)
+                distantWinForcingMoves = distantWinForcingMoves.concat(forcingMove)
+            }
+            else if (urgentDefensiveMoves.length === 1 && intersect(urgentDefensiveMoves, doubleAttackingMoves).length > 0) {
+                console.log(`Bot is forced to make a double attack in the hypothetical position, meaning this forcing move is sound.`)
+                distantWinForcingMoves = distantWinForcingMoves.concat(forcingMove)
+            }
+        })
+        console.log(`distantWinForcingMoves: ${distantWinForcingMoves}`)
+        return distantWinForcingMoves
+    }
+    
+    
+
+    function getImmediatelyWinningMoves(trios) {
+        return trios.filter(trio => (trio.botMoves === 2 && trio.playerMoves === 0)).map(trio => trio.unclaimed)
     }
 
     function getUrgentDefensiveMoves(trios) {
@@ -561,24 +587,15 @@ export default function FifteenGame() {
     }
 
     function getDoubleAttackingMoves(trios) {
-        // 1) Filter out trios that opponent has already blocked.
-        // 2) Filter out trios that Bot has no moves in.
-        // 3) In the list of unclaimed numbers in the trios where the bot has made the only move,
+        // Filter out trios that opponent has already blocked AND trios that Bot has no moves in.
+        // In the list of unclaimed numbers in the trios where the bot has made the only move,
         //    find duplicates by Filtering out the first occurance of each unclaimed number.
         let attackingTrios = trios.filter(trio => (trio.botMoves === 1 && trio.playerMoves === 0))
         let attackingMoves = attackingTrios.map(trio => trio.unclaimed).flat()
-        // console.log(`BOT FOUND ATTACK CREATING MOVES: ${attackingMoves}`)
         // BUG WARNING: Though attacking moves looks like a normal array when printed to the console...
         // It is in fact an Array of two-element arrays.  To remedy this we must use Array.prototype.flat()
 
         let doubleAttackingMoves = attackingMoves.filter((move, index, self) => (self.indexOf(move) !== index))
-        // let doubleAttackingMoves = attackingMoves.forEach(element => {
-        //     console.log(`Element: ${element}`)
-        // });
-        // ((move, index, self) => (self.indexOf(move) === index))
-
-        // console.log(`BOT FOUND DOUBLE ATTACK CREATING MOVES: ${doubleAttackingMoves}`)
-
         return doubleAttackingMoves
     }
 
@@ -611,61 +628,6 @@ export default function FifteenGame() {
 
     
 
-    
-    
-    // The intersection of unclaimedNumbers and MY winningNumbers.
-    function immediateWins(ml = moveList) {
-        let player = whoseTurn(ml)
-        let myMoves = filterMoves(player, ml);
-        // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        let immediateWins = intersect(winningNumbers(myMoves), unclaimedNumbers(ml));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-        console.log(`IMMEDIATE WINS (${ml}) found: ${immediateWins}`)
-        return immediateWins;
-    }
-
-    function urgentDefensiveMoves(ml = moveList) {
-        let player = whoseTurn(moveList)
-        let opponentsMoves = filterMoves(other(player), ml);
-        // console.log(`URGENT DEFENSIVE MOVES (${moveList}) found opponentsMoves: ${opponentsMoves}, winningNumbers: ${winningNumbers(opponentsMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        let urgentDefensiveMoves = intersect(winningNumbers(opponentsMoves), unclaimedNumbers(moveList)); 
-        console.log(`URGENT DEFENSIVE MOVES (${moveList}) found: ${urgentDefensiveMoves}`)  
-        return urgentDefensiveMoves;
-    }
-
-    // This method should not be called if there is an immediate win or an urgentDefensiveMove. 
-    function doubleAttackingMoves(moveList) {
-        let player = whoseTurn(moveList)
-        let myMoves = filterMoves(player, moveList);
-        // console.log(`IMMEDIATE WINS (${moveList}) found myMoves: ${myMoves}, winningNumbers: ${winningNumbers(myMoves)}, unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
-        
-        // unclaimedNumbers(moveList).forEach(unclaimedNumber => {
-        //     let hypotheticalMoveSet = myMoves.concat(unclaimedNumber);
-        //     if ((hypotheticalMoveSet)) {
-        //         doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
-        //     }
-        // })
-        
-        
-        // unclaimedNumbers(moveList).forEach(unclaimedNumber => {
-        //     let hypotheticalHistory = moveList.concat(unclaimedNumber);
-        //     if (thisIsADoubleAttack(hypotheticalHistory)) {
-        //         doubleAttackCreatingMoves = doubleAttackCreatingMoves.concat(testSquare)
-        //     }
-        // })
-        
-        // let doubleAttackingMoves = intersect(winningNumbers(myMoves), unclaimedNumbers(moveList));  // let immediateWins = unclaimedNumbers(moveList).filter(unclaimedNumber => winningNumbers.includes(unclaimedNumber))  // Unclaimed numbers that result in a win. 
-        console.log(`Double Attacking Moves (${moveList}) isn't really built yet...`)
-        return doubleAttackingMoves = [];
-    }
-
-
-
-    
-
-    
-
-
-
     // Randomly selects a move from a list of possible next moves.  Depending on calling context this method can get a totally random unclaimed number or a random number from the listo of bestMoves or the list of mistakes. I considered giving this unclaimedNumbers() as default prop but decided that would lead to more potential debugging confusion than simply requiring a moveSet to be passed
     function selectMoveRandomly(moveSet) {
         // console.log(`selectMoveRandomly found these unclaimedNumbers: ${unclaimedNumbers(moveList)}`)
@@ -685,6 +647,58 @@ export default function FifteenGame() {
     //     }, 500);
     //     return 0;
     // }
+
+    // // winning combos are 2-number sets that would complete a win.
+    // // A two number combo is only winning if both of its numbers are yet unclaimed. 
+    // // A number is part of a winning combo if 
+    // //    1) it is unclaimed &&
+    // //    2) adding it to the 
+    // function winningCombos(ml, moveSet) {
+    //     let winningCombos = []
+    //     let unclaimed = unclaimedNumbers(ml)
+    //     moveSet.forEach((myNumber) => {
+    //         unclaimed.forEach((secondNumber) => {
+    //             let thirdNumber = complementOf(myNumber + secondNumber)
+    //             if (unclaimed.includes(thirdNumber)) {
+    //                 winningCombos = winningCombos.concat(secondNumber, thirdNumber)
+    //             }
+    //         })
+    //     })
+
+    //     // Every number that appears on this list is expected to appear at least twice.
+    //     // If a number appears four times that indicates it is the focus of a double attack.
+    //     // console.log(`Winning Combos: ${winningCombos}`)
+    //     return winningCombos
+
+    //     // This list can be used to fin winning double attacks but may also help with more difficult situations.
+    //     // Can the bot find its best (forcing) move if there are no immediate wins and no double attacks by selecting 
+    //     // the move that appears the most times on their list of threat creating moves combined with the oppponents
+    //     // list of threat creating moves?
+
+    // }
+    // function attackingMoves(ml, moveSet) {
+    //     let attackingMoves = []
+    //     let unclaimed = unclaimedNumbers(ml)
+    //     moveSet.forEach((myNumber) => {
+    //         unclaimed.forEach((secondNumber) => {
+    //             let thirdNumber = complementOf(myNumber + secondNumber)
+    //             if (unclaimed.includes(thirdNumber)) {
+    //                 attackingMoves = attackingMoves.concat(secondNumber, thirdNumber)
+    //             }
+    //         })
+    //     })
+
+    //     // Every number that appears on this list is expected to appear at least twice.
+    //     // If a number appears four times that indicates it is the focus of a double attack.
+    //     // console.log(`Winning Combos: ${winningCombos}`)
+    //     return attackingMoves
+
+    //     // This list can be used to fin winning double attacks but may also help with more difficult situations.
+    //     // Can the bot find its best (forcing) move if there are no immediate wins and no double attacks by selecting 
+    //     // the move that appears the most times on their list of threat creating moves combined with the oppponents
+    //     // list of threat creating moves?
+    // }
+
 
 
 }
