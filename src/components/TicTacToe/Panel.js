@@ -52,8 +52,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.main,
         margin: '0.5rem 1.0rem',
         width: '50%',
-        height: '30%',
-        maxHeight: '3.0rem',
+        height: '3.0rem',
         fontSize: '1.2rem',
     },
     buttonIcon: {
