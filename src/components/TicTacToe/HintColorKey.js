@@ -7,13 +7,6 @@ import './TicTacToe.css';
 
 // MUI Components
 import Grid from '@material-ui/core/Grid';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-
-
-
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
