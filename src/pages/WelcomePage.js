@@ -69,7 +69,7 @@ export default function WelcomePage() {
                     In this lesson you will prove some interseting things about Tic-Tac-Toe,
                     without relying on any mathematical jargon or algebra.
                 </Typography> */}
-                <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' gutterBottom >
+                <Typography paragraph align='justify' color='textPrimary' variant='body1' gutterBottom >
                     Math is all about things that can be proven using logic.
                     Mathematical proofs can be profoundly beautiful, but they often deal with very abstract concepts and 
                     involve a lot of technical jargon, making them inaccessible to beginners. 
@@ -118,7 +118,7 @@ export default function WelcomePage() {
                     Similarity Beneath the Surface
                 </Typography>
                    
-                <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' >
+                <Typography paragraph align='justify' color='textPrimary' variant='body1' >
                     Many problems can be solved with less work if, instead of starting from scratch, you start
                     with the solution to a different problem in mind and adapt that solution to the problem at hand. 
                     The first, and most difficult, step in this process is realizing that the two problems have 
@@ -126,7 +126,7 @@ export default function WelcomePage() {
                     even though at a deeper level they are behaving according to the same patterns. Being familiar 
                     with mathematics makes you better at noticing when this is the case.
                 </Typography>
-                <Typography paragraph align='justify' color='textPrimary' component='body1' variant='body1' >
+                <Typography paragraph align='justify' color='textPrimary' variant='body1' >
                     Experience this adaptive process for yourself!  Once you have mastered Tic-Tac-Toe and written up 
                     a strategic plan that lets you guarantee you cannot be beaten, 
                     try playing the Fifteen Game against my bot. 
