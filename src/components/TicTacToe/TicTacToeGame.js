@@ -5,6 +5,8 @@ import './TicTacToe.css';
 // My Components
 import Board from "./Board";
 import Panel from "./Panel";
+import PlayPanel from "./PlayPanel";
+import LearnPanel from "./LearnPanel";
 
 
 // MUI  components
@@ -56,15 +58,14 @@ export default function TicTacToeGame(props) {
     const classes = useStyles();
     const mode = props.mode;
 
-    // let learnMode = (props.mode === 'learn') ? true : false;
-    // let [mode, setMode] = useState((props.mode === 'learn') ? true : false); 
-    
+    // State used ONLY in PLAY mode    
     let [gameNumber, setGameNumber] = useState(1);
     let [record, setRecord] = useState([0, 0, 0]);     // 3 element counter for humanWins, botWins, and tieGames.
-
-    let [moveList,setMoveList] = useState([]); 
+    
+    // State used ONLY in LEARN mode    
     let [showHints, setShowHints] = useState(false); 
-    // let [showCommentary, setShowCommentary] = useState(true);  
+
+    let [moveList, setMoveList] = useState([]); 
 
     return (
         <Box className={classes.root} >
@@ -78,19 +79,20 @@ export default function TicTacToeGame(props) {
                 </Box>
             </Box>
             <Box className={classes.panelArea}>
-                <Panel
-                    mode={mode}
-                    gameNumber={gameNumber}
-                    record={record}
-                    gameStatus={getStatus()}
-                    commentary={getCommentary()}
-
-                    handleUndoClick={handleUndoClick}
-                    handleNewGameClick={handleNewGameClick}
-
-                    // showHints={showHints}
-                    toggleShowHints={toggleShowHints}
-                />
+                {(mode === 'play') ? 
+                    <PlayPanel
+                        gameNumber={gameNumber}
+                        record={record}
+                        gameStatus={getStatus()}
+                        handleNewGameClick={handleNewGameClick}
+                    />  : 
+                    <LearnPanel
+                        gameStatus={getStatus()}
+                        commentary={getCommentary()}
+                        handleUndoClick={handleUndoClick}
+                        toggleShowHints={toggleShowHints}
+                    />
+                }
             </Box>
         </Box>
     );
