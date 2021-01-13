@@ -57,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
 export default function TicTacToeGame(props) {
     const classes = useStyles();
     const mode = props.mode;
+    
+    // State used in BOTH modes    
+    let [moveList, setMoveList] = useState([]); 
 
     // State used ONLY in PLAY mode    
     let [gameNumber, setGameNumber] = useState(1);
@@ -65,7 +68,6 @@ export default function TicTacToeGame(props) {
     // State used ONLY in LEARN mode    
     let [showHints, setShowHints] = useState(false); 
 
-    let [moveList, setMoveList] = useState([]); 
 
     return (
         <Box className={classes.root} >
@@ -112,22 +114,19 @@ export default function TicTacToeGame(props) {
                 data[squareId] = 'o';
             }
         })
-        // DELETE
-        // squaresClaimedByPlayer('x').forEach(squareId => {
-        //     data[squareId] = 'x';
-        // });
-        // squaresClaimedByPlayer('o').forEach(squareId => {
-        //     data[squareId] = 'o';
-        // });
         return data;  // this method only deals with current board position, not hypotheticals.  Thus, it wants to use a version of helper squaresClaimedByPlayer() that does not require a moveList be explicitly passed in. 
     }
 
     
-    function getBoardColors() {
+    function getBoardColors(ml = moveList) {
         // If the game is won highlight the winning line(s), whether hints are turned on or off.
-        if (gameOver() && !gameDrawn()) {
+        console.log(`getBoardData checking if there is a win to highlight`)
+        // if (gameOver() && !gameDrawn()) {
+        if (gameOver(ml)) {
             return highlightWins();
         }
+        console.log(`getBoardData DID NOT find a win to highlight`)
+
         // If hints are turned off return colors [] filled with 'noColor' strings.
         if (mode === 'play') {
             return Array(9).fill('noColor');
@@ -168,6 +167,11 @@ export default function TicTacToeGame(props) {
     function wins(player, ml = moveList) {
         return (lineCountsFor(player, ml).includes(3));
     }
+    // function wins(player, ml = moveList) {
+    //     return (lineCountsFor(player, ml).includes(3));
+    // }
+
+
     function xWins(ml = moveList) {
         lineCounts(ml).forEach(lineTuple => {
             if (lineTuple[0] === 3) {
@@ -418,8 +422,7 @@ export default function TicTacToeGame(props) {
         if (ml.length === 1 && ml[0] !== 4 && ml[0] % 2 === 0 ) {
             return `The corner opening can lead X to a winning double attack if O makes a mistake on their first move.
             Unfortunately for X, the only sound move that O has in this position is also the most intuitive one.
-            Go through each of O's losing options and come up with a plan for X that guarantees a win. Do you notice a pattern?
-            To win X must create a threat that forces O to play a specific defensive move, then follow that up with a double attack.`
+            Proove this to yourself by going through each of O's losing options and finding a plan for X that guarantees a win.`
         }
         if (ml.length === 1 && ml[0] % 2 === 1) {
             return `The Edge opening is the least commonly played and is the most complex to analyze.
@@ -477,19 +480,37 @@ export default function TicTacToeGame(props) {
 
     // MID-LEVEL HELPERS for getBoardColors() and getBoardHints()
     function highlightWins() {
-        let highlightedSquares = Array(9).fill('noColor')
-        
         console.assert(!gameOver(), `highlightWins() was called but found that the game is not over`);
+        
+        let highlightedSquares = Array(9).fill('noColor')
+        let data = lineData() 
 
-        let winner = (wins('x')) ? 'x' : 'o';
-        // let lines = lines(winner);
-        linesWithThree(winner).forEach(line => {
-            squaresInLine(line).forEach(square => {
+        
+        if (data.xSquares.length === 3) {
+            let squaresToHighlight = data.xSquares
+            squaresToHighlight.forEach(square => {
                 highlightedSquares[square] = 'win';
             });
-        });
+        }
+
+        
         return highlightedSquares;
     } 
+
+    // function highlightWins() {
+    //     console.assert(!gameOver(), `highlightWins() was called but found that the game is not over`);
+
+    //     let highlightedSquares = Array(9).fill('noColor')
+
+    //     let winner = (wins('x')) ? 'x' : 'o';
+    //     // let lines = lines(winner);
+    //     linesWithThree(winner).forEach(line => {
+    //         squaresInLine(line).forEach(square => {
+    //             highlightedSquares[square] = 'win';
+    //         });
+    //     });
+    //     return highlightedSquares;
+    // } 
      
     
 
@@ -716,7 +737,7 @@ export default function TicTacToeGame(props) {
     }
 
     function intersect(listOne, listTwo) {
-        let intersection = Array(0).concat(listOne.filter(number => listTwo.includes(number)))
+        let intersection = listOne.filter(number => listTwo.includes(number))
         return intersection;
     }
 
@@ -724,7 +745,7 @@ export default function TicTacToeGame(props) {
         let unclaimed = [];
         for (let i = 0; i < 9; i++) {
             if (!ml.includes(i)) {
-                unclaimed.push(i)
+                unclaimed = unclaimed.concat(i)
             }
         }
         return unclaimed;
@@ -735,18 +756,19 @@ export default function TicTacToeGame(props) {
         
         let xSquares = ml.filter((square, turn) => turn % 2 === 0)
         let oSquares = ml.filter((square, turn) => turn % 2 === 1)
-        let unclaimed = unclaimed(ml)
+        // let unclaimed = unclaimed(ml)
 
-        for (let lineId = 0; lineId < 9; lineId++) {
+        for (let lineId = 0; lineId < 8; lineId++) {
             let mySquares = squaresInLine(lineId)
             let thisLinesData = {
                 'lineId': lineId,
                 'xSquares': intersect(mySquares, xSquares),
                 'oSquares': intersect(mySquares, oSquares),
-                'unclaimed': intersect(mySquares, unclaimed)
+                'unclaimed': intersect(mySquares, unclaimed(ml))
             }
             lineData[lineId] = thisLinesData
         }
+        console.log(`LINE DATA: ${lineData}`)
         return lineData
     }
     
@@ -883,9 +905,24 @@ export default function TicTacToeGame(props) {
     
     
     function gameOver(ml = moveList) {
-        return (ml.length >= 9 
-            || wins('x', ml) 
-            || wins('o', ml));  // Board full or there's a 3-in-a-row
+        if (ml.length >= 9) {
+            console.log(`gameOver() --> TRUE`)
+            return true
+        }
+        else if (ml.length < 5) {
+            console.log(`gameOver() --> FALSE`)
+            return false
+        }
+        else {
+            lineData().forEach(line => {
+                if (line.xSquares.length === 3 || line.oSquares.length === 3) {
+                    console.log(`gameOver() --> TRUE`)
+                    return true
+                }
+            }) 
+            console.log(`gameOver() --> FALSE`)
+            return false
+        }
     }
 
 }
