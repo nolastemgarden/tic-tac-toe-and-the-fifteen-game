@@ -14,8 +14,6 @@ import Switch from '@material-ui/core/Switch';
 
 
 import ReplayIcon from '@material-ui/icons/Replay';
-import UndoIcon from '@material-ui/icons/Undo';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 // Custom Styling
 import { makeStyles } from '@material-ui/core/styles';
@@ -31,10 +29,11 @@ const useStyles = makeStyles((theme) => ({
     },
     infoArea: {
         // border: 'solid red 1px',
-        flex: '1 0 35%',
         display: 'flex',
         flexDirection: 'column',
-        padding: '1.0rem 2.0rem 0.0rem ',
+        justifyContent: 'center',
+        height: '40%',
+        // padding: '1.0rem 2.0rem 0.0rem ',
 
     },
     controls: {
@@ -102,22 +101,11 @@ export default function Panel(props) {
 
     const scoreBoard = (
         <React.Fragment>
-            <Typography align='center' component='h1' variant='h3' noWrap gutterBottom>
+            <Typography align='center' component='h1' variant='h4' noWrap gutterBottom>
                 Game {gameNumber}:&nbsp;&nbsp;{gameStatus}
             </Typography>
-            <Typography align='center' component='h3' variant='h4' noWrap >
+            <Typography align='center' component='h3' variant='h5' noWrap >
                 Human: {props.record[0]} &emsp;  Bot: {props.record[1]} &emsp;  Draw: {props.record[2]}
-            </Typography>
-        </React.Fragment>
-    )
-
-    const commentaryBoard = (
-        <React.Fragment>
-            <Typography align='center' component='h1' variant='h3' noWrap gutterBottom>
-                {gameStatus}
-            </Typography>
-            <Typography align='justify' variant='body1' >
-                {commentary}
             </Typography>
         </React.Fragment>
     )
