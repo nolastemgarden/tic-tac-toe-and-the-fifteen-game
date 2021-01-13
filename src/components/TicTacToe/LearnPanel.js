@@ -32,27 +32,30 @@ const useStyles = makeStyles((theme) => ({
     },
     infoArea: {
         // border: 'solid red 1px',
-        flex: '1 0 65%',
+        // flex: '1 0 65%',
+        height: 'calc(100% - 4.0rem)',
         display: 'flex',
         flexDirection: 'column',
-        padding: '1.0rem 2.0rem 0.0rem ',
-
+        padding: '0.0rem 1rem',
+        overflow: 'scroll'
     },
     controls: {
         // border: 'solid green 1px',
-        flex: '1 0 35%',
+        // flex: '1 0 35%',
+        height: '4.0rem',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
+        // flexDirection: 'column',
+        justifyContent: 'space-around',
         alignItems: 'center',
     },
 
     button: {
         color: theme.palette.common.white,
         backgroundColor: theme.palette.primary.main,
-        margin: '0.5rem 1.0rem',
-        width: '50%',
+        // margin: '0.5rem 1.0rem',
+        width: '45%',
         height: '3.0rem',
+        lineHeight: '1.4rem',
         fontSize: '1.2rem',
     },
     buttonIcon: {
@@ -85,84 +88,64 @@ export default function Panel(props) {
     const showCommentary = props.showCommentary
     const toggleShowCommentarySwitch = props.toggleShowCommentarySwitch
 
-    
-
-    const commentaryBoard = (
-        <React.Fragment>
-            <Typography align='center' component='h1' variant='h3' noWrap gutterBottom>
-                {gameStatus}
-            </Typography>
-            <Typography align='justify' variant='body1' >
-                {commentary}
-            </Typography>
-        </React.Fragment>
-    )
-
-    const learnButtons = (
-        <React.Fragment>
-            <UndoButton />
-            <ShowHintsButton
-                toggleShowHints={toggleShowHints}
-            />
-
-        </React.Fragment>
-    )
-
-    const playButtons = (
-        <React.Fragment>
-            <NewGameButton handleNewGameClick={handleNewGameClick} />
-            <HelpModal />
-        </React.Fragment>
-    )
-
     return (
         <Box className={classes.panel}>
             <Box className={classes.infoArea} >
-                {commentaryBoard}
+                {/* <Typography align='center' component='h1' variant='h4' noWrap gutterBottom>
+                {gameStatus}
+                </Typography> */}
+                <Typography align='justify' variant='body1' >
+                    {commentary}
+                </Typography>
             </Box>
             <Box className={classes.controls} >
-                {learnButtons}
+                <UndoButton 
+                    handleUndoClick={handleUndoClick}
+                />
+                <ShowHintsButton
+                    toggleShowHints={toggleShowHints}
+                />
             </Box>
         </Box>
     )
-}
 
-
-function UndoButton(props) {
-    const classes = useStyles();
-    const gameOver = props.gameOver
-    const moveNumber = props.moveNumber
-    const handleUndoClick = props.handleUndoClick
-    return (
-        <Button
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            onClick={() => handleUndoClick()}
-        // disabled={gameOver || moveNumber < 1}
-        >
-            <UndoIcon className={classes.buttonIcon} />
+    
+    function UndoButton(props) {
+        const classes = useStyles();
+        const handleUndoClick = props.handleUndoClick
+        return (
+            <Button
+                className={classes.button}
+                variant="contained"
+                color="primary"
+                onClick={() => handleUndoClick()}
+            >
+                <UndoIcon className={classes.buttonIcon} />
             Undo
-        </Button>
-    )
-}
+            </Button>
+        )
+    }
 
-function ShowHintsButton(props) {
-    const classes = useStyles();
-    const toggleShowHints = props.toggleShowHints
+    function ShowHintsButton(props) {
+        const classes = useStyles();
+        const toggleShowHints = props.toggleShowHints
 
-    return (
-        <Button
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            onClick={() => toggleShowHints()}
-        >
-            <HelpOutlineIcon className={classes.buttonIcon} />
+        return (
+            <Button
+                className={classes.button}
+                variant="contained"
+                color="primary"
+                onClick={() => toggleShowHints()}
+            >
+                <HelpOutlineIcon className={classes.buttonIcon} />
             Show Hints
-        </Button>
-    )
+            </Button>
+        )
+    }
 }
+
+
+
 
 
 function NewGameButton(props) {
