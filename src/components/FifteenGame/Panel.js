@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         justifyContent: 'center',
 
-        height: '50%',
+        height: '40%',
 
     },
     // gameStatus: {
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     //     flex: '1 0 55%'
     // },
     controls: {
-        height: '50%',
+        height: '60%',
     },
     difficultyModeBox: {
         height: '100%',
@@ -65,28 +65,25 @@ const useStyles = makeStyles((theme) => ({
     button: {
         color: theme.palette.common.white,
         backgroundColor: theme.palette.primary.main,
-        margin: '0.5rem 1.0rem',
-        width: '70%',
-        height: '30%',
-        maxHeight: '3.0rem',
+        margin: '0.35rem 0.75rem',
+        width: '85%',
+        height: '2.5rem',
         fontSize: '1.2rem',
     },
     selectedButton: {
         color: theme.palette.common.white,
         backgroundColor: 'rgba(46, 107, 18, 1.0)',
-        margin: '0.5rem 1.0rem',
-        width: '70%',
-        height: '30%',
-        maxHeight: '3.0rem',
+        margin: '0.35rem 0.70rem',
+        width: '85%',
+        height: '2.5rem',
         fontSize: '1.2rem',
     },
     unselectedButton: {
         color: '#999999',
         backgroundColor: 'rgba(46, 107, 18, 0.5)',
-        margin: '0.5rem 1.0rem',
-        width: '70%',
-        height: '30%',
-        maxHeight: '3.0rem',
+        margin: '0.35rem 0.75rem',
+        width: '85%',
+        height: '2.5rem',
         fontSize: '1.2rem',
     },
 
@@ -175,10 +172,10 @@ export default function Panel(props) {
     return (
         <Grid container className={classes.panel}>
             <Grid item className={classes.infoArea} xs={12}>
-                <Typography align='center' component='h1' variant='h3' noWrap gutterBottom>
+                <Typography align='center' component='h1' variant='h4' noWrap gutterBottom>
                     Game {gameNumber}:&nbsp;&nbsp;{gameStatus}
                 </Typography> 
-                <Typography align='center' component='h3' variant='h4' noWrap >
+                <Typography align='center' component='h3' variant='h5' noWrap >
                     Human: {props.record[0]} &emsp;  Bot: {props.record[1]} &emsp;  Draw: {props.record[2]} 
                 </Typography> 
                 
