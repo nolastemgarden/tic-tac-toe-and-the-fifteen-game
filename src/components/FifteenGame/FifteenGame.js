@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     boardContainer: {
         // border: 'solid red 1px',
         width: '100%',
-        paddingTop: 'min(100%, 45vh)',
+        paddingTop: 'min(100%, 40vh)',
         height: '0',
         position: 'relative',
     },
