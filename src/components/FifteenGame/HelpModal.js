@@ -33,10 +33,11 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(4),
     },
     button: {
-        margin: '0.5rem 1.0rem',
-        width: '70%',
-        height: '30%',
-        maxHeight: '3.0rem',
+        color: theme.palette.common.white,
+        backgroundColor: theme.palette.primary.main,
+        margin: '0.35rem 0.75rem',
+        width: '85%',
+        height: '2.5rem',
         fontSize: '1.2rem',
     },
     
