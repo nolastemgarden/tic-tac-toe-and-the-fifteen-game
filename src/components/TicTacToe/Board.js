@@ -188,8 +188,7 @@ function Square(props) {
             icon = null;
             break;
         default:
-            throw console.error("Square passed symbol not 'x' 'o' or ''");
-            break;
+            console.error("Square passed symbol not 'x' 'o' or ''");
     }
 
 
